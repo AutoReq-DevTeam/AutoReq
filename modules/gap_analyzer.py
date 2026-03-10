@@ -1,9 +1,12 @@
 """
-modules/gap_analyzer.py — Eksiklik Analizi
-Sahibi: Üye 2 (Akıllı Analiz Modülleri)
+modules/gap_analyzer.py — Unutulan Özellikleri Bulan Sistem
+Sahibi: Üye 2 (Akıllı Kontrol Modülü)
 
-Görev: Standart şablonlara göre eksik gereksinim alanlarını tespit et ve öner.
-Şablon dosyası: data/templates/requirement_template.json
+Senin Görevin:
+Müşteri bir alışveriş uygulaması istemiş olabilir. Ürün eklemeyi yazmış, satın almayı yazmış ama "Sepeti boşalt" butonunu istemeyi unutmuş!
+Senin işin, bizim sistemdeki standart e-ticaret (veya diğer proje) kalıplarına bakarak müşterinin midesine yazmayı unuttuğu, 'Burada kesin eksik var, sisteme kayıt var ama şifremi unuttum özelliği yok' dediğin detayları tespit edip önermek.
+
+Çıktı: "Müşterinin yazmayı unuttuğu özelliklerin bir tavsiye listesi."
 """
 
 from core.models import ParsedDocument

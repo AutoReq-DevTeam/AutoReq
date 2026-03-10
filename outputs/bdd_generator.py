@@ -1,8 +1,16 @@
 """
-outputs/bdd_generator.py — BDD Senaryo Üretici
-Sahibi: Üye 3 (Çıktı & Döküman Üretimi)
+outputs/bdd_generator.py — Test Senaryosu Yazıcı (BDD Üretici)
+Sahibi: Üye 3 (Rapor ve Çıktı Aşaması)
 
-Görev: Given-When-Then formatında BDD test senaryoları oluştur.
+Senin Görevin:
+Yazılımcının kodunun doğru çalışıp çalışmadığını test etmemiz lazım.
+Bunu İngilizce Gherkin formatında şöyle yazıyoruz:
+- GIVEN (Diyelim ki sistemde bir kullanıcı var)
+- WHEN (Kullanıcı 'Sil' butonuna bastığında)
+- THEN (Kullanıcının hesabı silinmelidir)
+Senin işin gereksinimleri bu üçlü İngilizce şablona oturtup .feature uzantılı dosyalar yaratmak.
+
+Çıktı: "Yazılımcının kodunu test edeceği, Given/When/Then formatında İngilizce test dosyaları."
 """
 
 from core.models import AnalysisReport

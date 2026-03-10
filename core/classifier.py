@@ -1,8 +1,13 @@
 """
-core/classifier.py — Gereksinim Sınıflandırıcı
-Sahibi: Üye 1 (NLP Core & Preprocessing)
+core/classifier.py — Gereksinim Sınıflandırıcı (Etiketleyici)
+Sahibi: Üye 1 (Metin Hazırlık)
 
-Görev: Her gereksinimi Fonksiyonel (F) veya Fonksiyonel Olmayan (NFR) olarak etiketle.
+Senin Görevin:
+Tertemiz hale gelmiş cümleler sana gelecek. Senin işin bu cümlelere iki farklı etiket yapıştırmak:
+- 'F' (Fonksiyonel): Eğer cümle sistemin yapacağı bir işten bahsediyorsa (Örn: "Kullanıcı giriş yapabilmeli")
+- 'NFR' (Fonksiyonel Olmayan): Eğer cümle hız, güvenlik, dil gibi kalite şartlarından bahsediyorsa (Örn: "Sistem en geç 2 saniyede açılmalı", "Şifreler güvenli tutulmalı")
+
+Çıktı: "Her cümlenin ne tür bir istek olduğunu belirten etiketli liste."
 """
 
 from .models import Requirement

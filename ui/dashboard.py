@@ -1,8 +1,14 @@
 """
-ui/dashboard.py — Ana Dashboard
-Sahibi: Üye 4 (UI & Entegrasyon)
+ui/dashboard.py — Ana Giriş Ekranı (Vitrin)
+Sahibi: Üye 4 (Arayüz ve Entegrasyon)
 
-Görev: Metin girişi, analiz butonu ve ilerleme çubuğunu göster.
+Senin Görevin:
+Müşterinin/Kullanıcının uygulamayı açtığında göreceği o şık, temiz ilk sayfayı yapmak.
+Bu sayfada büyük bir metin kutusu olmalı ki adam projesini anlatsın.
+Altında kalın harflerle dikkat çeken, tıklanabilir bir "Analiz Et" butonu olmalı.
+Ve kullanıcı butona bastığında "Bekleyiniz, veriler işleniyor..." gibi havalı bir yüklenme çubuğu çıkmalı.
+
+Çıktı: "İçine metin girilebilen, şık ve çalışan bir ana ekran."
 """
 
 import streamlit as st

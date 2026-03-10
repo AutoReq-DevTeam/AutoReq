@@ -1,8 +1,15 @@
 """
-core/ner.py — Varlık Tanıma (Named Entity Recognition)
-Sahibi: Üye 1 (NLP Core & Preprocessing)
+core/ner.py — Cümledeki Rolleri ve Nesneleri Ayıklayıcı
+Sahibi: Üye 1 (Metin Hazırlık)
 
-Görev: Metindeki aktörleri (Kullanıcı, Admin, Sistem) ve nesneleri tespit et.
+Senin Görevin:
+Sana gelen cümlenin içinde 'kim, ne yapıyor?' sorusunun cevabını cımbızla çekmek.
+Örneğin: "Müşteri sisteme kredi kartı ile ödeme yapabilmelidir" cümlesi geldiğinde:
+- Aktör (Rol): "Müşteri", "Sistem"
+- Nesne: "kredi kartı", "ödeme"
+kısımlarını bulup listeye yazacaksın. (Bunun için spaCy kütüphanesini kullanacaksın).
+
+Çıktı: "Cümledeki ana karakterlerin ve anahtar elemanların listesi."
 """
 
 from .models import Requirement

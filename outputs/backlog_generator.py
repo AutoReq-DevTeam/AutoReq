@@ -1,8 +1,12 @@
 """
-outputs/backlog_generator.py — Product Backlog Üretici
-Sahibi: Üye 3 (Çıktı & Döküman Üretimi)
+outputs/backlog_generator.py — Öncelik Sıralayıcı (Product Backlog Üretici)
+Sahibi: Üye 3 (Rapor ve Çıktı Aşaması)
 
-Görev: Öncelik skoru hesaplayarak sıralı Product Backlog oluştur.
+Senin Görevin:
+Yazılım ekibi hangi işi önce yapmalı? Müşteri hepsini 'Acil' diyebilir ama biz biliyoruz ki 'Kayıt Olma' işlemi, 'Tema Rengi Seçme' işleminden daha önemlidir.
+Senin işin, bizim kurallarımıza (örn: fonksiyonel şeyler her zaman görsel şeylerden daha acildir) göre her isteğe bir puan vermek ve bunları en önemliden en önemsize doğru sıralamak.
+
+Çıktı: "Ekibin 'ilk buradan başlayalım' diyebileceği puanlanmış, sıralı bir Excel/Tablo listesi."
 """
 
 from core.models import AnalysisReport

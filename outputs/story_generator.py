@@ -1,8 +1,14 @@
 """
-outputs/story_generator.py — User Story Üretici
-Sahibi: Üye 3 (Çıktı & Döküman Üretimi)
+outputs/story_generator.py — Hikayeci (User Story Üretici)
+Sahibi: Üye 3 (Rapor ve Çıktı Aşaması)
 
-Görev: Gereksinimleri "As a [role], I want [goal], so that [benefit]" formatına dönüştür.
+Senin Görevin:
+Yazılımcılar uzun metinler yerine kısa görev notlarını sever. Bu notlara 'User Story' denir.
+Senin işin elimizdeki gereksinimleri şu formata çevirmek:
+'Bir [Rol] olarak, [Bunu yapmak] istiyorum, çünkü [Bana şöyle bir faydası var].'
+Örnek: Bir "Öğrenci" olarak "notlarımı görmek" istiyorum çünkü "durumumu takip etmeliyim".
+
+Çıktı: "Yazılımcıların önüne yapıştırılacak görev post-it'leri gibi kısa hikayeler."
 """
 
 from core.models import AnalysisReport

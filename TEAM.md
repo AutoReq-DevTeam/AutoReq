@@ -7,14 +7,14 @@
 
 ## 🗂 Sorumluluk Matrisi (RACI)
 
-| Modül | Üye 1 | Üye 2 | Üye 3 | Üye 4 |
+| Sorumluluk Matrisi | Üye 1 | Üye 2 | Üye 3 | Üye 4 |
 |---|:---:|:---:|:---:|:---:|
 | NLP Core & Preprocessing | **R** | C | I | I |
 | Akıllı Analiz Modülleri | I | **R** | C | I |
 | Çıktı & Döküman Üretimi | I | C | **R** | I |
 | UI / Streamlit Arayüzü | C | I | I | **R** |
 | Testler | C | C | C | **R** |
-| `app.py` (entegrasyon) | C | C | C | **R** |
+| `app.py` (entegrasyon) | **R** | C | C | C |
 
 > **R** = Responsible (Sorumlu) | **C** = Consulted (Danışılan) | **I** = Informed (Bilgilendirilen)
 
@@ -22,13 +22,14 @@
 
 ## 🧑‍💻 Üye 1 — NLP Core & Preprocessing
 
-**Çalışma Dizini:** `core/`
+**Çalışma Dizini:** `core/` + `app.py`
 
 ### Görevler
 - [ ] `preprocessor.py` — Ham metin temizleme, tokenizasyon, normalizasyon
 - [ ] `classifier.py` — Fonksiyonel vs. Fonksiyonel Olmayan gereksinim sınıflandırıcı (scikit-learn)
 - [ ] `ner.py` — Named Entity Recognition; aktör (Kullanıcı, Sistem, Admin) ve nesne tespiti (spaCy)
 - [ ] `core/__init__.py` — Modül dışa aktarımları
+- [ ] `app.py` — Ana Streamlit giriş noktası; tüm modülleri birleştirir ve sistemi sen ayağa kaldırırsın
 
 ### Teknik Detaylar
 ```
@@ -98,10 +99,9 @@ Giriş                     : AnalysisReport (Üye 2'den gelir)
 
 ## 🧑‍💻 Üye 4 — UI / Arayüz & Uygulama Entegrasyonu
 
-**Çalışma Dizini:** `ui/` + `app.py` + `tests/`
+**Çalışma Dizini:** `ui/` + `tests/`
 
 ### Görevler
-- [ ] `app.py` — Ana Streamlit giriş noktası; tüm modülleri birleştirir
 - [ ] `ui/dashboard.py` — Ana ekran; metin girişi, analiz butonu, ilerleme çubuğu
 - [ ] `ui/results.py` — Analiz sonuçlarını sekmeli/panelli gösterim
 - [ ] `ui/components.py` — Yeniden kullanılabilir UI bileşenleri (kartlar, rozetler, tablolar)

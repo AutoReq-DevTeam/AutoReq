@@ -1,9 +1,13 @@
 """
-outputs/srs_generator.py — SRS PDF Üretici
-Sahibi: Üye 3 (Çıktı & Döküman Üretimi)
+outputs/srs_generator.py — Sözleşme Yazıcı (PDF Üretici)
+Sahibi: Üye 3 (Rapor ve Çıktı Aşaması)
 
-Görev: IEEE 830 standardına uygun SRS belgesi oluştur ve PDF olarak kaydet.
-Çıktı: outputs/generated/srs_<timestamp>.pdf
+Senin Görevin:
+Artık elimizde tertemiz, hatalarından arındırılmış bir yazılım gereksinim listesi var.
+Senin işin bunu alıp, sanki büyük bir şirket için yazılmış resmi bir proje dokümanına (SRS) dönüştürmek ve PDF olarak kaydetmek.
+(Bunun için fpdf2 gibi kütüphaneler kullanacaksın).
+
+Çıktı: "Müşteriye sunulmaya hazır, çok şık ve resmi bir PDF belgesi."
 """
 
 from core.models import AnalysisReport

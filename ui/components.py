@@ -1,8 +1,13 @@
 """
-ui/components.py — Yeniden Kullanılabilir UI Bileşenleri
-Sahibi: Üye 4 (UI & Entegrasyon)
+ui/components.py — Görsel Parça Deposu (UI Bileşenleri)
+Sahibi: Üye 4 (Arayüz ve Entegrasyon)
 
-Görev: Uygulama genelinde kullanılan ortak UI bileşenlerini tanımla.
+Senin Görevin:
+Web sayfasında tekrar tekrar kullanacağımız butonları, uyarı kutularını veya renkli rozetleri (badge) her seferinde baştan yazmak yorucudur.
+Burası senin tependeki rafın. Burada "Kırmızı Uyarı Kutusu", "İndirme Butonu" gibi küçük görsel parçalar (fonksiyonlar) yapacaksın.
+Diğer sayfalarda da sadece bu fonksiyonu çağırıp parçayı Lego gibi yerine takacaksın.
+
+Çıktı: "Tekrar kullanılabilir, küçük ve şık arayüz parçacıkları."
 """
 
 import streamlit as st

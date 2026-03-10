@@ -1,8 +1,13 @@
 """
-modules/improver.py — İyileştirme Önerileri
-Sahibi: Üye 2 (Akıllı Analiz Modülleri)
+modules/improver.py — Muğlak Kelime Temizleyicisi
+Sahibi: Üye 2 (Akıllı Kontrol Modülü)
 
-Görev: "Hızlı olmalı" gibi muğlak ifadeleri ölçülebilir kriterlere dönüştür.
+Senin Görevin:
+Yazılımcılar yuvarlak lafları sevmez. Müşteri "Sistem çok süper hızlı açılmalı" dediğinde yazılımcı ne yapacağını bilemez.
+Senin işin metindeki "hızlı", "kolay", "hemen", "güzel" gibi ölçülemeyen (muğlak) kelimeleri tespit etmek.
+Ardından bunları ölçülebilir, teknik bir dile çevirmek (Örn: "Sistem açılış süresi < 1 saniye olmalıdır").
+
+Çıktı: "Daha teknik ve net yazılmış, düzeltilmiş profesyonel cümleler."
 """
 
 from core.models import Requirement
