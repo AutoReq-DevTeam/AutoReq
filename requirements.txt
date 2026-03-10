@@ -1,0 +1,35 @@
+# ============================================================
+#  AutoReq - Python Bağımlılıkları
+#  Kurulum: pip install -r requirements.txt
+# ============================================================
+
+# --- Web Arayüzü ---
+streamlit>=1.32.0
+
+# --- NLP Kütüphaneleri ---
+spacy>=3.7.0
+nltk>=3.8.1
+# spaCy Türkçe modeli için:
+#   python -m spacy download tr_core_news_sm
+
+# --- Makine Öğrenmesi (Sınıflandırma) ---
+scikit-learn>=1.4.0
+numpy>=1.26.0
+pandas>=2.2.0
+
+# --- PDF Üretimi ---
+fpdf2>=2.7.9
+reportlab>=4.1.0
+
+# --- Veri Serileştirme & Export ---
+openpyxl>=3.1.2       # Excel export
+python-docx>=1.1.0    # Word export
+
+# --- Yardımcı Kütüphaneler ---
+python-dotenv>=1.0.0  # Ortam değişkenleri
+loguru>=0.7.2         # Gelişmiş loglama
+pydantic>=2.6.0       # Veri doğrulama
+
+# --- Test ---
+pytest>=8.0.0
+pytest-cov>=4.1.0

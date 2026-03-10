@@ -205,3 +205,24 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# ============================================================
+# AutoReq — Proje Spesifik
+# ============================================================
+
+# Üretilen çıktı dosyaları (PDF, DOCX, XLSX vb.)
+outputs/generated/*
+!outputs/generated/.gitkeep
+
+# spaCy model dosyaları (büyük boyutlu)
+*.spacy
+
+# Ortam değişkenleri
+.env
+.env.local
+
+# Streamlit önbelleği
+.streamlit/
+
+# Örnek / test çıktıları
+data/generated/

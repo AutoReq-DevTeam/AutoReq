@@ -1,0 +1,24 @@
+{
+  "requirement_areas": [
+    {
+      "area": "Kimlik Doğrulama",
+      "required": ["Kullanıcı Girişi", "Kullanıcı Çıkışı"],
+      "suggested": ["Şifre Sıfırlama", "İki Faktörlü Doğrulama", "Oturum Zaman Aşımı"]
+    },
+    {
+      "area": "Kullanıcı Yönetimi",
+      "required": ["Kullanıcı Kaydı"],
+      "suggested": ["Profil Güncelleme", "Hesap Silme", "Rol Yönetimi"]
+    },
+    {
+      "area": "Performans",
+      "required": [],
+      "suggested": ["Yanıt Süresi Limiti", "Eşzamanlı Kullanıcı Kapasitesi", "Yük Testi Eşiği"]
+    },
+    {
+      "area": "Güvenlik",
+      "required": [],
+      "suggested": ["Veri Şifreleme", "SQL Injection Koruması", "XSS Koruması"]
+    }
+  ]
+}
