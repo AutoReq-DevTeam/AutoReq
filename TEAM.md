@@ -20,7 +20,7 @@
 
 ---
 
-## 🧑‍💻 Üye 1 — NLP Core & Preprocessing
+## 🧑‍💻 Galip Efe Öncü — NLP Core & Preprocessing
 
 **Çalışma Dizini:** `core/` + `app.py`
 
