@@ -47,7 +47,7 @@ Giriş                     : Ham string (müşteri metni)
 
 ---
 
-## 🧑‍💻 Üye 2 — Akıllı Analiz Modülleri
+## 🧑‍💻 Eren Eyyüpkoca — Akıllı Analiz Modülleri
 
 **Çalışma Dizini:** `modules/`
 
@@ -72,7 +72,7 @@ Giriş                     : ParsedDocument (Üye 1'den gelir)
 
 ---
 
-## 🧑‍💻 Üye 3 — Çıktı & Döküman Üretimi
+## 🧑‍💻 Halise İncir — Çıktı & Döküman Üretimi
 
 **Çalışma Dizini:** `outputs/`
 
@@ -98,7 +98,7 @@ Prompt Stratejisi         : Belirlenen mühendislik standartlarına göre dökü
 
 ---
 
-## 🧑‍💻 Üye 4 — UI / Arayüz & Uygulama Entegrasyonu
+## 🧑‍💻 Agid Gülsever — UI / Arayüz & Uygulama Entegrasyonu
 
 **Çalışma Dizini:** `ui/` + `tests/`
 
