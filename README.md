@@ -4,7 +4,7 @@
 
 ### Otomatik Yazılım Gereksinim Analizörü
 
-*Ham müşteri metinlerini yapılandırılmış mühendislik dökümanlarına dönüştüren NLP destekli otomasyon asistanı.*
+*Ham müşteri metinlerini yapılandırılmış mühendislik dökümanlarına dönüştüren NLP ve LLM destekli otomasyon asistanı.*
 
 ---
 
@@ -35,9 +35,9 @@
 
 ## 📌 Proje Hakkında
 
-**AutoReq**, yazılım geliştirme sürecindeki en zorlu ve zaman alıcı aşamalardan biri olan **gereksinim mühendisliğini** otomatize etmek için tasarlanmış bir yapay zeka destekli araçtır.
+AutoReq, yazılım geliştirme sürecindeki en zorlu ve zaman alıcı aşamalardan biri olan **gereksinim mühendisliğini** otomatize etmek için tasarlanmış, hibrit bir yapay zeka (NLP + LLM) aracıdır.
 
-Müşterilerden veya paydaşlardan gelen belirsiz, yapılandırılmamış ham metinleri alır; Doğal Dil İşleme (NLP) teknikleriyle analiz eder ve endüstri standartlarına uygun, hatasız mühendislik belgelerine dönüştürür. Bu sayede yazılım ekipleri, gereksinim toplama sürecini günlerden saatlere indirirken insan kaynaklı hata ve eksiklikleri de minimize eder.
+Müşterilerden gelen belirsiz ham metinleri alır; **spaCy** ile yapısal analiz yapar ve **LLM** (GPT/Llama) modülleriyle mantıksal derinlik katarak endüstri standartlarına uygun belgelere dönüştürür.
 
 ---
 
@@ -82,7 +82,8 @@ AutoReq
 | Katman | Teknoloji | Amaç |
 |---|---|---|
 | **Programlama Dili** | Python 3.x | Temel uygulama geliştirme |
-| **NLP Motoru** | spaCy / NLTK | Metin analizi, NER, tokenizasyon |
+| **NLP Motoru** | spaCy / NLTK | Yapısal analiz, NER, tokenizasyon |
+| **Zeka Katmanı** | LLM (OpenAI / Ollama) | Çelişki tespiti, döküman üretimi |
 | **Web Arayüzü** | Streamlit | İnteraktif kullanıcı arayüzü |
 | **Proje Yönetimi** | GitHub + Scrum | Versiyon kontrolü ve agile süreç |
 
@@ -132,7 +133,7 @@ AutoReq analiz işlemi tamamlandığında aşağıdaki formatları otomatik olar
 
 | Çıktı | Format | Açıklama |
 |---|---|---|
-| **SRS Belgesi** | PDF | Yazılım Gereksinim Spesifikasyonu (Software Requirements Specification) |
+| **SRS Belgesi** | PDF | ISO/IEC/IEEE 29148 standardına uygun Yazılım Gereksinim Spesifikasyonu |
 | **User Stories** | Metin / Export | *"As a user, I want..."* formatında çevik hikayeler |
 | **Product Backlog** | Liste / Export | Önceliklendirilmiş sprint iş listesi |
 | **BDD Senaryoları** | Gherkin | *Given-When-Then* formatında test senaryoları |

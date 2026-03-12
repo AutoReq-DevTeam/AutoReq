@@ -24,7 +24,7 @@ class ConflictDetector:
         Döndürür:
             list[dict]: Her biri {'req_ids', 'conflict_type', 'reason'} içeren çelişki listesi.
         """
-        # TODO: Üye 2 — Zıt anahtar kelime çiftlerini tespit et (örn: "her zaman" vs "asla")
-        # TODO: Üye 2 — Aynı aktöre ait çelişen izin kurallarını bul
-        # TODO: Üye 2 — Belirsiz/muğlak ifadeleri uyar
+        # TODO: Üye 2 — Zıt anahtar kelime çiftlerini tespit et (Lokal NLP)
+        # TODO: Üye 2 — LLM kullanarak mantıksal ve anlamsal çelişkileri tespit et
+        # TODO: Üye 2 — Belirsiz/muğlak ifadeleri sezgilere dayalı (LLM) olarak uyar
         raise NotImplementedError("ConflictDetector.detect() henüz implemente edilmedi.")

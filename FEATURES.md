@@ -1,28 +1,40 @@
 # 🚀 AutoReq: Otomatik Yazılım Gereksinim Analizörü
 
-Bu dosya, projenin teknik detaylarını, özellik listesini ve geliştirme yol haritasını içerir.
+Bu dosya, projenin teknoloji stratejisini, özellik listesini ve geliştirme yol haritasını içerir.
 
-## 📌 Proje Vizyonu
-Müşteriden gelen ham metinleri Doğal Dil İşleme (NLP) ile analiz ederek, hatasız ve yapılandırılmış mühendislik dökümanlarına dönüştüren bir otomasyon asistanı.
+## 🧠 Teknoloji Stratejisi: Hibrit Yaklaşım (NLP + LLM)
+AutoReq, performans ve maliyet verimliliği için geleneksel **NLP** tekniklerini, derin anlamsal analiz ve yaratıcı içerik üretimi için ise **LLM** (Large Language Models) teknolojisini bir arada kullanır.
+
+### 🔍 NLP (Doğal Dil İşleme - spaCy / NLTK)
+*Hız, yapısal analiz ve lokal veri işleme için kullanılır.*
+- **Metin Ön İşleme:** Cümle bazlı tokenizasyon, temizleme ve normalizasyon.
+- **Varlık Tespiti (NER):** Aktörlerin (Kullanıcı, Sistem) ve temel nesnelerin hızlıca yakalanması.
+- **Yapısal Sınıflandırma:** Gereksinimlerin temel türlerine göre (Fonksiyonel / Teknik) ayrıştırılması.
+
+### 🤖 LLM (Yapay Zeka - GPT / Llama / Claude)
+*Mantıksal çıkarım, çelişki tespiti ve yaratıcı dökümantasyon için kullanılır.*
+- **Çelişki & Belirsizlik Analizi:** Mantıksal zıtlıkların tespiti ve "muğlak" ifadelerin sezilmesi.
+- **Eksiklik Analizi:** Sektörel bilgiye dayanarak eksik kalan senaryoların uyarılması.
+- **İçerik Üretimi:** User Story, BDD Senaryosu ve SRS dökümanlarının profesyonel dille yazılması.
 
 ## 🛠 Temel Özellikler (MVP)
-- [ ] **Metin Ayrıştırma:** Cümle bazlı tokenizasyon ve temizleme.
-- [ ] **Sınıflandırma:** Gereksinimlerin Fonksiyonel / Fonksiyonel Olmayan olarak ayrılması.
-- [ ] **Varlık Tespiti (NER):** Aktörlerin (Kullanıcı, Sistem) ve Nesnelerin belirlenmesi.
+- [ ] **Metin Ayrıştırma (NLP):** Cümle bazlı ayrıştırma.
+- [ ] **Sınıflandırma (NLP + LLM):** Hibrit model ile kategorizasyon.
+- [ ] **Varlık Tespiti (NLP):** Aktör ve nesne haritalama.
 
-## 🧠 Akıllı Modüller
-- [ ] **Çelişki Tespiti:** Mantıksal zıtlıkların ve belirsiz ifadelerin uyarılması.
-- [ ] **Eksiklik Analizi:** Standart şablonlara göre (Login var, Pass reset yok gibi) öneri sunma.
-- [ ] **İyileştirme Önerileri:** "Hızlı olmalı" gibi muğlak ifadelerin ölçülebilir hale getirilmesi.
+## 🧠 Akıllı Modüller (LLM Destekli)
+- [ ] **Çelişki Tespiti:** Mantıksal zıtlıkların uyarılması.
+- [ ] **Eksiklik Analizi:** Standart şablonlara göre öneri sunma.
+- [ ] **İyileştirme Önerileri:** Ölçülebilir kriterlere dönüştürme.
 
 ## 📂 Çıktılar (Outputs)
 - [ ] **Otomatik SRS:** PDF formatında Yazılım Gereksinim Dökümanı.
-- [ ] **User Stories:** "As a user, I want..." formatında çevik hikayeler.
-- [ ] **Product Backlog:** Önceliklendirilmiş iş listesi (B-serisi çıktı).
-- [ ] **BDD Senaryoları:** Given-When-Then formatında test senaryoları.
+- [ ] **User Stories:** LLM ile zenginleştirilmiş kullanıcı hikayeleri.
+- [ ] **BDD Senaryoları:** Gherkin formatında test senaryoları.
 
 ## 🏗 Teknoloji Yığını
 - **Dil:** Python 3.x
 - **NLP:** spaCy / NLTK
+- **LLM Entegrasyonu:** LangChain / OpenAI API / Ollama (Local)
 - **Arayüz:** Streamlit
 - **Versiyon Kontrol:** GitHub (Scrum Framework)

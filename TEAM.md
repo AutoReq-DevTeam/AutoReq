@@ -10,11 +10,12 @@
 | Sorumluluk Matrisi | Üye 1 | Üye 2 | Üye 3 | Üye 4 |
 |---|:---:|:---:|:---:|:---:|
 | NLP Core & Preprocessing | **R** | C | I | I |
-| Akıllı Analiz Modülleri | I | **R** | C | I |
-| Çıktı & Döküman Üretimi | I | C | **R** | I |
-| UI / Streamlit Arayüzü | C | I | I | **R** |
-| Testler | C | C | C | **R** |
-| `app.py` (entegrasyon) | **R** | C | C | C |
+| Akıllı Analiz (NLP + LLM) | I | **R** | C | I |
+| Çıktı Üretimi (LLM Destekli) | I | C | **R** | I |
+| LLM Entegrasyonu (Genel) | C | **R** | **R** | I |
+| UI & Uygulama Entegrasyonu | C | I | I | **R** |
+| Testler (Unit & Prompt Test) | C | C | C | **R** |
+| `app.py` (Orchestration) | **R** | C | C | C |
 
 > **R** = Responsible (Sorumlu) | **C** = Consulted (Danışılan) | **I** = Informed (Bilgilendirilen)
 
@@ -36,7 +37,7 @@
 Kullanılacak Kütüphaneler : spaCy, NLTK, scikit-learn
 Temel Sınıf               : TextProcessor
 Giriş                     : Ham string (müşteri metni)
-Çıkış                     : ParsedDocument dataclass
+Çıkış                     : ParsedDocument dataclass (Yapısal analiz tamamlanmış)
 ```
 
 ### Kabul Kriterleri
@@ -58,16 +59,16 @@ Giriş                     : Ham string (müşteri metni)
 
 ### Teknik Detaylar
 ```
-Kullanılacak Kütüphaneler : spaCy, pandas, pydantic
+Kullanılacak Kütüphaneler : LangChain, OpenAI/Ollama API, spaCy, pydantic
 Giriş                     : ParsedDocument (Üye 1'den gelir)
-Çıkış                     : AnalysisReport dataclass
-Şablonlar                 : data/templates/ dizininden okunur
+Çıkış                     : AnalysisReport dataclass (Mantıksal ve anlamsal analiz eklenmiş)
+Şablonlar & Promptlar     : data/templates/ ve prompts/ dizinlerinden okunur
 ```
 
 ### Kabul Kriterleri
-- Çelişki tespiti en az 5 farklı çelişki türünü yakalamalıdır
-- Eksik gereksinim analizi `data/templates/` altındaki şablona dayanmalıdır
-- Her sonuç için açıklayıcı bir `reason` alanı üretilmelidir
+- Çelişki tespiti hem kelime bazlı (NLP) hem de mantıksal (LLM) düzeyde çalışmalıdır
+- LLM yanıt süreleri optimize edilmeli ve "hallucination" kontrolü yapılmalıdır
+- Her analiz sonucu için tutarlı bir `reason` alanı üretilmelidir
 
 ---
 
@@ -76,7 +77,7 @@ Giriş                     : ParsedDocument (Üye 1'den gelir)
 **Çalışma Dizini:** `outputs/`
 
 ### Görevler
-- [ ] `srs_generator.py` — IEEE 830 standardına uygun PDF formatında SRS belgesi üretimi
+- [ ] `srs_generator.py` — ISO/IEC/IEEE 29148 standardına uygun PDF formatında SRS belgesi üretimi
 - [ ] `story_generator.py` — "As a [role], I want [goal], so that [benefit]" formatında User Story üretimi
 - [ ] `backlog_generator.py` — Öncelik skoru hesaplayarak sıralı Product Backlog üretimi
 - [ ] `bdd_generator.py` — Given / When / Then formatında BDD test senaryosu üretimi
@@ -84,14 +85,14 @@ Giriş                     : ParsedDocument (Üye 1'den gelir)
 
 ### Teknik Detaylar
 ```
-Kullanılacak Kütüphaneler : fpdf2, reportlab, python-docx, openpyxl
+Kullanılacak Kütüphaneler : fpdf2, reportlab, python-docx, LangChain (İçerik Yazımı)
 Giriş                     : AnalysisReport (Üye 2'den gelir)
 Çıkış                     : PDF / DOCX / XLSX / Gherkin dosyaları
-Şablonlar                 : data/templates/ dizininden okunur
+Prompt Stratejisi         : Belirlenen mühendislik standartlarına göre döküman üretimi
 ```
 
 ### Kabul Kriterleri
-- PDF çıktısı geçerli bir IEEE 830 yapısına sahip olmalıdır
+- PDF çıktısı geçerli bir ISO/IEC/IEEE 29148 yapısına sahip olmalıdır
 - Her çıktı formatı için ayrı unit test yazılmalıdır
 - Dosyalar `outputs/generated/` altına kaydedilmelidir
 
@@ -138,9 +139,10 @@ Sprint 4  (Hafta 8)   → Test & entegrasyon, demo hazırlığı
 ## 🔗 Ortak Kurallar
 
 1. **Branch Stratejisi:** `main` → `develop` → `feature/uye[n]-ozellik-adi`
-2. **Commit Convention:** `feat:`, `fix:`, `docs:`, `test:` önekleri kullanılacak
+2. **Commit Convention:** `feat:`, `fix:`, `docs:`, `test:`, `prompt:` önekleri kullanılacak
 3. **Pull Request:** Her PR en az 1 başka üye tarafından incelenmelidir
 4. **Interface Anlaşması:** Modüller arası `dataclass` tanımları `core/models.py` dosyasında tutulur
+5. **API Güvenliği:** API anahtarları asla koda gömülmez, `.env` dosyasında saklanır
 
 ---
 

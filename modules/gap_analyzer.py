@@ -23,7 +23,7 @@ class GapAnalyzer:
         Döndürür:
             list[dict]: Her biri {'missing_area', 'suggestion', 'severity'} içeren boşluk listesi.
         """
-        # TODO: Üye 2 — data/templates/ altındaki şablonu yükle
-        # TODO: Üye 2 — Şablondaki zorunlu alanları mevcut gereksinimlerle karşılaştır
-        # TODO: Üye 2 — Eksik alanlar için öneri oluştur (örn: Login var → Password Reset öner)
+        # TODO: Üye 2 — Mevcut gereksinimleri analiz edip projenin kapsamını belirle (E-ticaret, Fintech, vb.)
+        # TODO: Üye 2 — LLM kullanarak "Dünya standartlarında bu tip bir sistemde ne eksik olabilir?" sorusuna yanıt ara
+        # TODO: Üye 2 — Eksik iş akışlarını (örn: "Giriş var ama Şifremi Unuttum yok") raporla
         raise NotImplementedError("GapAnalyzer.analyze() henüz implemente edilmedi.")

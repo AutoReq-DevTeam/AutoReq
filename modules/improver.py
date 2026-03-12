@@ -24,7 +24,7 @@ class RequirementImprover:
         Döndürür:
             dict: {'original', 'improved', 'reason'} alanları olan öneri dict'i.
         """
-        # TODO: Üye 2 — Muğlak ifade sözlüğü oluştur (hızlı, kolay, düzgün, vs.)
-        # TODO: Üye 2 — Her muğlak ifadeye ölçülebilir alternatif öner
-        #               Örn: "hızlı" → "2 saniyenin altında yanıt vermeli"
+        # TODO: Üye 2 — Muğlak ifade sözlüğü (NLP tabanlı ön kontrol)
+        # TODO: Üye 2 — LLM (Few-shot prompting) kullanarak muğlak ifadeleri teknik metne dönüştür
+        #               Örn: "süper hızlı olsun" → LLM → "Sistem yanıt süresi 500ms altında olmalıdır"
         raise NotImplementedError("RequirementImprover.improve() henüz implemente edilmedi.")

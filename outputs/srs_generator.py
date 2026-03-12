@@ -25,7 +25,7 @@ class SRSGenerator:
         Döndürür:
             str: Oluşturulan PDF dosyasının tam yolu.
         """
-        # TODO: Üye 3 — fpdf2 ile IEEE 830 şablonunu yükle
-        # TODO: Üye 3 — Bölümleri doldur: Giriş, Genel Tanım, Gereksinimler
+        # TODO: Üye 3 — fpdf2 ile ISO/IEC/IEEE 29148 şablonunu oluştur
+        # TODO: Üye 3 — Bölümleri doldur: Giriş, Genel Tanım, Sistem Özellikleri, Gereksinimler
         # TODO: Üye 3 — PDF olarak kaydet → output_path/srs_<timestamp>.pdf
         raise NotImplementedError("SRSGenerator.generate() henüz implemente edilmedi.")
