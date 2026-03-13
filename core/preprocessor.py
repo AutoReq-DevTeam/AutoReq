@@ -1,15 +1,10 @@
 """
-core/preprocessor.py — Metin Temizleyici ve Düzenleyici
-Sahibi: Üye 1 (Metin Hazırlık)
+core/preprocessor.py — Metin Ön İşleme Modülü
+Sorumlu: Üye 1 (NLP & Preprocessing)
 
-Senin Görevin:
-Sana müşteriden gelen karmakarışık, imla kurallarına uyulmamış uzunca bir yazı verilecek.
-Senin buradaki görevin bir editör gibi davranmak:
-1. Gereksiz boşlukları, anlamsız karakterleri sil.
-2. Noktalama işaretlerini ve büyük/küçük harfleri düzgün bir standarda oturt.
-3. Uzun metni, bilgisayarın kolayca okuyabileceği kelimelere ve cümlelere ayır.
-
-Çıktı: "Tertemiz, bilgisayarın işlemeye hazır olduğu bir veri seti."
+Açıklama:
+Ham metinleri temizleyerek analize hazır hale getirir. Gereksiz karakter temizliği, 
+normalizasyon ve cümle bazlı ayrıştırma (tokenization) işlemlerinden sorumludur.
 """
 
 from .models import ParsedDocument, Requirement

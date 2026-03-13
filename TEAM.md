@@ -30,7 +30,7 @@
 - [ ] `classifier.py` — Fonksiyonel vs. Fonksiyonel Olmayan gereksinim sınıflandırıcı (scikit-learn)
 - [ ] `ner.py` — Named Entity Recognition; aktör (Kullanıcı, Sistem, Admin) ve nesne tespiti (spaCy)
 - [ ] `core/__init__.py` — Modül dışa aktarımları
-- [ ] `app.py` — Ana Streamlit giriş noktası; tüm modülleri birleştirir ve sistemi sen ayağa kaldırırsın
+- [ ] `app.py` — Ana Streamlit giriş noktası; tüm modülleri birleştirir ve sistemin başlatılmasını sağlar
 
 ### Teknik Detaylar
 ```

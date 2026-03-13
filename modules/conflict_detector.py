@@ -1,13 +1,10 @@
 """
-modules/conflict_detector.py — Çelişki ve Mantık Hatası Dedektifi
-Sahibi: Üye 2 (Akıllı Kontrol Modülü)
+modules/conflict_detector.py — Çelişki ve Mantık Analizörü
+Sorumlu: Eren Eyyüpkoca
 
-Senin Görevin:
-Müşteriler bazen ne istediklerini bilmezler ve kendi kendileriyle çelişirler.
-Örneğin yukarıda "Kullanıcılar şifre girmeden sisteme girebilsin" derken, aşağıda "Sistem son derece güvenli olmalı" diyebilir.
-Senin işin, bu birbiriyle zıtlaşan, teknik olarak imkansız olan istekleri yan yana koyup "Hop, burada bir mantık hatası var!" diye uyarı verecek kodu yazmak.
-
-Çıktı: "Hatalı isteklerin altı çizilmiş bir hata raporu."
+Açıklama:
+Gereksinimler arasındaki mantıksal çelişkileri ve teknik zıtlıkları tespit eder. 
+NLP ve LLM tekniklerini kullanarak belgelerdeki uyumsuzlukları raporlar.
 """
 
 from core.models import ParsedDocument, AnalysisReport

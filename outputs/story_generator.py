@@ -1,14 +1,10 @@
 """
-outputs/story_generator.py — Hikayeci (User Story Üretici)
-Sahibi: Üye 3 (Rapor ve Çıktı Aşaması)
+outputs/story_generator.py — User Story Üretim Modülü
+Sorumlu: Halise İncir
 
-Senin Görevin:
-Yazılımcılar uzun metinler yerine kısa görev notlarını sever. Bu notlara 'User Story' denir.
-Senin işin elimizdeki gereksinimleri şu formata çevirmek:
-'Bir [Rol] olarak, [Bunu yapmak] istiyorum, çünkü [Bana şöyle bir faydası var].'
-Örnek: Bir "Öğrenci" olarak "notlarımı görmek" istiyorum çünkü "durumumu takip etmeliyim".
-
-Çıktı: "Yazılımcıların önüne yapıştırılacak görev post-it'leri gibi kısa hikayeler."
+Açıklama:
+Analiz edilen gereksinimleri çevik (agile) geliştirme süreçlerine uygun 
+"User Story" formatına dönüştürür. Rol, hedef ve fayda bileşenlerini ayrıştırır.
 """
 
 from core.models import AnalysisReport

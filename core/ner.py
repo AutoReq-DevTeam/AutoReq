@@ -1,15 +1,11 @@
 """
-core/ner.py — Cümledeki Rolleri ve Nesneleri Ayıklayıcı
-Sahibi: Üye 1 (Metin Hazırlık)
+core/ner.py — Varlık ve Nesne Ayıklayıcı (NER)
+Sorumlu: Üye 1 (NLP & Preprocessing)
 
-Senin Görevin:
-Sana gelen cümlenin içinde 'kim, ne yapıyor?' sorusunun cevabını cımbızla çekmek.
-Örneğin: "Müşteri sisteme kredi kartı ile ödeme yapabilmelidir" cümlesi geldiğinde:
-- Aktör (Rol): "Müşteri", "Sistem"
-- Nesne: "kredi kartı", "ödeme"
-kısımlarını bulup listeye yazacaksın. (Bunun için spaCy kütüphanesini kullanacaksın).
-
-Çıktı: "Cümledeki ana karakterlerin ve anahtar elemanların listesi."
+Açıklama:
+Cümle içerisinden aktörleri (Kullanıcı, Sistem, vb.) ve temel nesneleri (Kredi Kartı, Sipariş vb.) 
+tespit eder. Bu bilgiler, gereksinimlerin kapsamını ve etkileşim noktalarını 
+belirlemek için kullanılır.
 """
 
 from .models import Requirement

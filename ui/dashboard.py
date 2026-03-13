@@ -1,14 +1,10 @@
 """
-ui/dashboard.py — Ana Giriş Ekranı (Vitrin)
-Sahibi: Üye 4 (Arayüz ve Entegrasyon)
+ui/dashboard.py — Ana Kullanıcı Arayüzü
+Sorumlu: Agid Gülsever
 
-Senin Görevin:
-Müşterinin/Kullanıcının uygulamayı açtığında göreceği o şık, temiz ilk sayfayı yapmak.
-Bu sayfada büyük bir metin kutusu olmalı ki adam projesini anlatsın.
-Altında kalın harflerle dikkat çeken, tıklanabilir bir "Analiz Et" butonu olmalı.
-Ve kullanıcı butona bastığında "Bekleyiniz, veriler işleniyor..." gibi havalı bir yüklenme çubuğu çıkmalı.
-
-Çıktı: "İçine metin girilebilen, şık ve çalışan bir ana ekran."
+Açıklama:
+AutoReq sisteminin ana giriş ekranıdır. Kullanıcı metin girişi, analiz tetikleme 
+ve işlem durumu takibi süreçlerini yönetir.
 """
 
 import streamlit as st

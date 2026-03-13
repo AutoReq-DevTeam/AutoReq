@@ -1,13 +1,10 @@
 """
-outputs/srs_generator.py — Sözleşme Yazıcı (PDF Üretici)
-Sahibi: Üye 3 (Rapor ve Çıktı Aşaması)
+outputs/srs_generator.py — PDF SRS Üretim Modülü
+Sorumlu: Halise İncir
 
-Senin Görevin:
-Artık elimizde tertemiz, hatalarından arındırılmış bir yazılım gereksinim listesi var.
-Senin işin bunu alıp, sanki büyük bir şirket için yazılmış resmi bir proje dokümanına (SRS) dönüştürmek ve PDF olarak kaydetmek.
-(Bunun için fpdf2 gibi kütüphaneler kullanacaksın).
-
-Çıktı: "Müşteriye sunulmaya hazır, çok şık ve resmi bir PDF belgesi."
+Açıklama:
+Final analiz verilerini kullanarak ISO/IEC/IEEE 29148 standartlarına uygun profesyonel 
+Yazılım Gereksinim Spesifikasyonu (SRS) dökümanı üretir.
 """
 
 from core.models import AnalysisReport

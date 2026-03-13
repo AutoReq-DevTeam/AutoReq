@@ -1,15 +1,10 @@
 """
-ui/results.py — Sonuçları Gösterme Ekranı
-Sahibi: Üye 4 (Arayüz ve Entegrasyon)
+ui/results.py — Analiz Sonuç Paneli
+Sorumlu: Agid Gülsever
 
-Senin Görevin:
-Analiz bitti! Şimdi Üye 2'nin ve Üye 3'ün o karanlıkta ürettiği tüm raporları müşteriye çok şık bir şekilde sunma vakti.
-Burada sekmeler (tablar) kullan.
-1. Sekmede temizlenmiş metni tablo yap.
-2. Sekmede Üye 2'nin bulduğu hataları kırmızı ünlemlerle (⚠️) göster.
-3. Sekmede büyük "PDF İndir", "Excel İndir" butonları koy.
-
-Çıktı: "Müşterinin okumaktan keyif alacağı, sekmeli ve butonlu harika bir sonuç sayfası."
+Açıklama:
+Tamamlanan analiz sonuçlarını görselleştirir. Gereksinim listesi, çelişki raporları 
+ve indirilebilir dökümanları sekmeli bir yapıda kullanıcıya sunar.
 """
 
 import streamlit as st

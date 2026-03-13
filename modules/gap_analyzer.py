@@ -1,12 +1,10 @@
 """
-modules/gap_analyzer.py — Unutulan Özellikleri Bulan Sistem
-Sahibi: Üye 2 (Akıllı Kontrol Modülü)
+modules/gap_analyzer.py — Eksik Gereksinim Analizörü
+Sorumlu: Eren Eyyüpkoca
 
-Senin Görevin:
-Müşteri bir alışveriş uygulaması istemiş olabilir. Ürün eklemeyi yazmış, satın almayı yazmış ama "Sepeti boşalt" butonunu istemeyi unutmuş!
-Senin işin, bizim sistemdeki standart e-ticaret (veya diğer proje) kalıplarına bakarak müşterinin midesine yazmayı unuttuğu, 'Burada kesin eksik var, sisteme kayıt var ama şifremi unuttum özelliği yok' dediğin detayları tespit edip önermek.
-
-Çıktı: "Müşterinin yazmayı unuttuğu özelliklerin bir tavsiye listesi."
+Açıklama:
+Mevcut gereksinimleri analiz ederek, sistemin bütünlüğü için kritik olan ancak 
+atlanmış özellikleri (örn: kayıt var ama şifre sıfırlama yok) tespit eder ve öneriler sunar.
 """
 
 from core.models import ParsedDocument
