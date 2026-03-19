@@ -1,5 +1,8 @@
 # 🗺 AutoReq: 6 Haftalık Geliştirme Yol Haritası
 
+---
+
+## 📅 Proje Planı Tanıtımı
 Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve üyelerin haftalık odak noktalarını içerir.
 
 | Hafta | Odak Noktası | Ana Hedef |
