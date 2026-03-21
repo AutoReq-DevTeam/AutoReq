@@ -3,8 +3,8 @@ core/ner.py — Varlık ve Nesne Ayıklayıcı (NER)
 Sorumlu: Üye 1 (NLP & Preprocessing)
 
 Açıklama:
-Cümle içerisinden aktörleri (Kullanıcı, Sistem, vb.) ve temel nesneleri (Kredi Kartı, Sipariş vb.) 
-tespit eder. Bu bilgiler, gereksinimlerin kapsamını ve etkileşim noktalarını 
+Cümle içerisinden aktörleri (Kullanıcı, Sistem, vb.) ve temel nesneleri (Kredi Kartı, Sipariş vb.)
+tespit eder. Bu bilgiler, gereksinimlerin kapsamını ve etkileşim noktalarını
 belirlemek için kullanılır.
 """
 
