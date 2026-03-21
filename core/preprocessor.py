@@ -3,7 +3,7 @@ core/preprocessor.py — Metin Ön İşleme Modülü
 Sorumlu: Üye 1 (NLP & Preprocessing)
 
 Açıklama:
-Ham metinleri temizleyerek analize hazır hale getirir. Gereksiz karakter temizliği, 
+Ham metinleri temizleyerek analize hazır hale getirir. Gereksiz karakter temizliği,
 normalizasyon ve cümle bazlı ayrıştırma (tokenization) işlemlerinden sorumludur.
 """
 

@@ -3,8 +3,8 @@ app.py — Ana Uygulama Modülü
 Sorumlu: Üye 1 (NLP & Preprocessing)
 
 Açıklama:
-AutoReq sisteminin merkezi giriş noktasıdır. core, modules, outputs ve ui 
-modülleri bu dosya üzerinden entegre edilir. Uygulama `streamlit run app.py` 
+AutoReq sisteminin merkezi giriş noktasıdır. core, modules, outputs ve ui
+modülleri bu dosya üzerinden entegre edilir. Uygulama `streamlit run app.py`
 komutu ile başlatılır.
 """
 
