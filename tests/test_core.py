@@ -34,3 +34,7 @@ class TestEntityRecognizer:
     def test_actor_detection(self):
         # TODO: Üye 4 — "Kullanıcı" aktörünü tespit etmeli
         pass
+
+
+def test_basic():
+    assert True
