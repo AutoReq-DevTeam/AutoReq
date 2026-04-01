@@ -10,7 +10,7 @@ streamlit>=1.32.0
 stanza>=1.8.0
 nltk>=3.8.1
 # Stanza Türkçe modeli için:
-#   python -c "import stanza; stanza.download('tr')"
+# python -c "import stanza; stanza.download('tr')"
 
 # --- Makine Öğrenmesi (Sınıflandırma) ---
 scikit-learn>=1.4.0
