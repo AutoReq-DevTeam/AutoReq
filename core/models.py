@@ -53,7 +53,13 @@ class ParsedDocument:
 @dataclass
 class AnalysisReport:
     """Üye 2 → Üye 3 arası veri transferi.
-    LLM analiz sonuçlarını tutar
+    LLM analiz sonuçlarını tutar.
+
+    conflicts öğeleri (modules.analysis_report_parsing ile üretilir): en az
+    req_ids, conflict_type, reason; isteğe bağlı id, severity, suggested_resolution.
+
+    gaps öğeleri: en az missing_area, suggestion, severity; isteğe bağlı id,
+    scenario, related_standard_step, rationale.
     """
 
     parsed_doc: ParsedDocument

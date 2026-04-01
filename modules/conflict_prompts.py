@@ -111,9 +111,33 @@ def build_conflict_detection_system_prompt() -> str:
     return f"{CORE_CONFLICT_ANALYZER_PERSONA}\n\n{CONFLICT_DETECTION_SYSTEM_PROMPT}"
 
 
+def build_pairwise_conflict_user_prompt(requirements_block: str, requirement_count: int) -> str:
+    """
+    "Hangi gereksinimler birbiriyle çelişiyor?" analizi için kullanıcı (user) mesajı.
+
+    Parametreler:
+        requirements_block: Köşeli parantezli id'lerle formatlanmış gereksinim listesi metni.
+        requirement_count: Listede yer alan gereksinim sayısı (bağlam için).
+
+    Döndürür:
+        str: LLMClient.chat(user_prompt=...) ile gönderilecek tam metin.
+    """
+    return f"""Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+
+Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+
+Toplam gereksinim sayısı: {requirement_count}
+
+Gereksinimler:
+{requirements_block}
+
+Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini {requirement_count} ile tutarlı tut.""".strip()
+
+
 __all__ = [
     "CORE_CONFLICT_ANALYZER_PERSONA",
     "CONFLICT_DETECTION_SYSTEM_PROMPT",
     "build_conflict_detection_system_prompt",
+    "build_pairwise_conflict_user_prompt",
 ]
 

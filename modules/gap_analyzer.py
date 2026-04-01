@@ -3,8 +3,12 @@ modules/gap_analyzer.py — Eksik Gereksinim Analizörü
 Sorumlu: Eren Eyyüpkoca
 
 Açıklama:
-Mevcut gereksinimleri analiz ederek, sistemin bütünlüğü için kritik olan ancak 
+Mevcut gereksinimleri analiz ederek, sistemin bütünlüğü için kritik olan ancak
 atlanmış özellikleri (örn: kayıt var ama şifre sıfırlama yok) tespit eder ve öneriler sunar.
+
+LLM entegrasyonu için prompt katmanı: modules/gap_prompts.py
+- build_gap_analysis_system_prompt() — persona + standart senaryo referansı + JSON şeması
+- build_gap_analysis_user_prompt(...) — gereksinim bloğu ve isteğe bağlı domain_hint
 """
 
 from core.models import ParsedDocument
