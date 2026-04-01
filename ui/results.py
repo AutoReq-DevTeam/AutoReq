@@ -7,7 +7,17 @@ Tamamlanan analiz sonuçlarını görselleştirir. Gereksinim listesi, çelişki
 ve teknik çıktıları sekmeli bir yapıda kullanıcıya sunar.
 """
 
+from pathlib import Path
+
 import streamlit as st
+
+from ui.components import download_button, req_card
+
+
+def _safe_get(dictionary, key, default="-"):
+    if isinstance(dictionary, dict):
+        return dictionary.get(key, default)
+    return default
 
 
 def render_results(report):
@@ -21,35 +31,92 @@ def render_results(report):
 
     st.header("📊 Analiz Sonuçları")
 
-    tab1, tab2, tab3 = st.tabs(
+    tab1, tab2, tab3, tab4 = st.tabs(
         [
-            "📄 Özet",
             "📋 Gereksinimler",
-            "⚙️ Teknik",
+            "⚠️ Çelişkiler & Eksiklikler",
+            "✨ İyileştirme Önerileri",
+            "📥 İndirilebilir Çıktılar",
         ]
     )
 
     with tab1:
-        st.subheader("Analiz Özeti")
-        st.metric("Toplam Gereksinim", len(requirements))
-
-        if requirements:
-            st.success("Metin başarıyla işlendi ve gereksinimler ayrıştırıldı.")
-        else:
-            st.warning("Analiz tamamlandı ancak gereksinim listesi boş döndü.")
-
-    with tab2:
         st.subheader("Ayrıştırılan Gereksinimler")
 
         if requirements:
             for i, req in enumerate(requirements, start=1):
-                st.markdown(f"### 📌 Gereksinim {i}")
-                st.info(str(req))
+                req_dict = getattr(req, "__dict__", {})
+                req_text = _safe_get(req_dict, "text", str(req))
+                req_type = _safe_get(req_dict, "type", "FUNCTIONAL")
+                req_id = _safe_get(req_dict, "id", f"REQ-{i}")
+
+                req_card(
+                    req_id=req_id,
+                    text=req_text,
+                    req_type=req_type,
+                )
         else:
             st.warning("Henüz ayrıştırılmış gereksinim bulunamadı.")
 
+    with tab2:
+        st.subheader("Çelişkiler")
+
+        if report.conflicts:
+            for i, conflict in enumerate(report.conflicts, start=1):
+                st.markdown(f"### Çelişki {i}")
+
+                if isinstance(conflict, dict):
+                    for key, value in conflict.items():
+                        st.write(f"**{key}:** {value}")
+                else:
+                    st.write(conflict)
+        else:
+            st.info("Çelişki bulunamadı.")
+
+        st.subheader("Eksiklikler")
+
+        if report.gaps:
+            for i, gap in enumerate(report.gaps, start=1):
+                st.markdown(f"### Eksiklik {i}")
+
+                if isinstance(gap, dict):
+                    for key, value in gap.items():
+                        st.write(f"**{key}:** {value}")
+                else:
+                    st.write(gap)
+        else:
+            st.info("Eksiklik bulunamadı.")
+
     with tab3:
-        st.subheader("Teknik Detaylar")
-        st.write("Çatışmalar:", report.conflicts)
-        st.write("Eksikler:", report.gaps)
-        st.write("İyileştirmeler:", report.improvements)
+        st.subheader("İyileştirme Önerileri")
+
+        if report.improvements:
+            for i, improvement in enumerate(report.improvements, start=1):
+                st.markdown(f"### Öneri {i}")
+
+                if isinstance(improvement, dict):
+                    for key, value in improvement.items():
+                        st.write(f"**{key}:** {value}")
+                else:
+                    st.write(improvement)
+        else:
+            st.info("Henüz iyileştirme önerisi bulunmuyor.")
+
+    with tab4:
+        st.subheader("İndirilebilir Çıktılar")
+
+        generated_dir = Path("outputs") / "generated"
+        pdf_files = list(generated_dir.glob("*.pdf"))
+
+        if pdf_files:
+            pdf_path = pdf_files[0]
+
+            with open(pdf_path, "rb") as pdf_file:
+                download_button(
+                    label=f"📄 {pdf_path.name} dosyasını indir",
+                    data=pdf_file.read(),
+                    filename=pdf_path.name,
+                    mime="application/pdf",
+                )
+        else:
+            st.warning("outputs/generated klasöründe henüz PDF çıktısı bulunamadı.")
