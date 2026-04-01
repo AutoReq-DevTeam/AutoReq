@@ -12,9 +12,20 @@ import streamlit as st
 
 def req_card(req_id: str, text: str, req_type: str):
     """Tek bir gereksinimi kart formatında gösterir."""
-    # TODO: Üye 4 — Kart tasarımı (st.container + st.columns kombinasyonu)
-    color = "🟢" if req_type == "FUNCTIONAL" else "🔵"
-    st.markdown(f"**{color} [{req_id}]** {text}")
+    icon = "🟢" if req_type == "FUNCTIONAL" else "🔵"
+
+    with st.container():
+        col1, col2 = st.columns([1, 8])
+
+        with col1:
+            st.markdown(f"### {icon}")
+
+        with col2:
+            st.markdown(f"**{req_id}**")
+            st.markdown(f"**Tür:** `{req_type}`")
+            st.write(text)
+
+        st.divider()
 
 
 def priority_badge(priority: str):
