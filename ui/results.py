@@ -3,8 +3,8 @@ ui/results.py — Analiz Sonuç Paneli
 Sorumlu: Agid Gülsever
 
 Açıklama:
-Tamamlanan analiz sonuçlarını görselleştirir. Gereksinim listesi, çelişki raporları 
-ve indirilebilir dökümanları sekmeli bir yapıda kullanıcıya sunar.
+Tamamlanan analiz sonuçlarını görselleştirir. Gereksinim listesi, çelişki raporları
+ve teknik çıktıları sekmeli bir yapıda kullanıcıya sunar.
 """
 
 import streamlit as st
@@ -15,31 +15,41 @@ def render_results(report):
     Analiz raporunu sekmeli panelde görüntüler.
 
     Parametreler:
-        report: AnalysisReport nesnesi (Üye 2'den gelir).
+        report: AnalysisReport nesnesi
     """
+    requirements = report.parsed_doc.requirements
+
     st.header("📊 Analiz Sonuçları")
 
-    tab1, tab2, tab3, tab4 = st.tabs(
+    tab1, tab2, tab3 = st.tabs(
         [
+            "📄 Özet",
             "📋 Gereksinimler",
-            "⚠️ Çelişkiler & Eksiklikler",
-            "💡 İyileştirme Önerileri",
-            "📥 İndirilebilir Çıktılar",
+            "⚙️ Teknik",
         ]
     )
 
     with tab1:
-        # TODO: Üye 4 — report.parsed_doc.requirements listesini tablo olarak göster
-        st.info("Gereksinim tablosu buraya gelecek.")
+        st.subheader("Analiz Özeti")
+        st.metric("Toplam Gereksinim", len(requirements))
+
+        if requirements:
+            st.success("Metin başarıyla işlendi ve gereksinimler ayrıştırıldı.")
+        else:
+            st.warning("Analiz tamamlandı ancak gereksinim listesi boş döndü.")
 
     with tab2:
-        # TODO: Üye 4 — report.conflicts ve report.gaps'i listele
-        st.info("Çelişki ve eksiklik listesi buraya gelecek.")
+        st.subheader("Ayrıştırılan Gereksinimler")
+
+        if requirements:
+            for i, req in enumerate(requirements, start=1):
+                st.markdown(f"### 📌 Gereksinim {i}")
+                st.info(str(req))
+        else:
+            st.warning("Henüz ayrıştırılmış gereksinim bulunamadı.")
 
     with tab3:
-        # TODO: Üye 4 — report.improvements listesini göster
-        st.info("İyileştirme önerileri buraya gelecek.")
-
-    with tab4:
-        # TODO: Üye 4 — SRS PDF, User Stories, Backlog, BDD indirme butonları
-        st.info("İndirme butonları buraya gelecek.")
+        st.subheader("Teknik Detaylar")
+        st.write("Çatışmalar:", report.conflicts)
+        st.write("Eksikler:", report.gaps)
+        st.write("İyileştirmeler:", report.improvements)
