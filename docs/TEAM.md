@@ -28,13 +28,13 @@
 ### Görevler
 - [ ] `preprocessor.py` — Ham metin temizleme, tokenizasyon, normalizasyon
 - [ ] `classifier.py` — Fonksiyonel vs. Fonksiyonel Olmayan gereksinim sınıflandırıcı (scikit-learn)
-- [ ] `ner.py` — Named Entity Recognition; aktör (Kullanıcı, Sistem, Admin) ve nesne tespiti (spaCy)
+- [ ] `ner.py` — Named Entity Recognition; aktör (Kullanıcı, Sistem, Admin) ve nesne tespiti (Stanza)
 - [ ] `core/__init__.py` — Modül dışa aktarımları
 - [ ] `app.py` — Ana Streamlit giriş noktası; tüm modülleri birleştirir ve sistemin başlatılmasını sağlar
 
 ### Teknik Detaylar
 ```
-Kullanılacak Kütüphaneler : spaCy, NLTK, scikit-learn
+Kullanılacak Kütüphaneler : Stanza, NLTK, scikit-learn
 Temel Sınıf               : TextProcessor
 Giriş                     : Ham string (müşteri metni)
 Çıkış                     : ParsedDocument dataclass (Yapısal analiz tamamlanmış)
@@ -59,7 +59,7 @@ Giriş                     : Ham string (müşteri metni)
 
 ### Teknik Detaylar
 ```
-Kullanılacak Kütüphaneler : LangChain, OpenAI/Ollama API, spaCy, pydantic
+Kullanılacak Kütüphaneler : LangChain, OpenAI/Ollama API, Stanza, pydantic
 Giriş                     : ParsedDocument (Üye 1'den gelir)
 Çıkış                     : AnalysisReport dataclass (Mantıksal ve anlamsal analiz eklenmiş)
 Şablonlar & Promptlar     : data/templates/ ve prompts/ dizinlerinden okunur

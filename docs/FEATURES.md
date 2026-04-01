@@ -5,7 +5,7 @@ Bu dosya, projenin teknoloji stratejisini, özellik listesini ve geliştirme yol
 ## 🧠 Teknoloji Stratejisi: Hibrit Yaklaşım (NLP + LLM)
 AutoReq, performans ve maliyet verimliliği için geleneksel **NLP** tekniklerini, derin anlamsal analiz ve yaratıcı içerik üretimi için ise **LLM** (Large Language Models) teknolojisini bir arada kullanır.
 
-### 🔍 NLP (Doğal Dil İşleme - spaCy / NLTK)
+### 🔍 NLP (Doğal Dil İşleme - Stanza / NLTK)
 *Hız, yapısal analiz ve lokal veri işleme için kullanılır.*
 - **Metin Ön İşleme:** Cümle bazlı tokenizasyon, temizleme ve normalizasyon.
 - **Varlık Tespiti (NER):** Aktörlerin (Kullanıcı, Sistem) ve temel nesnelerin hızlıca yakalanması.
@@ -34,7 +34,7 @@ AutoReq, performans ve maliyet verimliliği için geleneksel **NLP** tekniklerin
 
 ## 🏗 Teknoloji Yığını
 - **Dil:** Python 3.x
-- **NLP:** spaCy / NLTK
+- **NLP:** Stanza / NLTK
 - **LLM Entegrasyonu:** LangChain / OpenAI API / Ollama (Local)
 - **Arayüz:** Streamlit
 - **Versiyon Kontrol:** GitHub (Scrum Framework)

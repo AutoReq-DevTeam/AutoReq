@@ -12,12 +12,20 @@ from datetime import datetime
 
 @dataclass
 class Requirement:
-    """Tek bir gereksinim cümlesini temsil eder."""
+    """Tek bir gereksinim cümlesini temsil eder.
+    Mimari Karar: Modüller arası veri transferinde (Data Transfer Object) standart Python 
+    sınıfları yerine '@dataclass' kullanılarak __init__, __repr__ metotları otomatik 
+    yönetilmiş ve Type Hinting aracılığıyla veri bütünlüğü (Data Integrity) güvence altına alınmıştır.
+    """
 
     id: str
     text: str
     req_type: str = "UNKNOWN"  # "FUNCTIONAL" | "NON_FUNCTIONAL" | "UNKNOWN"
-    actors: List[str] = field(default_factory=list)  # Her nesne için yeni bir liste oluşturur
+    
+    # Neden default_factory=list? Eğer list = [] deseydik, Python'da listeler mutable (değiştirilebilir) 
+    # olduğu için tüm Requirement nesneleri aynı hafızadaki listeyi (referansı) paylaşırdı.
+    # default_factory her yeni nesnede bellekte SIFIRDAN bir liste yaratmasını garanti eder.
+    actors: List[str] = field(default_factory=list)  
     objects: List[str] = field(default_factory=list)
     priority: Optional[str] = None  # "HIGH" | "MEDIUM" | "LOW"
 

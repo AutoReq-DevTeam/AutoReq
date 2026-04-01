@@ -17,12 +17,14 @@ from core.classifier import RequirementClassifier
 from core.ner import EntityRecognizer
 
 
-# Ağır NLP motorlarını belleğe kitler
+# Ağır NLP motorlarını belleğe kitler (Memoization / Caching)
 @st.cache_resource
 def load_nlp_pipeline():
     """
-    Kullanıcı sayfayı her yenilediğinde baştan yüklenmesini ve uygulamanın donmasını engellemek için
-    Stanza modellerini vs. belleğe bir kere yükler.
+    Optimizasyon: Streamlit arayüzü her etkileşimde (buton tıklaması vb.) sayfa state'ini sıfırlayıp 
+    kodları baştan okur. Stanza ve NLP pipeline'ları ağır yüklü (GB boyutunda) modeller olduğu için,
+    @st.cache_resource dekoratörü kullanarak bellekte Singleton Pattern mantığı ile tutuyoruz. 
+    Böylece modeller RAM'e sadece 1 kere yüklenir, gereksiz performans kaybı ve bellek şişmesi önlenir.
     """
 
     # fmt: off
@@ -40,20 +42,22 @@ nlp_engines = load_nlp_pipeline()
 
 def process_text(raw_text: str) -> AnalysisReport:
     """
-    Ham metni alır ve tüm analiz sürecini baştan sona çalıştırır.
+    Bu fonksiyon projenin Orkestrasyon (Orchestrator) merkezidir.
+    Tıpkı bir fabrika bandı (Pipeline Pattern) gibi çalışır. Ham maddeyi (metni) alır, 
+    sırasıyla preprocessor, classifier ve ner istasyonlarına göndererek analiz zincirini tamamlar. 
+    Ön işleme ile Zeka katmanı arasındaki Low Coupling (Zayıf Bağlılık) prensibini güçlendirir.
     """
-    # 1. Ön İşleme
+    # 1. İstasyon: Ön İşleme (Tokenization & Stopwords temizliği)
     parsed_doc = nlp_engines["preprocessor"].process(raw_text)
 
-    # parsed_doc.requirements listesi üzerinde döngü
+    # 2. İstasyonlara teker teker gereksinimler gönderilir
     for req in parsed_doc.requirements:
-        # 2. Sınıflandırma
+        # Sınıflandırma (FR / NFR)
         req = nlp_engines["classifier"].classify(req)
-
-        # 3. Varlık Çıkarımı (NER)
+        # Varlık Çıkarımı (Aktör ve Nesneler)
         req = nlp_engines["ner"].recognize(req)
 
-    # 4. Rapor Oluşturma
+    # İşlem tamamlandığında 3. ekip (Eren/LLM) için hazırlanan DTO (Data Transfer nesnesi) döndürülür
     # fmt: off
     report = AnalysisReport(
         parsed_doc=parsed_doc,
