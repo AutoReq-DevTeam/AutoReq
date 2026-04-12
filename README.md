@@ -2,15 +2,16 @@
 
 # 🚀 AutoReq
 
-### Otomatik Yazılım Gereksinim Analizörü
+### Automated Software Requirements Analyzer
 
-*Ham müşteri metinlerini yapılandırılmış mühendislik dökümanlarına dönüştüren NLP ve LLM destekli otomasyon asistanı.*
+*Transform raw customer text into structured engineering documents — powered by NLP and LLM intelligence.*
 
 ---
 
-[![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![Stanza](https://img.shields.io/badge/Stanza-NLP-09A3D5?style=for-the-badge)](https://stanfordnlp.github.io/stanza/)
+[![Gemini](https://img.shields.io/badge/Gemini-LLM-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white)](https://ai.google.dev/)
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg?style=for-the-badge)](./LICENSE)
 [![Status](https://img.shields.io/badge/Status-In%20Development-orange?style=for-the-badge)]()
 
@@ -18,196 +19,341 @@
 
 ---
 
-## 📖 İçindekiler
+## 📖 Table of Contents
 
-- [Proje Hakkında](#-proje-hakkında)
-- [Proje Vizyonu](#-proje-vizyonu)
-- [Özellikler](#-özellikler)
-- [Teknoloji Yığını](#-teknoloji-yığını)
-- [Kurulum](#-kurulum)
-- [Kullanım](#-kullanım)
-- [Çıktılar](#-çıktılar)
-- [Geliştirme Yol Haritası](#-geliştirme-yol-haritası)
-- [Katkıda Bulunma](#-katkıda-bulunma)
-- [Lisans](#-lisans)
-
----
-
-## 📌 Proje Hakkında
-
-AutoReq, yazılım geliştirme sürecindeki en zorlu ve zaman alıcı aşamalardan biri olan **gereksinim mühendisliğini** otomatize etmek için tasarlanmış, hibrit bir yapay zeka (NLP + LLM) aracıdır.
-
-Müşterilerden gelen belirsiz ham metinleri alır; **Stanza** ile yapısal analiz yapar ve **LLM** (GPT/Llama) modülleriyle mantıksal derinlik katarak endüstri standartlarına uygun belgelere dönüştürür.
+- [About the Project](#-about-the-project)
+- [Key Features](#-key-features)
+- [Architecture](#-architecture)
+- [Tech Stack](#-tech-stack)
+- [Installation](#%EF%B8%8F-installation)
+- [Usage](#-usage)
+- [Project Structure](#-project-structure)
+- [Outputs](#-outputs)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
-## 🔭 Proje Vizyonu
+## 📌 About the Project
 
-> *"Müşteriden gelen ham metinleri Doğal Dil İşleme (NLP) ile analiz ederek, hatasız ve yapılandırılmış mühendislik dökümanlarına dönüştüren bir otomasyon asistanı."*
+**Requirements engineering** is one of the most challenging and time-consuming phases in software development. Ambiguous customer language, missed edge cases, and contradictory statements can derail entire projects before a single line of code is written.
 
-AutoReq'in nihai hedefi, bir yazılım projesinin başındaki belirsizlik duvarını yıkarak hem geliştirici ekipleri hem de ürün sahipleri için net, ölçülebilir ve izlenebilir gereksinim belgeleri ortaya çıkarmaktır.
+**AutoReq** solves this by combining **classical NLP** (Stanza/NLTK) for fast structural analysis with **Large Language Models** (Google Gemini) for deep semantic reasoning — creating a hybrid AI pipeline that converts unstructured customer text into professionally structured, industry-standard documentation.
 
----
+> *"Better software starts with better requirements."*
 
-## 🎯 Proje Gereksinimleri (Requirements & NFR)
+### 🔑 Why AutoReq?
 
-### Fonksiyonel Gereksinimler (Functional Requirements)
-- **Metin Analizi:** Sistem, kullanıcının girdiği serbest formattaki metni kabul etmeli ve işleyebilmelidir.
-- **Aktör ve Nesne Tespiti (NER):** Sistem, verilen metindeki "Kullanıcı, Sistem, Yönetici, Veritabanı" gibi ana aktörleri ve objeleri tespit etmelidir.
-- **Sınıflandırma:** Sistem, çıkarttığı gereksinimleri "Fonksiyonel" veya "Fonksiyonel Olmayan (NFR)" olarak etiketlemelidir.
-- **Çelişki Uyarıları:** Sistem, LLM desteği kullanarak mantıksal olarak birbiriyle çelişen maddeleri kırmızı uyarı olarak kullanıcıya raporlamalıdır.
-- **Dışa Aktarma:** Analiz sonucunda oluşan tüm çıktılar, ISO/IEC/IEEE 29148 standartlarına uygun bir **PDF dökümanı** olarak indirebilmelidir.
-
-### Fonksiyonel Olmayan Gereksinimler (Non-Functional Requirements - NFR)
-- **Performans (Performance):** Metin analiz süreci (LLM istekleri ve NER süreçleri dahil) tek bir sayfa uzunluğundaki metinler için **maksimum 15 saniye** sürmelidir.
-- **Güvenlik (Security):** LLM API (OpenAI/Groq vb.) erişim anahtarları asla kaynak koda (GitHub'a) gömülmemeli, sistem ortam değişkeni (env) üzerinden şifreli bir şekilde okunmalıdır.
-- **Kullanılabilirlik (Usability):** Uygulama arayüzü (Streamlit), arka planda çalışan süreçleri göstermek adına bir yüklenme (spinner/progress) ibaresi göstermelidir. Dil modeli analizlerinin tamamı Türkçe yapılmaktadır.
+- 🕐 **Save hours** of manual requirements elicitation and documentation
+- 🎯 **Catch conflicts** and missing requirements before they become costly bugs
+- 📄 **Generate ISO-compliant** SRS documents automatically
+- 🌐 **Turkish language native** — built specifically for Turkish NLP processing
 
 ---
 
-## ✨ Özellikler
+## ✨ Key Features
 
-[Tüm detaylı özellik listesini görmek için tıklayınız.](./docs/FEATURES.md)
+### 🛠 Core NLP Engine
+- **Text Preprocessing** — Sentence-level tokenization, stopword removal, and lemmatization using Stanza
+- **Requirement Classification** — Automatic categorization into **Functional (FR)** and **Non-Functional (NFR)** requirements via heuristic keyword matching
+- **Named Entity Recognition (NER)** — Detect actors (*User, System, Admin*) and objects (*password, form, database*) using lemma-based lookup with Stanza fallback
 
-### 🛠 Temel Özellikler (MVP)
+### 🧠 Intelligent Analysis (LLM-Powered)
+- **Conflict Detection** — Pairwise analysis of requirements to identify logical contradictions via Google Gemini
+- **Gap Analysis** — Identify missing requirements by comparing against standard templates *(in progress)*
+- **Improvement Suggestions** — Transform vague statements like *"should be fast"* into measurable, testable criteria *(in progress)*
 
-| Özellik | Açıklama | Durum |
-|---|---|---|
-| **Metin Ayrıştırma** | Cümle bazlı tokenizasyon ve metin temizleme | 🔲 Planlandı |
-| **Sınıflandırma** | Gereksinimlerin Fonksiyonel / Fonksiyonel Olmayan olarak kategorize edilmesi | 🔲 Planlandı |
-| **Varlık Tespiti (NER)** | Aktörlerin (Kullanıcı, Sistem) ve Nesnelerin otomatik belirlenmesi | 🔲 Planlandı |
+### 📂 Document Generation
+- **SRS Generator** — Produce ISO/IEC/IEEE 29148 compliant Software Requirements Specification in PDF format
+- **User Stories** — Generate Agile stories in *"As a [role], I want [goal], so that [benefit]"* format *(in progress)*
+- **BDD Scenarios** — Create Gherkin-format *Given-When-Then* test scenarios *(in progress)*
+- **Product Backlog** — Prioritized sprint backlog generation *(in progress)*
 
-### 🧠 Akıllı Analiz Modülleri
-
-| Modül | Açıklama | Durum |
-|---|---|---|
-| **Çelişki Tespiti** | Mantıksal zıtlıkların ve belirsiz ifadelerin uyarılması | 🔲 Planlandı |
-| **Eksiklik Analizi** | Standart şablonlara göre eksik gereksinimlerin tespiti ve öneriler *(örn: Giriş var, Şifre Sıfırlama yok)* | 🔲 Planlandı |
-| **İyileştirme Önerileri** | *"Hızlı olmalı"* gibi muğlak ifadelerin somut ve ölçülebilir kriterlere dönüştürülmesi | 🔲 Planlandı |
+### 🖥 Interactive Dashboard
+- **Streamlit-based UI** — Clean, single-page web dashboard with real-time analysis feedback
+- **Demo Mode** — Pre-loaded sample text for instant demonstration
+- **Tabbed Results** — Requirements, conflicts, gaps, and download panels organized in tabs
 
 ---
 
-## 🏗 Teknoloji Yığını
+## 🏗 Architecture
+
+AutoReq follows a **layered pipeline architecture** with clear separation of concerns:
 
 ```
-AutoReq
-├── Dil          → Python 3.x
-├── NLP          → Stanza / NLTK
-├── Arayüz       → Streamlit
-└── Versiyon     → GitHub (Scrum Framework)
+┌─────────────────────────────────────────────────────────────────────┐
+│                       app.py (Orchestrator)                         │
+│                       Streamlit Entry Point                         │
+├─────────────┬───────────────┬───────────────┬───────────────────────┤
+│   Layer 1   │    Layer 2    │    Layer 3    │       Layer 4         │
+│   core/     │   modules/    │   outputs/    │       ui/             │
+│             │               │               │                       │
+│ Preprocessor│ LLM Client    │ SRS Generator │ Dashboard             │
+│ Classifier  │ Conflict Det. │ Story Gen.    │ Results Panel         │
+│ NER         │ Gap Analyzer  │ BDD Gen.      │ Reusable Components   │
+│ Models      │ Improver      │ Backlog Gen.  │                       │
+└─────────────┴───────────────┴───────────────┴───────────────────────┘
 ```
 
-| Katman | Teknoloji | Amaç |
-|---|---|---|
-| **Programlama Dili** | Python 3.x | Temel uygulama geliştirme |
-| **NLP Motoru** | Stanza / NLTK | Yapısal analiz, NER, tokenizasyon |
-| **Zeka Katmanı** | LLM (OpenAI / Ollama) | Çelişki tespiti, döküman üretimi |
-| **Web Arayüzü** | Streamlit | İnteraktif kullanıcı arayüzü |
-| **Proje Yönetimi** | GitHub + Scrum | Versiyon kontrolü ve agile süreç |
+### Data Flow
+
+```
+Raw Text ─→ TextPreprocessor ─→ Classifier ─→ EntityRecognizer ─→ AnalysisReport
+              (Stanza)          (Heuristic)     (Stanza NER)          │
+                                                                      ▼
+                                                                 Streamlit UI
+                                                               (Tabbed Results)
+```
+
+### Design Patterns Used
+
+| Pattern | Purpose |
+|---|---|
+| **Pipeline / Chain** | Sequential text processing across NLP stages |
+| **Singleton (Memoized)** | Heavy NLP models loaded once via `@st.cache_resource` |
+| **DTO (Dataclass)** | `Requirement → ParsedDocument → AnalysisReport` data flow |
+| **Strategy** | Interchangeable prompt templates for LLM tasks |
+| **Facade** | `LLMClient` hides Gemini API specifics |
+| **Graceful Degradation** | Fallback to string matching if Stanza model unavailable |
+| **Dependency Injection** | LLM client injected into analyzers for testability |
 
 ---
 
-## ⚙️ Kurulum
+## 🔧 Tech Stack
 
-> **Not:** Proje aktif geliştirme aşamasındadır. Aşağıdaki adımlar yakında güncellenecektir.
+| Layer | Technology | Purpose |
+|---|---|---|
+| **Language** | Python 3.8+ | Core runtime |
+| **NLP Engine** | Stanza / NLTK | Tokenization, POS tagging, lemmatization, NER |
+| **LLM** | Google Gemini (via `google-generativeai`) | Conflict detection, gap analysis, document generation |
+| **Web UI** | Streamlit | Interactive single-page dashboard |
+| **PDF Export** | fpdf2 / ReportLab | ISO 29148 SRS document generation |
+| **Data Validation** | Pydantic | Schema validation (future) |
+| **Logging** | Loguru | Structured logging with module binding |
+| **Testing** | pytest + pytest-cov | Unit testing and coverage reporting |
+| **VCS** | Git + GitHub | Scrum-based agile workflow |
 
-**Ön Koşullar:**
-- Python 3.8 veya üzeri
-- pip paket yöneticisi
+---
+
+## ⚙️ Installation
+
+### Prerequisites
+
+- **Python** 3.8 or higher
+- **pip** package manager
+- **Git**
+
+### Step-by-Step Setup
 
 ```bash
-# 1. Depoyu klonlayın
+# 1️⃣ Clone the repository
 git clone https://github.com/AutoReq-DevTeam/AutoReq.git
 cd AutoReq
 
-# 2. Sanal ortam oluşturun (önerilir)
+# 2️⃣ Create and activate a virtual environment
 python -m venv venv
 source venv/bin/activate      # Linux / macOS
 venv\Scripts\activate         # Windows
 
-# 3. Bağımlılıkları yükleyin
+# 3️⃣ Install dependencies
 pip install -r requirements.txt
 
-# 4. Stanza dil modelini indirin
+# 4️⃣ Download the Stanza Turkish NLP model (~150 MB)
 python -c "import stanza; stanza.download('tr')"
+
+# 5️⃣ Configure environment variables
+cp .env.example .env          # Linux / macOS
+copy .env.example .env        # Windows
 ```
+
+### Environment Variables
+
+Create a `.env` file from the provided template and configure:
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `GEMINI_API_KEY` | ✅ Yes (for LLM features) | — | Your Google AI Studio API key ([get one here](https://aistudio.google.com/apikey)) |
+| `GEMINI_MODEL_NAME` | ❌ No | `gemini-3.0-flash` | Gemini model variant to use |
+
+> **💡 Note:** The core NLP pipeline (preprocessing, classification, NER) works **without** an API key. Only LLM-powered features (conflict detection, gap analysis) require `GEMINI_API_KEY`.
 
 ---
 
-## 🚀 Kullanım
+## 🚀 Usage
+
+### Launch the Application
 
 ```bash
-# Streamlit arayüzünü başlatın
 streamlit run app.py
 ```
 
-Tarayıcınızda `http://localhost:8501` adresini açın, ham gereksinim metninizi yapıştırın ve analizi başlatın.
+The Streamlit dashboard will open automatically at **`http://localhost:8501`**.
+
+### Quick Start
+
+1. **Paste** your raw requirements text into the text area (or click the demo button for a sample)
+2. **Click** the "Analyze" button
+3. **Review** the results across the tabbed panels:
+   - 📋 **Requirements** — Classified list with FR/NFR labels, actors, and objects
+   - ⚠️ **Conflicts** — Detected contradictions between requirements
+   - 🔍 **Gaps** — Missing requirements and suggestions
+   - 📥 **Downloads** — Export your SRS document as PDF
+
+### Run Tests
+
+```bash
+# Run all tests
+pytest tests/ -v
+
+# Run with coverage report
+pytest tests/ -v --cov=core --cov=modules --cov=outputs
+```
 
 ---
 
-## 📂 Çıktılar
+## 📁 Project Structure
 
-AutoReq analiz işlemi tamamlandığında aşağıdaki formatları otomatik olarak üretir:
+```
+AutoReq/
+├── app.py                     # 🎯 Entry point — Streamlit orchestrator
+├── requirements.txt           # 📦 Python dependencies
+├── .env.example               # 🔐 Environment variable template
+│
+├── core/                      # 🧩 Layer 1: NLP Preprocessing Engine
+│   ├── models.py              #   Shared dataclasses (Requirement, ParsedDocument, AnalysisReport)
+│   ├── preprocessor.py        #   Stanza pipeline: tokenize → POS → lemma → filter
+│   ├── classifier.py          #   FR / NFR heuristic classifier
+│   └── ner.py                 #   Entity recognizer (actors & objects)
+│
+├── modules/                   # 🧠 Layer 2: Intelligent Analysis (LLM)
+│   ├── llm_client.py          #   Centralized Gemini API client
+│   ├── conflict_detector.py   #   Pairwise conflict analysis
+│   ├── conflict_prompts.py    #   Prompt templates for conflict detection
+│   ├── gap_analyzer.py        #   Missing-requirement detector
+│   ├── gap_prompts.py         #   Prompt templates for gap analysis
+│   ├── improver.py            #   Vague-requirement improver
+│   └── logging_utils.py       #   Module logger utilities
+│
+├── outputs/                   # 📄 Layer 3: Document Generators
+│   ├── srs_generator.py       #   ISO 29148 SRS PDF generator
+│   ├── story_generator.py     #   User Story generator
+│   ├── backlog_generator.py   #   Product Backlog generator
+│   ├── bdd_generator.py       #   Gherkin BDD scenario generator
+│   └── generated/             #   Output artifacts (gitignored)
+│
+├── ui/                        # 🖥 Layer 4: Streamlit UI Components
+│   ├── dashboard.py           #   Main input screen
+│   ├── results.py             #   Tabbed results panel
+│   └── components.py          #   Reusable widgets
+│
+├── tests/                     # 🧪 Test Suite
+│   ├── test_core.py           #   Core module tests
+│   ├── test_modules.py        #   Module tests
+│   └── test_outputs.py        #   Output tests
+│
+├── data/
+│   ├── samples/               #   Sample input texts
+│   └── templates/             #   JSON requirement templates
+│
+└── docs/                      # 📚 Documentation
+    ├── TEAM.md                #   Team roles & RACI matrix
+    ├── FEATURES.md            #   Feature list & status
+    └── ROADMAP_AND_ISSUES.md  #   Sprint backlog & issue tracker
+```
 
-| Çıktı | Format | Açıklama |
+---
+
+## 📂 Outputs
+
+Once analysis is complete, AutoReq can generate the following artifacts:
+
+| Output | Format | Description |
 |---|---|---|
-| **SRS Belgesi** | PDF | ISO/IEC/IEEE 29148 standardına uygun Yazılım Gereksinim Spesifikasyonu |
-| **User Stories** | Metin / Export | *"As a user, I want..."* formatında çevik hikayeler |
-| **Product Backlog** | Liste / Export | Önceliklendirilmiş sprint iş listesi |
-| **BDD Senaryoları** | Gherkin | *Given-When-Then* formatında test senaryoları |
+| 📄 **SRS Document** | PDF | ISO/IEC/IEEE 29148 compliant Software Requirements Specification |
+| 📝 **User Stories** | Text / Export | Agile stories in *"As a user, I want..."* format |
+| 📋 **Product Backlog** | List / Export | Prioritized sprint work items |
+| 🧪 **BDD Scenarios** | Gherkin | *Given-When-Then* formatted test scenarios |
 
 ---
 
-## 🗺 Geliştirme Yol Haritası
+## 🗺 Roadmap
 
 ```
-Phase 1 – MVP (Temel Analiz Motoru)
-├── [ ] Metin ön işleme pipeline'ı
-├── [ ] Fonksiyonel / Fonksiyonel Olmayan sınıflandırıcı
-└── [ ] NER ile aktör ve nesne tespiti
+Phase 1 — MVP (Core Analysis Engine)                          ✅ Complete
+├── ✅ Text preprocessing pipeline (Stanza)
+├── ✅ Functional / Non-Functional classifier
+└── ✅ NER-based actor and object detection
 
-Phase 2 – Akıllı Modüller
-├── [ ] Çelişki ve belirsizlik dedektörü
-├── [ ] Eksiklik analizi ve öneri motoru
-└── [ ] Muğlak ifade iyileştirici
+Phase 2 — Intelligent Modules                                 🔧 In Progress
+├── ✅ Conflict & contradiction detector (LLM)
+├── 🔲 Gap analysis & suggestion engine
+└── 🔲 Vague-expression improver
 
-Phase 3 – Çıktı & Entegrasyon
-├── [ ] Otomatik SRS PDF üretimi
-├── [ ] User Story & Backlog dışa aktarımı
-├── [ ] BDD senaryo üreteci
-└── [ ] Jira / Trello entegrasyonu (opsiyonel)
+Phase 3 — Output & Integration                                📋 Planned
+├── ⚠️ Automated SRS PDF generation (partial)
+├── 🔲 User Story & Backlog export
+├── 🔲 BDD scenario generator
+└── 🔲 Jira / Trello integration (optional)
 ```
 
-[Detaylı yol haritası ve haftalık görev dağılımı için tıklayınız.](./docs/ROADMAP_AND_ISSUES.md)
+> 📎 For detailed sprint backlog and weekly task breakdown, see [ROADMAP_AND_ISSUES.md](./docs/ROADMAP_AND_ISSUES.md).
 
 ---
 
-## 🤝 Katkıda Bulunma
+## 🤝 Contributing
 
-Her türlü katkıya açığız! Katkıda bulunmadan önce lütfen aşağıdaki adımları izleyin:
+Contributions are welcome! Follow our Scrum-based development workflow:
 
-1. Bu depoyu **fork**'layın
-2. Yeni bir **feature branch** oluşturun (`git checkout -b feature/yeni-ozellik`)
-3. Değişikliklerinizi **commit**'leyin (`git commit -m 'feat: yeni özellik eklendi'`)
-4. Branch'inizi **push**'layın (`git push origin feature/yeni-ozellik`)
-5. Bir **Pull Request** açın
+### Getting Started
 
-Geliştirme sürecimiz **Scrum** framework'ü üzerine kurulu olup sprint döngüleri GitHub üzerinden takip edilmektedir.
+1. **Fork** the repository
+2. **Create** a feature branch from `develop`
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. **Commit** your changes using [conventional commits](https://www.conventionalcommits.org/)
+   ```bash
+   git commit -m "feat: add new analysis module"
+   ```
+4. **Push** your branch
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+5. **Open** a Pull Request against `develop`
 
-[Geliştirme ekibi ve roller hakkında detaylı bilgi için tıklayınız.](./docs/TEAM.md)
+### Commit Prefixes
+
+| Prefix | Usage |
+|---|---|
+| `feat:` | New feature |
+| `fix:` | Bug fix |
+| `docs:` | Documentation changes |
+| `test:` | Adding or updating tests |
+| `prompt:` | LLM prompt modifications |
+
+### Code Standards
+
+- ✅ Every public function/class must have a **docstring**
+- ✅ **Type hints** are required on all function signatures
+- ✅ Use `field(default_factory=list)` for mutable defaults in dataclasses
+- ✅ No `print()` in production code — use **Loguru** for logging
+- ✅ PRs require at least **1 reviewer** approval
+
+> 👥 For team structure and role assignments, see [TEAM.md](./docs/TEAM.md).
 
 ---
 
-## 📄 Lisans
+## 📄 License
 
-Bu proje **GNU GPLv3 Lisansı** ile lisanslanmıştır. Detaylar için [LICENSE](./LICENSE) dosyasına bakınız.
+This project is licensed under the **GNU General Public License v3.0** — see the [LICENSE](./LICENSE) file for details.
 
 ---
 
 <div align="center">
 
-**AutoReq-DevTeam** tarafından ❤️ ile geliştirilmektedir.
+Built with ❤️ by the **AutoReq-DevTeam**
 
-*Daha iyi yazılım, daha net gereksinimlerle başlar.*
+*Better software starts with better requirements.*
 
 </div>

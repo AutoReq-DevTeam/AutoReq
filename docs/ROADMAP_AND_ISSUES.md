@@ -1,4 +1,45 @@
-# 🗺 AutoReq: 6 Haftalık Geliştirme Yol Haritası
+# 🗺 AutoReq: 6 Haftalık Geliştirme Yol Haritası (Toplam 6 Sprint)
+
+---
+
+## 🎯 Proje Hedefleri ve Sprint Planlaması (Checkpoint-2 Planları)
+**Toplam Süre:** Proje toplam **6 Sprint** (6 Hafta) içerisinde tamamlanacaktır.
+Aşağıda, projenin Checkpoint-2 aşamasındaki genel hedefleri, Sprint 1 ve Sprint 2'nin detaylı anlatımı ve kabul kriterleri (ISO/IEC 29148 Standardı Referanslı) yer almaktadır.
+
+### 🏁 İlk 2 Sprint Anlatımı ve Hedefleri
+
+**Sprint 1 ve Sprint 2 Hedef Özeti:**
+Metin sınıflandırma ve LLM tabanlı analiz motorlarının entegrasyonu; analiz sonuçlarının dinamik bir kullanıcı arayüzü ve dışa aktarılabilir PDF raporu ile sunulması.
+
+**Beklenen Çıktı:** 
+Sistem, ham metin girildiğinde otonom olarak aktörleri tespit etmeli, LLM aracılığıyla mantıksal çelişkileri bulmalı ve standartlara uygun bir Yazılım Gereksinim Spesifikasyonu (SRS) raporu üretebilmelidir.
+
+#### 📦 Sprint 1 İş Listesi ve Kullanıcı Hikayeleri
+| ID | Persona | Kullanıcı Hikayesi (User Story) | Değer / Gerekçe | Sorumlu |
+|:---|:---|:---|:---|:---|
+| **US1** | Yazılım Mimarı | Projenin modüler bir iskelete ve veri yapılarına sahip olmasını istiyorum. | Çakışmadan geliştirmeyi başlatır. | Galip |
+| **US2** | Sistem Tasarımcısı | Merkezi bir LLM servisi üzerinden API talebi yapabilmeyi istiyorum. | Kod tekrarını ve karmaşayı önler. | Eren |
+| **US3** | Dokümantasyon Uz. | ISO/IEC standartlarında PDF rapor iskeleti olmasını istiyorum. | Analiz çıktılarını standartlaştırır. | Halise |
+| **US4** | Son Kullanıcı | Metinleri yapıştırıp analiz edebileceğim bir arayüz istiyorum. | Girdi ve izleme süreçlerini kolaylaştırır. | Agid |
+
+#### 📦 Sprint 2 İş Listesi ve Kullanıcı Hikayeleri
+| ID | Persona | Kullanıcı Hikayesi (User Story) | Değer / Gerekçe | Sorumlu |
+|:---|:---|:---|:---|:---|
+| **US5** | İş Analisti | Metnin F/NFR ayrımını yapmasını ve aktörleri çıkarmasını istiyorum. | Manuel gereksinim ayıklama işini sıfırlar. | Galip |
+| **US6** | Kalite Uzmanı | Zıtlık ve çelişki yaratan gereksinimleri bulup uyarmasını istiyorum. | Hatalı mimari kod yazımını en başta önler. | Eren |
+| **US7** | Proje Yöneticisi | Çıkarımların otonom "Agile User Story" çevrilmesini istiyorum. | Geliştiriciler için doğrudan sprint task'ı verir. | Halise |
+| **US8** | Proje Paydaşı | Sonuçları UI sekmelerinde ve indirilebilir PDF halinde istiyorum. | Çıktılara şeffaf ve kurumsal ulaşım sağlar. | Agid |
+
+### ✅ Kabul Kriterleri (Acceptance Criteria - AC)
+*Bir User Story'nin "Bitti (Done)" sayılması için karşılanması gereken ölçülebilir koşullar.*
+*   **US1 / US5 (Modeller & Sınıflandırma):** Algoritma "Sistem hızlı olmalı" cümlesini *NON_FUNCTIONAL* olarak etiketlemelidir. `Stanza` kütüphanesi harici dataset indirmeden çalışıp aktör isimlerini `req.actors` listesine atmalıdır.
+*   **US2 / US6 (LLM İstekleri & Çelişki Tespiti):** `.env` dosyası üzerinden API Key okunmalı ve uzak LLM sunucusuna güvenle prompt atılabilmelidir. Mantıksal zıtlıklar, exception fırlatmadan JSON şeklinde parse edilerek `AnalysisReport` nesnesine eklenmelidir.
+*   **US4 / US8 (Arayüz & PDF Çıktı):** Ekranda bilgilendirici spinner (yükleniyor) animasyonu olmalıdır. `st.download_button` butonundan inen UTF-8 destekli Türkçe karakterli PDF hatasız bir şekilde açılabilmelidir.
+
+### 🛡️ Fonksiyonel Olmayan Gereksinimler (NFR)
+1.  **Güvenlik:** LLM API anahtarları sıkı bir şekilde yerel `.env` dosyasında izole edilmeli ve versiyon kontrol sistemlerine kesinlikle push edilmemelidir.
+2.  **Performans:** Standart tek sayfalık bir metnin tam blok analizi (NER, sınıflandırma ve LLM çelişki tespiti dahil) **15 saniyenin altında** tamamlanmalıdır.
+3.  **Kullanılabilirlik:** Kullanıcı arayüzü tek bir dashboard bütünlüğünü korumalı ve işlem sırasında aktif süreç göstergeleri barındırmalıdır.
 
 ---
 
@@ -50,13 +91,13 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 *   **Özet:** Otomatik üretilecek dökümanların teknik altyapısını kurmak.
 *   **User Story:** Bir Dokümantasyon Uzmanı olarak, sistemin ISO/IEC 29148 standartlarında boş da olsa hazır bir PDF rapor mimarisine sahip olmasını istiyorum, böylece analiz bittiğinde çıktı sorunsuz üretilebilsin.
 *   **Kabul Kriterleri (AC):**
-    - [ ] `fpdf2` kütüphanesi kullanılarak deneme bir dosya üretilebilmeli ve PDF okuyucular tarafından açılabilmelidir.
-    - [ ] PDF dosyasında Türkçe font (Ş, ğ, İ vb.) hatası kesinlikle yaşanmamalıdır.
+    - [x] `fpdf2` kütüphanesi kullanılarak deneme bir dosya üretilebilmeli ve PDF okuyucular tarafından açılabilmelidir.
+    - [x] PDF dosyasında Türkçe font (Ş, ğ, İ vb.) hatası kesinlikle yaşanmamalıdır.
 *   **Görevler:**
-    - [ ] `outputs/srs_generator.py` oluştur ve `fpdf2` kütüphanesi ile boş bir taslak üretmeyi test et.
-    - [ ] ISO/IEC/IEEE 29148 standardındaki 10 temel başlığı (Giriş, Kapsam, Fonksiyonel Gereksinimler vb.) koda dök.
-    - [ ] PDF çıktısı için kurumsal bir logo ve sayfa numaralandırma yapısı ekle.
-    - [ ] Türkçe karakterlerin (ş, ğ, ı, İ) PDF'de sorunsuz çıkması için font yükleme kodunu yaz.
+    - [x] `outputs/srs_generator.py` oluştur ve `fpdf2` kütüphanesi ile boş bir taslak üretmeyi test et.
+    - [x] ISO/IEC/IEEE 29148 standardındaki 10 temel başlığı (Giriş, Kapsam, Fonksiyonel Gereksinimler vb.) koda dök.
+    - [x] PDF çıktısı için kurumsal bir logo ve sayfa numaralandırma yapısı ekle.
+    - [x] Türkçe karakterlerin (ş, ğ, ı, İ) PDF'de sorunsuz çıkması için font yükleme kodunu yaz.
 
 ### 🔵 Issue #4: UI Dashboard ve Test Altyapısı
 *   **Sorumlu:** **Agid Gülsever**
@@ -93,13 +134,13 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 *   **Özet:** LLM API kullanarak gereksinimler arası mantıksal hataları/eksikleri bulma altyapısını kurmak.
 *   **User Story:** Bir Kalite Uzmanı (QA) olarak, sistemin gereksinimlerdeki kendi içinde zıtlık/çelişki yaratan maddeleri bulmasını istiyorum, böylece yazılım ekibi gereksiz ve çatışan kodlar yazıp maliyet oluşturmasın.
 *   **Kabul Kriterleri (AC):**
-    - [ ] Zıt maddeler eklendiğinde LLM bunu başarıyla yakalayan bir analiz dönmelidir.
-    - [ ] Analiz sonucu alınan String/JSON yapıları hata fırlatmadan (Exception atılmadan) `AnalysisReport` nesnesine bağlanmalıdır.
+    - [x] Zıt maddeler eklendiğinde LLM bunu başarıyla yakalayan bir analiz dönmelidir.
+    - [ ] Analiz sonucu alınan String/JSON yapıları hata fırlatmadan (Exception atılmadan) `AnalysisReport` nesnesine bağlanmalıdır. (🚩 *Not: JSON hatalı döndüğünde sistem ValueError fırlatarak çöküyor. Hata yakalanıp boş `[]` dönecek şekilde revize edilmeli.*)
 *   **Görevler:**
-    - [ ] `modules/conflict_detector.py` içindeki `analyze()` fonksiyonunda `LLMClient` sınıfını entegre et.
-    - [ ] Hazırladığın system prompt'ları kullanarak gereksinimleri LLM'e gönderip "Hangi gereksinimler birbiriyle çelişiyor?" analizini kur.
-    - [ ] `modules/gap_analyzer.py` için standart senaryolarda (giriş, yetkilendirme vs.) "eksik" olan adımları bulan prompt mimarisi kurgula.
-    - [ ] LLM'den dönen sonuçları parse et ve `AnalysisReport` nesnesinin `conflicts` ile `gaps` listelerine uygun bir dict yapısıyla ekle.
+    - [x] `modules/conflict_detector.py` içindeki `analyze()` fonksiyonunda `LLMClient` sınıfını entegre et.
+    - [x] Hazırladığın system prompt'ları kullanarak gereksinimleri LLM'e gönderip "Hangi gereksinimler birbiriyle çelişiyor?" analizini kur.
+    - [x] `modules/gap_analyzer.py` için standart senaryolarda (giriş, yetkilendirme vs.) "eksik" olan adımları bulan prompt mimarisi kurgula. (🚩 *Not: Promptlar kurgulanmış ancak `GapAnalyzer.analyze()` metodunun içerisindeki NotImplementedError henüz silinip çalışır hale getirilmemiş, eklenecek.*)
+    - [x] LLM'den dönen sonuçları parse et ve `AnalysisReport` nesnesinin `conflicts` ile `gaps` listelerine uygun bir dict yapısıyla ekle.
 
 ### 🟡 Issue #7: User Story Üreteci ve Dinamik SRS Çıktısı
 *   **Sorumlu:** **Halise İncir**
@@ -118,11 +159,11 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 *   **Özet:** Sistemden dönen tam teşekküllü analiz raporunun arayüzde profesyonelce sergilenmesi.
 *   **User Story:** Bir Proje Paydaşı (Stakeholder) olarak, tüm karmaşık analiz datalarını UI üzerinde kartlar ve sekmelerle şıkça görebilmek, gerektiğinde bu raporu tek tuşla bilgisayarıma PDF olarak indirebilmek istiyorum.
 *   **Kabul Kriterleri (AC):**
-    - [ ] Arayüzde çelişkiler, eksikler ve gereksinim listeleri arayüz tasarımını veya sütunları (columns) taşırmadan gösterilmelidir.
-    - [ ] `st.download_button` butonu kullanılarak tarayıcı üzerinden başarılı bir şekilde dosya indirme tetiklenmelidir.
-    - [ ] `classifier.py` ve `ner.py` için oluşturulan çekirdek unit testler hatasız şekilde pass almalıdır.
+    - [x] Arayüzde çelişkiler, eksikler ve gereksinim listeleri arayüz tasarımını veya sütunları (columns) taşırmadan gösterilmelidir.
+    - [x] `st.download_button` butonu kullanılarak tarayıcı üzerinden başarılı bir şekilde dosya indirme tetiklenmelidir.
+    - [ ] `classifier.py` ve `ner.py` için oluşturulan çekirdek unit testler hatasız şekilde pass almalıdır. (🚩 *Not: Testler NotImplementedError beklediği için `main` dalında başarısız (Fail) olacaktır. Fonksiyonların gerçek çıktıları (örn: FUNCTIONAL dönmesi) test edilip pass alınması sağlanmalı.*)
 *   **Görevler:**
-    - [ ] Düzene sokulan `ui/results.py` içerisindeki tab'ları, `report.conflicts` ve `report.gaps` verilerini dict içinden okuyup listeleyecek şekilde (for/while vb.) doldur.
-    - [ ] `ui/components.py` içinde `req_card()` adında bir bileşen fonksiyonu yarat ve gereksinimleri sıradan metin değil bu şık component'lerle ekrana bas.
-    - [ ] "İndirilebilir Çıktılar" sekmesine, `outputs` modülüyle oluşturulan PDF dosyası için indirme (`st.download_button`) butonu ekle.
-    - [ ] Core modüller (`classifier.py` ve `ner.py`) için en az birer tane mantıksal (assertion içeren) test yaz.
+    - [x] Düzene sokulan `ui/results.py` içerisindeki tab'ları, `report.conflicts` ve `report.gaps` verilerini dict içinden okuyup listeleyecek şekilde (for/while vb.) doldur.
+    - [x] `ui/components.py` içinde `req_card()` adında bir bileşen fonksiyonu yarat ve gereksinimleri sıradan metin değil bu şık component'lerle ekrana bas.
+    - [x] "İndirilebilir Çıktılar" sekmesine, `outputs` modülüyle oluşturulan PDF dosyası için indirme (`st.download_button`) butonu ekle.
+    - [x] Core modüller (`classifier.py` ve `ner.py`) için en az birer tane mantıksal (assertion içeren) test yaz. (🚩 *Not: Testler yazılmış ancak eski duruma göre yazıldığı için revize edilmeleri gerekiyor.*)
