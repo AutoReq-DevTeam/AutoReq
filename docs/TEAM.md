@@ -2,6 +2,8 @@
 
 > **Metodoloji:** Scrum | **Sprint Süresi:** 2 hafta | **Ekip:** 4 Kişi  
 > Her üye kendi modülünden tam sorumludur. Modüller arası iletişim `interface` katmanı üzerinden sağlanır.
+>
+> 📌 Projeye yeni katılan ekip üyeleri ve AI ajanları için kapsamlı bir öğretici: [`AGENT_GUIDE.md`](./AGENT_GUIDE.md) — kodu okumadan tüm projeye hakim olabilmen için tek dosyalık rehber.
 
 ---
 

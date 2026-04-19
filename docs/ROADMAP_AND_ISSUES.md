@@ -1,5 +1,7 @@
 # 🗺 AutoReq: 6 Haftalık Geliştirme Yol Haritası (Toplam 6 Sprint)
 
+> 📌 Aktif kod tabanı, modül sözleşmeleri ve bilinen tuzakların kapsamlı dökümü için: [`AGENT_GUIDE.md`](./AGENT_GUIDE.md). Bu dosya sprint backlog'una odaklanır.
+
 ---
 
 ## 🎯 Proje Hedefleri ve Sprint Planlaması (Checkpoint-2 Planları)
@@ -46,14 +48,14 @@ Sistem, ham metin girildiğinde otonom olarak aktörleri tespit etmeli, LLM arac
 ## 📅 Proje Planı Tanıtımı
 Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve üyelerin haftalık odak noktalarını içerir.
 
-| Hafta | Odak Noktası | Ana Hedef |
-| :--- | :--- | :--- |
-| **Hafta 1** | **Temel Altyapı** | Proje iskeleti, LLM bağlantısı ve Streamlit ana giriş ekranı. |
-| **Hafta 2** | **NLP Motoru** | Metinlerin F/NF olarak ayrılması ve Aktör/Nesne tespiti (NER). |
-| **Hafta 3** | **Zeka Katmanı** | Prompt Engineering ile çelişki dedektörü ve eksik gereksinim tespiti. |
-| **Hafta 4** | **SRS & Dökümantasyon** | ISO 29148 standartlarında PDF raporlama ve User Story üreteci. |
-| **Hafta 5** | **Gelişmiş Çıktılar** | BDD senaryoları (Gherkin) ve Product Backlog dışa aktarımı. |
-| **Hafta 6** | **Entegrasyon & Final** | Uçtan uca testler, hata ayıklama ve Final Demo hazırlığı. |
+| Hafta | Odak Noktası | Ana Hedef | Durum |
+| :--- | :--- | :--- | :--- |
+| **Hafta 1** | **Temel Altyapı** | Proje iskeleti, LLM bağlantısı ve Streamlit ana giriş ekranı. | ✅ Tamamlandı |
+| **Hafta 2** | **NLP Motoru** | Metinlerin F/NF olarak ayrılması ve Aktör/Nesne tespiti (NER). | ✅ Tamamlandı |
+| **Hafta 3** | **Stabilizasyon & Entegrasyon** | Hazır LLM modüllerinin pipeline'a bağlanması, kritik UI hatalarının giderilmesi, Gap analizinin işler hale getirilmesi, dinamik SRS üretimi. | 🔧 Planlandı |
+| **Hafta 4** | **Üretken Çıktılar** | User Story, BDD (Gherkin) ve Improvement (muğlak ifade iyileştirme) modüllerinin tamamlanması; çelişki/gap görselleştirme. | 📋 Planlandı |
+| **Hafta 5** | **Backlog, Veri & UI 2.0** | Product Backlog üretici, çoklu format export (Excel/DOCX/JSON), dosya yükleme, Pydantic doğrulama, LLM önbellek. | 📋 Planlandı |
+| **Hafta 6** | **Performans, Test & Demo** | Performans optimizasyonu (<15s), %70+ test coverage, prompt regresyon suite, ISO 29148 uyum kontrolü, Final Demo hazırlığı. | 📋 Planlandı |
 
 ---
 
@@ -167,3 +169,389 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
     - [x] `ui/components.py` içinde `req_card()` adında bir bileşen fonksiyonu yarat ve gereksinimleri sıradan metin değil bu şık component'lerle ekrana bas.
     - [x] "İndirilebilir Çıktılar" sekmesine, `outputs` modülüyle oluşturulan PDF dosyası için indirme (`st.download_button`) butonu ekle.
     - [x] Core modüller (`classifier.py` ve `ner.py`) için en az birer tane mantıksal (assertion içeren) test yaz. (🚩 *Not: Testler yazılmış ancak eski duruma göre yazıldığı için revize edilmeleri gerekiyor.*)
+
+---
+
+# 🛠 3. Hafta (Sprint 3) Görev Listesi (Issues) — *Stabilizasyon & Entegrasyon*
+
+> 🎯 **Sprint Hedefi:** Sprint 1-2'de hazırlanan tüm modüller (özellikle `ConflictDetector`) henüz `app.py` pipeline'ına bağlanmamıştır; UI'da çelişkiler sekmesi her zaman boş gelmektedir. Bu sprintin amacı, mevcut hazır parçaları **uçtan uca çalışır** hale getirmek, kritik UI hatalarını gidermek, eksik kalan `GapAnalyzer` modülünü tamamlamak ve SRS PDF üretimini gerçek analiz verisiyle dinamikleştirmektir.
+
+### 🔴 Issue #9: LLM Modüllerinin Pipeline'a Entegrasyonu ve Hata Toleransı
+*   **Sorumlu:** **Galip Efe Öncü**
+*   **Özet:** `app.py` orkestrasyonunu LLM analiz modülleriyle birleştirip sistemi gerçekten "akıllı" yapmak.
+*   **User Story:** Bir Yazılım Mimarı olarak, hazır olan `ConflictDetector` ve `GapAnalyzer` çıktılarının arayüze otomatik yansımasını ve bir LLM hatası oluşsa bile uygulamanın çökmemesini istiyorum, böylece son kullanıcı kesintisiz analiz deneyimi yaşasın.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `process_text()` fonksiyonu çağrıldığında `report.conflicts` ve `report.gaps` boş olmamalı (en az 2 maddeli demo metninde 0'dan büyük sonuç dönmeli).
+    - [ ] `GEMINI_API_KEY` tanımlı değilken bile uygulama çökmeden çalışmalı; UI'da bilgilendirici uyarı gözükmeli.
+    - [ ] `LLMClientError` veya `ValueError` fırlatılırsa pipeline `conflicts=[]` / `gaps=[]` ile devam etmeli, traceback UI'a yansımamalı.
+    - [ ] `app.py` içindeki `time.sleep(2)` kaldırılmalı; gerçek pipeline süresi spinner'da yansıtılmalı.
+*   **Görevler:**
+    - [ ] `app.py::process_text()` içine `ConflictDetector().analyze(parsed_doc)` çağrısını ekle ve `AnalysisReport.conflicts`'e ata.
+    - [ ] Aynı şekilde `GapAnalyzer().analyze(parsed_doc)` çağrısını ekle (Issue #10 ile koordine).
+    - [ ] LLM çağrılarını `try/except (LLMClientError, ValueError)` ile sarmala; hata durumunda Loguru ile log at, boş liste dön.
+    - [ ] `time.sleep(2)` satırını sil; spinner mesajını "Stanza ile ön işleme yapılıyor..." → "LLM ile çelişki analizi..." gibi adım adım güncelle.
+    - [ ] `EntityRecognizer` ve `TextPreprocessor`'ın iki ayrı Stanza pipeline yüklemesi sorununu gider — tek bir paylaşılan pipeline (ör. `core/nlp_engine.py`) oluştur.
+    - [ ] `load_nlp_pipeline()` cache'inde bu paylaşılan pipeline'ı kullan.
+
+### 🟠 Issue #10: GapAnalyzer Modülünün Tamamlanması
+*   **Sorumlu:** **Eren Eyyüpkoca**
+*   **Özet:** Hazır olan `gap_prompts.py` altyapısını kullanarak `GapAnalyzer.analyze()` metodunun stub'tan kurtarılması.
+*   **User Story:** Bir Kalite Uzmanı olarak, sistemin "Giriş var ama şifremi unuttum yok" gibi standart eksiklikleri otomatik raporlamasını istiyorum, böylece sprint planlamadan önce tüm kritik akışları kapatmış olalım.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `GapAnalyzer().analyze(doc)` artık `NotImplementedError` fırlatmamalı; `list[dict]` dönmeli.
+    - [ ] Dönen her dict, AGENT_GUIDE'da tanımlanan sözleşmeye uygun olmalı: `missing_area`, `suggestion`, `severity` zorunlu.
+    - [ ] Sadece "Kullanıcı giriş yapabilmeli" gibi tek gereksinim verilse bile en az 1 anlamlı eksiklik (parola sıfırlama, MFA vb.) önermeli.
+    - [ ] Mock LLM ile yazılmış unit test (`tests/test_modules.py::TestGapAnalyzer`) PASS olmalı.
+*   **Görevler:**
+    - [ ] `modules/gap_analyzer.py` içine `ConflictDetector`'ın 7 adımlık akışını birebir uyarla:
+        1. Boş `doc.requirements` → erken dönüş.
+        2. `_format_requirements_block(doc)` (helper'ı paylaş veya tekrar yaz).
+        3. `build_gap_analysis_user_prompt(...)` + `build_gap_analysis_system_prompt()`.
+        4. `LLMClient().chat(...)`.
+        5. `extract_json_object(response.content)`.
+        6. `gaps_payload_to_report_dicts(payload)`.
+        7. `list[dict]` dön.
+    - [ ] Constructor'a `llm_client: Optional[LLMClient] = None` ekle (DI için).
+    - [ ] `GapAnalyzer.analyze(doc, *, domain_hint: Optional[str] = None)` parametre desteği aç (gap_prompts opsiyonel hint kabul ediyor).
+    - [ ] `tests/test_modules.py::TestGapAnalyzer::test_detects_missing_password_reset` → mock LLM yanıtıyla gerçek assertion.
+    - [ ] Loguru ile başlangıç/bitiş loglarını ekle (`get_module_logger("gap_analyzer")`).
+
+### 🟡 Issue #11: Dinamik SRS PDF Üretimi (AnalysisReport → PDF)
+*   **Sorumlu:** **Halise İncir**
+*   **Özet:** Statik SRS şablonunu, `AnalysisReport` verisini bölüm bölüm dolduran dinamik bir üretici haline getirmek.
+*   **User Story:** Bir Dokümantasyon Uzmanı olarak, sistemin analiz ettiği gereksinimleri ve tespit ettiği çelişkileri otomatik olarak SRS PDF'inin ilgili bölümlerine yerleştirmesini istiyorum, böylece elle kopya-yapıştır işine gerek kalmasın.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `generate_srs(report: AnalysisReport, output_path: Optional[Path] = None) -> Path` imzası kullanılmalı.
+    - [ ] Üretilen PDF, `outputs/generated/srs_{timestamp}.pdf` formatında **`outputs/generated/`** klasörüne yazılmalı.
+    - [ ] PDF'in "Fonksiyonel Gereksinimler" bölümü gerçek `req_type == "FUNCTIONAL"` olan maddeleri tablo halinde içermeli.
+    - [ ] "Kalite Özellikleri" bölümü `NON_FUNCTIONAL` maddeleri içermeli.
+    - [ ] Yeni bölüm "Tespit Edilen Çelişkiler" eklenmeli; `report.conflicts` boş değilse her madde gerekçesiyle yazılmalı.
+    - [ ] Linux ve Windows üzerinde Türkçe karakterler (ş, ğ, İ, ı) bozulmadan render edilmeli.
+*   **Görevler:**
+    - [ ] `outputs/srs_generator.py::generate_srs()` imzasını `AnalysisReport` alacak şekilde güncelle (eski parametresiz çağrıyı geriye uyumlu tut).
+    - [ ] Hardcoded `C:\Windows\Fonts\arial.ttf` yolunu OS-aware bir helper'a çıkar (`_resolve_turkish_font_path()`):
+        - Windows → `arial.ttf`
+        - Linux → `/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf`
+        - macOS → `/System/Library/Fonts/Supplemental/Arial.ttf`
+        - Hiçbiri yoksa Helvetica fallback + log uyarı.
+    - [ ] Her başlık (Giriş, Kapsam, …) için bölüm doldurucu (`_render_functional_section`, `_render_nfr_section`, `_render_conflicts_section`, `_render_actors_section`) helper'ları ekle.
+    - [ ] `outputs/generated/` klasörünü gerekirse `Path.mkdir(parents=True, exist_ok=True)` ile otomatik oluştur.
+    - [ ] `app.py` içine: analiz tamamlandığında `generate_srs(report)` çağrısını arka planda yap, dosya yolunu `st.session_state.srs_pdf_path`'e kaydet.
+
+### 🔵 Issue #12: Kritik UI Hata Düzeltmeleri ve Test Modernizasyonu
+*   **Sorumlu:** **Agid Gülsever**
+*   **Özet:** Sonuç panelindeki sessiz veri okuma hatasını gidermek, eski (yanlış) testleri güncellemek ve gerçek davranışları doğrulayan testler yazmak.
+*   **User Story:** Bir Son Kullanıcı olarak, ekrandaki gereksinim kartlarının doğru tür etiketini (FUNCTIONAL/NON_FUNCTIONAL) göstermesini ve `pytest tests/` çıktısının yeşil olmasını istiyorum, böylece sisteme güvenebileyim.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `ui/results.py` içindeki gereksinim kartları artık her zaman "FUNCTIONAL" göstermemeli — gerçek `req_type` değeri yansımalı.
+    - [ ] `pytest tests/ -v` komutu **tüm testler PASS** ile bitmeli (eski yanlış `raises_not_implemented` testleri dahil).
+    - [ ] `tests/test_core.py::TestRequirementClassifier::test_non_functional_classification` gerçek assertion içermeli; "Sistem hızlı olmalı" → `NON_FUNCTIONAL` doğrulaması yapılmalı.
+    - [ ] LLM API key eksikse UI sidebar'da "❌ API Key tanımsız" uyarısı görünmeli.
+*   **Görevler:**
+    - [ ] `ui/results.py:_safe_get(req_dict, "type", "FUNCTIONAL")` → `_safe_get(req_dict, "req_type", "UNKNOWN")` olarak düzelt.
+    - [ ] `tests/test_core.py::test_classifier_raises_not_implemented` → gerçek davranış testine çevir: `classify(Requirement(text="Sistem hızlı olmalı"))` → `req_type == "NON_FUNCTIONAL"`.
+    - [ ] `tests/test_core.py::test_ner_raises_not_implemented` → benzer şekilde gerçek assertion'a çevir: `recognize(Requirement(text="Kullanıcı şifresini değiştirmeli"))` → `actors` ve `objects` dolu olmalı.
+    - [ ] `TestTextPreprocessor::test_empty_input` ve `test_tokenization` TODO'larını gerçek testlere çevir (boş string crash etmemeli, normal cümle tokenize olmalı).
+    - [ ] `ui/dashboard.py::render_dashboard()` sidebar'da `os.getenv("GEMINI_API_KEY")` kontrolüyle dinamik durum göster (`✅ API Key OK` / `❌ API Key tanımsız`).
+    - [ ] `tests/conftest.py` içine `pytest fixture` ekle: dummy `LLMClient` (mock chat metodu) — diğer üyelerin testlerinde kullanması için.
+
+---
+
+# 🚀 4. Hafta (Sprint 4) Görev Listesi (Issues) — *Üretken Çıktılar*
+
+> 🎯 **Sprint Hedefi:** Çelişki/eksiklik analizi artık çalıştığına göre, sistemin değer üretme katmanını kapatmak: muğlak ifadelerin ölçülebilir kriterlere dönüştürülmesi (Improver), Agile User Story üretimi, BDD (Gherkin) test senaryoları ve UI'da bunların görselleştirilmesi.
+
+### 🔴 Issue #13: Logging Standardizasyonu ve Önceliklendirme Motoru
+*   **Sorumlu:** **Galip Efe Öncü**
+*   **Özet:** Tüm core modüllerini Loguru'ya geçirmek ve gereksinimlere otomatik öncelik atayan bir mekanizma kurmak.
+*   **User Story:** Bir Yazılım Mimarı olarak, projedeki tüm log çıktılarının tek tip (Loguru) olmasını ve gereksinimlerin kritiklik düzeyine göre HIGH/MEDIUM/LOW etiketlenmesini istiyorum, böylece geliştirme sürecinde hata izleme tutarlı olsun ve PM'ler önceliği görebilsin.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `core/preprocessor.py` ve `outputs/srs_generator.py`'deki tüm `print()` çağrıları kalkmış olmalı.
+    - [ ] `core/ner.py` artık stdlib `logging` yerine Loguru `get_module_logger("ner")` kullanmalı.
+    - [ ] Her `Requirement.priority` alanı pipeline çıkışında `"HIGH"`, `"MEDIUM"` veya `"LOW"` ile dolu olmalı (None kalmamalı).
+    - [ ] "Kritik" / "güvenlik" / "must" gibi kelimeler içeren cümleler `HIGH` olmalı; nötr cümleler `MEDIUM`; iyi-olur ifadeleri `LOW`.
+*   **Görevler:**
+    - [ ] `core/preprocessor.py` içindeki "Stanza indiriliyor..." ve "Stanza indirildi." print'lerini `_log.info()` ile değiştir.
+    - [ ] `outputs/srs_generator.py` içindeki "[BAŞARILI] PDF oluşturuldu..." print'lerini Loguru'ya çevir.
+    - [ ] `core/ner.py` başında `from .logging_utils import get_module_logger` (veya `modules/logging_utils.py`'tan) ile Loguru'ya geç.
+    - [ ] `core/priority_detector.py` (yeni dosya) oluştur:
+        - `PriorityDetector.detect(req: Requirement) -> Requirement` — `req.priority` alanını doldurur.
+        - HIGH keywords: `kritik, mutlaka, asla, şart, güvenlik, mahremiyet, must, zorunlu`
+        - LOW keywords: `tercihen, isteğe bağlı, ileride, opsiyonel, nice-to-have`
+        - Diğerleri MEDIUM.
+    - [ ] `app.py::process_text()` içine NER'den sonra `priority_detector.detect(req)` çağrısı ekle.
+    - [ ] `core/__init__.py`'a `PriorityDetector` export'u ekle.
+    - [ ] `tests/test_core.py::TestPriorityDetector` ile 3 senaryo testi yaz.
+
+### 🟠 Issue #14: Muğlak Gereksinim İyileştirici (Improver) Modülü
+*   **Sorumlu:** **Eren Eyyüpkoca**
+*   **Özet:** "Hızlı olmalı", "kolay olmalı" gibi ölçülemeyen ifadeleri LLM ile teknik, ölçülebilir kriterlere dönüştürmek.
+*   **User Story:** Bir Yazılım Mimarı olarak, müşterinin "süper hızlı olsun" gibi muğlak ifadelerinin sistem tarafından "Sistem yanıt süresi 1000 eşzamanlı kullanıcıda 500ms altında olmalıdır" gibi ölçülebilir kriterlere otomatik çevrilmesini istiyorum, böylece geliştirme aşamasında belirsizlik kalmasın.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `RequirementImprover().improve(requirement)` artık `NotImplementedError` fırlatmamalı.
+    - [ ] Dönen dict şu sözleşmeye uymalı: `{"original": str, "improved": str, "reason": str}`.
+    - [ ] Sadece muğlak ifadeler (`vague_keyword_dictionary` ön kontrolünden geçenler) LLM'e gönderilmeli (token tasarrufu).
+    - [ ] "Sistem hızlı olmalı" → `improved` alanında bir sayısal eşik (ms/saniye) içermeli.
+    - [ ] Mock LLM'le yazılmış unit test PASS olmalı.
+*   **Görevler:**
+    - [ ] `modules/improver_prompts.py` oluştur:
+        - `CORE_IMPROVER_PERSONA` — "Sen, gereksinim ölçülebilirlik uzmanısın..."
+        - `IMPROVEMENT_SYSTEM_PROMPT` — JSON şeması (`{"improved": ..., "reason": ...}`).
+        - **Few-shot örnekler** ekle (en az 3 tane: hız, kullanılabilirlik, güvenlik).
+        - `build_improvement_user_prompt(requirement_text)` builder'ı.
+    - [ ] `modules/improver.py` içinde:
+        - `vague_keywords = {"hızlı", "kolay", "basit", "güvenli", "şık", "modern", "kullanışlı", "iyi", "kötü", "büyük", "küçük"}`
+        - Ön filtre: gereksinim metninde bu kelimelerden biri yoksa LLM çağrısını atla, `original == improved` döndür.
+    - [ ] `LLMClient` enjeksiyonu için constructor parametresi ekle (test edilebilirlik).
+    - [ ] `app.py::process_text()` içine her requirement için `improver.improve(req)` çağrısı ekle, `report.improvements`'e ata.
+    - [ ] `tests/test_modules.py::TestRequirementImprover::test_improves_vague_requirement` mock'lu gerçek test.
+    - [ ] `modules/__init__.py`'a yeni prompt fonksiyonlarını ekle.
+
+### 🟡 Issue #15: User Story ve BDD Senaryosu Üreteçleri
+*   **Sorumlu:** **Halise İncir**
+*   **Özet:** Fonksiyonel gereksinimleri Agile User Story formatına ve Gherkin BDD senaryolarına çeviren iki ayrı LLM destekli üreteç.
+*   **User Story:** Bir Çevik Proje Yöneticisi olarak, çıkarılan gereksinimlerin doğrudan sprint backlog'una atılabilecek "As a... I want..." kartlarına ve QA ekibinin kullanabileceği "Given/When/Then" test senaryolarına otomatik dönüşmesini istiyorum.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `StoryGenerator().generate(report)` `list[dict]` döner; her dict `{"role", "goal", "benefit", "acceptance_criteria"}` içerir.
+    - [ ] `BDDGenerator().generate(report)` `list[str]` döner; her string `Feature:`, `Scenario:`, `Given`, `When`, `Then` anahtar kelimelerini içeren geçerli Gherkin formatında olmalı.
+    - [ ] BDD çıktısı `outputs/generated/scenarios.feature` dosyasına yazılmalı; `pytest-bdd` veya `behave` ile parse edilebilir olmalı.
+    - [ ] User Stories aynı zamanda `outputs/generated/user_stories.docx` olarak da export edilmeli.
+*   **Görevler:**
+    - [ ] `modules/story_prompts.py` ve `modules/bdd_prompts.py` oluştur (`conflict_prompts` template'ini takip et).
+    - [ ] `outputs/story_generator.py::StoryGenerator.generate()` — sadece `req_type == "FUNCTIONAL"` olanları işler, LLM ile dönüştürür.
+    - [ ] `outputs/bdd_generator.py::BDDGenerator.generate()` — her FR için minimum 1 happy path + 1 negative scenario üretir.
+    - [ ] `python-docx` kullanarak `_export_to_docx(stories, path)` helper'ı yaz.
+    - [ ] BDD `.feature` dosyası header'ına `# Generated by AutoReq | {timestamp}` ekle.
+    - [ ] `app.py` analiz sonrası bu üreteçleri çağır, dosyaları `outputs/generated/`'a yaz.
+    - [ ] `tests/test_outputs.py::TestStoryGenerator::test_story_format` ve `TestBDDGenerator::test_gherkin_format` gerçek assertion'larla doldur.
+
+### 🔵 Issue #16: Çelişki / Eksiklik / İyileştirme Görselleştirme
+*   **Sorumlu:** **Agid Gülsever**
+*   **Özet:** Şu an tüm çelişkilerin/eksiklerin ham `dict` halinde basıldığı sonuç sekmelerini, bilgilendirici kart UI'larına dönüştürmek.
+*   **User Story:** Bir Proje Paydaşı olarak, çelişkileri renkli severity rozetleriyle, eksiklikleri kategorize edilmiş checklist olarak ve iyileştirmeleri "öncesi/sonrası" karşılaştırmalı kart olarak görmek istiyorum, böylece teknik bilgim olmasa bile sonuçları kavrayabileyim.
+*   **Kabul Kriterleri (AC):**
+    - [ ] Çelişkiler sekmesinde her madde `conflict_card()` adlı bir bileşenle render edilmeli (severity rengi: high=kırmızı, medium=sarı, low=yeşil).
+    - [ ] Eksikler sekmesinde maddeler `scenario` alanına göre gruplanmalı (authentication, authorization, data_privacy, …).
+    - [ ] İyileştirme sekmesinde `original` (sol) vs `improved` (sağ) yan yana iki kolon halinde gösterilmeli.
+    - [ ] Conflict kartlarındaki `req_ids` etiketleri tıklanınca o gereksinim kartına scroll edebilmeli (anchor link).
+    - [ ] `tests/test_modules.py` içine mock LLM ile `ConflictDetector` ve `GapAnalyzer` testleri eklenmeli (her biri minimum 1 PASS).
+*   **Görevler:**
+    - [ ] `ui/components.py` içine yeni bileşenler ekle:
+        - `conflict_card(conflict: dict)` — severity badge + req_ids + reason expander.
+        - `gap_card(gap: dict)` — scenario etiketi + missing_area + suggestion + severity.
+        - `improvement_diff_card(improvement: dict)` — 2 kolonlu original/improved.
+    - [ ] `ui/results.py::tab2` ve `tab3`'ü ham dict listeleme yerine bu kartları kullanacak şekilde refactor et.
+    - [ ] Tab2 başına özet metrik göstergeleri ekle: `st.metric("Toplam Çelişki", len(conflicts))`, `st.metric("Toplam Eksiklik", len(gaps))`.
+    - [ ] Gereksinim kartlarına `st.markdown(f"<a id='{req_id}'></a>", unsafe_allow_html=True)` anchor ekle.
+    - [ ] `tests/test_modules.py::TestConflictDetector::test_detects_contradiction` → mock LLM yanıtıyla gerçek çelişki tespiti testi.
+    - [ ] `tests/test_modules.py::TestGapAnalyzer::test_detects_missing_password_reset` → mock LLM testi.
+
+---
+
+# 📦 5. Hafta (Sprint 5) Görev Listesi (Issues) — *Backlog, Veri & UI 2.0*
+
+> 🎯 **Sprint Hedefi:** Sistemi gerçek ürün haline getirmek: önceliklendirilmiş Product Backlog üretimi, çoklu format export (Excel/DOCX/JSON), Pydantic ile güçlü tip doğrulaması, LLM önbellek (cost optimization) ve dosya yükleme + çoklu sayfa UI mimarisi.
+
+### 🔴 Issue #17: Veri Şablonları, Örnek Veri Seti ve Pydantic Doğrulama
+*   **Sorumlu:** **Galip Efe Öncü**
+*   **Özet:** `data/` klasöründeki boş placeholder'ları gerçek örneklerle doldurmak ve `core/models.py` dataclass'larına Pydantic v2 doğrulama katmanı eklemek.
+*   **User Story:** Bir Yazılım Mimarı olarak, sistemin örnek girdiler üzerinden hızlı test edilebilmesini ve modüller arası veri akışında tip uyuşmazlığı hatalarının runtime'da değil sınırda yakalanmasını istiyorum, böylece geliştirme döngüsü güvenli olsun.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `data/samples/` altında en az 3 farklı domain örneği bulunmalı: `ornek_eticaret.txt`, `ornek_bankacilik.txt`, `ornek_egitim.txt`.
+    - [ ] `data/templates/requirement_template.json` JSON Schema (draft 2020-12) standartında olmalı.
+    - [ ] `core/models.py` dataclass'ları Pydantic v2 `BaseModel`'e geçirilmeli (veya hibrit dataclass+validator yaklaşımı).
+    - [ ] Geçersiz veri (örn. `req_type="INVALID"`) ile `Requirement` oluşturulmaya çalışıldığında `ValidationError` fırlatılmalı.
+    - [ ] Geçmiş tüm testler hâlâ PASS olmalı (geriye uyumluluk).
+*   **Görevler:**
+    - [ ] `data/samples/` içine 3-5 sayfalık gerçekçi Türkçe gereksinim metinleri yaz (e-ticaret, bankacılık, eğitim platformu domain'lerinden).
+    - [ ] `data/templates/requirement_template.json` — `Requirement` dataclass'ının JSON Schema karşılığını oluştur.
+    - [ ] `core/models.py`:
+        - `Requirement`, `ParsedDocument`, `AnalysisReport` → `pydantic.BaseModel`'e dönüştür.
+        - `req_type` alanına `Literal["FUNCTIONAL", "NON_FUNCTIONAL", "UNKNOWN"]` kısıtı.
+        - `priority` alanına `Optional[Literal["HIGH", "MEDIUM", "LOW"]]` kısıtı.
+        - `severity` validation'ı `analysis_report_parsing` içinde Pydantic'e devret.
+    - [ ] Mevcut tüm `dataclasses.field(default_factory=list)` kullanımlarını Pydantic `Field(default_factory=list)` formuna çevir.
+    - [ ] `tests/test_core.py::TestModels` — 5 yeni validation testi ekle.
+    - [ ] `ui/dashboard.py`'a "Örnek Veri Yükle" dropdown'ı ekle (`data/samples/*.txt` içinden seçim).
+
+### 🟠 Issue #18: LLM Hata Toleransı, Önbellek ve Maliyet Takibi
+*   **Sorumlu:** **Eren Eyyüpkoca**
+*   **Özet:** LLM çağrılarını cache'leyerek aynı metnin tekrar tekrar API'a gönderilmesini önlemek + retry/backoff + token tüketim takibi.
+*   **User Story:** Bir Sistem Tasarımcısı olarak, kullanıcı aynı metni 5 kez analiz ettiğinde Gemini API'a 5 kez para ödemek yerine, ikinci ve sonraki çağrıların yerel önbellekten gelmesini istiyorum; ayrıca her sprint sonunda kaç token harcandığını görebilmek istiyorum.
+*   **Kabul Kriterleri (AC):**
+    - [ ] Aynı `(system_prompt + user_prompt)` çiftiyle yapılan ikinci `LLMClient.chat()` çağrısı API'a gitmeden önbellekten dönmeli (en az 100x daha hızlı).
+    - [ ] Cache TTL yapılandırılabilir olmalı (default: 24 saat).
+    - [ ] Gemini 5xx veya rate-limit hatalarında **3 kez** exponential backoff (1s, 2s, 4s) ile retry yapılmalı.
+    - [ ] Her `LLMResponse.raw` içinde `usage_metadata` (input_tokens, output_tokens, estimated_cost_usd) bulunmalı.
+    - [ ] Sidebar'da "Bu oturumda harcanan: ~$0.XX (YYY token)" göstergesi olmalı.
+*   **Görevler:**
+    - [ ] `modules/llm_cache.py` oluştur: `diskcache` veya `functools.lru_cache` tabanlı, key = `hashlib.sha256(system+user)`.
+    - [ ] `LLMClient._chat_gemini` çağrısını cache wrapper ile sarmala; `bypass_cache=True` parametresi ile cache'i atlama opsiyonu.
+    - [ ] `tenacity` veya manuel `for attempt in range(3): try: ... except: time.sleep(2**attempt)` retry logic ekle.
+    - [ ] `LLMResponse.raw["usage"]` içine token sayıları + tahmini maliyet (Gemini Flash pricing).
+    - [ ] `st.session_state.total_tokens_used` ve `total_cost_usd` accumulator'ları.
+    - [ ] `ui/dashboard.py` sidebar'ına maliyet metric'ini ekle.
+    - [ ] `tests/test_modules.py::TestLLMClient::test_cache_hit` — aynı prompt 2x çağrılınca mock fonksiyon 1x çalışmalı.
+
+### 🟡 Issue #19: Product Backlog Üreteci ve Çoklu Format Export
+*   **Sorumlu:** **Halise İncir**
+*   **Özet:** Önceliklendirme skorlamasıyla Product Backlog üretmek + tüm çıktıları Excel/DOCX/JSON formatlarında dışa aktarmak.
+*   **User Story:** Bir Proje Yöneticisi olarak, sistemden çıkan gereksinimlerin doğrudan Excel'e/DOCX'e aktarılabilmesini ve sprint planlama için kullanılabilecek puanlanmış bir Product Backlog'a dönüşmesini istiyorum, böylece haftalık planlama toplantısında manuel iş kalmasın.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `BacklogGenerator().generate(report)` `list[dict]` döndürmeli; her dict `{"req_id", "title", "priority_score", "story_points", "type", "depends_on"}` içermeli.
+    - [ ] Skorlama formülü: `priority_score = priority_weight × type_weight × conflict_penalty × dependency_factor`.
+    - [ ] Excel export (`.xlsx`) Backlog'u tablo halinde, formül-doğrulama kuralları uygulanmış olarak üretmeli.
+    - [ ] DOCX export User Stories'i resmi şablon formatında (başlık, role, tablo) sunmalı.
+    - [ ] JSON export tüm `AnalysisReport`'u serialize etmeli (Pydantic `.model_dump_json()` ile).
+    - [ ] UI download sekmesinde 4 farklı dosya butonu olmalı: PDF (SRS), XLSX (Backlog), DOCX (Stories), JSON (Full Report).
+*   **Görevler:**
+    - [ ] `outputs/backlog_generator.py::BacklogGenerator.generate()` — skorlama mantığı:
+        - `priority_weight = {HIGH: 3, MEDIUM: 2, LOW: 1}`
+        - `type_weight = {FUNCTIONAL: 1.0, NON_FUNCTIONAL: 0.7}`
+        - Çelişki listesinde geçen `req_id`'lere `× 1.5` (önce çözülsün diye yukarı çek).
+    - [ ] `outputs/exporters.py` (yeni dosya) içinde:
+        - `export_backlog_xlsx(backlog, path)` — `openpyxl` ile.
+        - `export_stories_docx(stories, path)` — `python-docx` ile.
+        - `export_report_json(report, path)` — Pydantic JSON.
+    - [ ] `app.py`'a analiz sonrası 4 dosyayı paralel üretme adımı ekle.
+    - [ ] `ui/results.py::tab4`'e 4 ayrı `download_button` ekle.
+    - [ ] `tests/test_outputs.py::TestBacklogGenerator::test_priority_scoring` — bilinen senaryoyla skor hesaplaması doğrulansın.
+
+### 🔵 Issue #20: UI Mimarisi 2.0 — Çoklu Sayfa ve Dosya Yükleme
+*   **Sorumlu:** **Agid Gülsever**
+*   **Özet:** Streamlit'in `st.navigation`/`pages/` yapısı ile çoklu sayfa mimarisine geçmek + .txt/.docx/.pdf dosya yükleme desteği eklemek.
+*   **User Story:** Bir İş Analisti olarak, müşteriden e-posta ile gelen `.docx` ve `.pdf` toplantı notlarını sürükle-bırak ile yükleyip analiz edebilmek ve sonuçları "Giriş", "Analiz", "Sonuçlar", "Export" sayfaları arasında gezinebilmek istiyorum.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `streamlit run app.py` artık 4 ayrı sayfa açmalı: 📥 Girdi / 🔬 Analiz / 📊 Sonuçlar / 📤 Export.
+    - [ ] `.txt`, `.docx`, `.pdf` dosyaları yüklenebilmeli; metin otomatik çıkarılıp text_area'ya doldurulmalı.
+    - [ ] Sidebar'da gerçek zamanlı sayaç olmalı: gereksinim sayısı, çelişki sayısı, eksiklik sayısı.
+    - [ ] Session state ile bir analiz, sayfalar arası gezildiğinde kaybolmamalı.
+    - [ ] `pyproject.toml` veya `requirements.txt`'e `python-docx` ve `pypdf` (zaten varsa atla) eklenmeli.
+*   **Görevler:**
+    - [ ] `app.py` → ana entry: `st.navigation` ile 4 sayfa tanımlayan ince orchestrator'a indirgen.
+    - [ ] `ui/pages/01_input.py`, `02_analysis.py`, `03_results.py`, `04_export.py` (veya `pages/` klasörü) oluştur.
+    - [ ] `ui/file_loader.py` — `extract_text_from_upload(uploaded_file) -> str`:
+        - `.txt` → direkt decode
+        - `.docx` → `python-docx`
+        - `.pdf` → `pypdf` veya `pdfplumber`
+        - Diğer → `ValueError`.
+    - [ ] `ui/dashboard.py`'da `st.file_uploader(accept=[".txt", ".docx", ".pdf"])` widget'ı.
+    - [ ] Sidebar'a `st.metric` ile canlı sayaçlar (`req_count`, `conflict_count`, `gap_count`, `cost_usd`).
+    - [ ] `st.session_state` schema'sını standartlaştır ve `ui/state.py`'a çıkar.
+    - [ ] Drag & drop UX testi: 3 farklı format dosya ile manuel doğrulama checklist'i.
+
+---
+
+# 🏁 6. Hafta (Sprint 6) Görev Listesi (Issues) — *Performans, Test, Demo*
+
+> 🎯 **Sprint Hedefi:** Ürünü demo-ready hale getirmek: performans hedeflerini (<15s) tutturmak, test coverage'ı %70'in üzerine çıkarmak, prompt regresyon suite kurmak, ISO/IEC/IEEE 29148 uyumunu doğrulamak ve final sunum materyallerini hazırlamak.
+
+### 🔴 Issue #21: Performans Optimizasyonu ve Uçtan Uca Entegrasyon Testleri
+*   **Sorumlu:** **Galip Efe Öncü**
+*   **Özet:** Tüm pipeline'ı NFR hedefi olan "<15 saniye / tek sayfa metin" eşiğine indirmek + uçtan uca entegrasyon testleri yazmak.
+*   **User Story:** Bir Yazılım Mimarı olarak, müşteriye demo gösterirken sistemin 100 cümlelik metni 15 saniyenin altında analiz etmesini ve `pytest tests/integration/` komutunun pipeline'ın tüm uçlarını doğrulayan testleri çalıştırmasını istiyorum.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `tests/integration/test_e2e.py` — `data/samples/ornek_eticaret.txt` üzerinde tam `process_text()` akışı **<15s** içinde tamamlanmalı (pytest fixture ile zaman ölçümü).
+    - [ ] `cProfile` veya `py-spy` çıktısı `docs/performance_report.md`'de paylaşılmalı, hot path'ler belgelenmeli.
+    - [ ] `EntityRecognizer` ve `RequirementClassifier` aynı paylaşılan Stanza pipeline'ını kullanmalı (Sprint 3'ten kalmışsa kapat).
+    - [ ] Bellek kullanımı: ilk Stanza yükleme sonrası **<800 MB** olmalı.
+*   **Görevler:**
+    - [ ] `cProfile` ile pipeline'ı profile et; en yavaş 5 fonksiyonu raporla.
+    - [ ] Per-requirement classifier+NER çağrılarını `concurrent.futures.ThreadPoolExecutor` ile paralelleştir (LLM çağrıları hariç — onlar sıralı).
+    - [ ] `core/preprocessor.py` — Stanza pipeline'a sadece gerekli processor'ları yükle (zaten `tokenize,pos,lemma`, kontrol et).
+    - [ ] `LLM` çağrıları için `asyncio` veya batched chat (multi-prompt single call) araştırması — uygulanabilirse implement et.
+    - [ ] `tests/integration/__init__.py` + `test_e2e.py`:
+        - Fixture: 3 farklı sample dosyası.
+        - Assert: `process_text(text)` < 15s.
+        - Assert: `report.parsed_doc.requirements` boş değil, en az 1 conflict veya gap var.
+    - [ ] `docs/performance_report.md` belgesi oluştur, profil sonuçlarını özetle.
+
+### 🟠 Issue #22: Prompt Regresyon Suite ve LLM Mock Fixture'ları
+*   **Sorumlu:** **Eren Eyyüpkoca**
+*   **Özet:** Prompt değişikliklerinin çıktı kalitesini bozmadığını otomatik doğrulayan snapshot test altyapısı + tüm üyelerin kullanabileceği zengin LLM mock fixture kütüphanesi.
+*   **User Story:** Bir QA Engineer olarak, prompt'larda yapılan en küçük değişikliğin bile bilinen 20 örnek gereksinim setinde regresyona neden olup olmadığını CI'da otomatik görmek istiyorum, böylece prompt iyileştirmeleri güvenle merge edilsin.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `tests/golden/` klasörü 20 örnek gereksinim seti + beklenen çelişki/eksiklik JSON snapshot'ları içermeli.
+    - [ ] `pytest tests/regression/` komutu LLM olmadan (mock ile) tüm prompt builder'ları çalıştırıp snapshot karşılaştırmalı.
+    - [ ] Prompt builder fonksiyonlarının çıktısı (tam string) snapshot olarak versiyonlanmalı; değişiklik geldiğinde test FAIL olmalı.
+    - [ ] `tests/conftest.py`'a en az 5 LLM mock fixture eklenmeli (boş yanıt, malformed JSON, normal yanıt, rate limit, timeout).
+*   **Görevler:**
+    - [ ] `tests/golden/sample_requirements/*.txt` — 20 farklı senaryo (auth eksik, çelişkili limitler, NFR muğlaklık, vs.).
+    - [ ] `tests/golden/expected/*.json` — beklenen `AnalysisReport.conflicts/gaps` çıktıları (manuel olarak hazırlanan ground truth).
+    - [ ] `tests/regression/test_prompt_snapshots.py` — `syrupy` veya `snapshottest` ile snapshot testleri.
+    - [ ] `tests/conftest.py`'a fixtures:
+        - `mock_llm_normal` — istenen JSON'u döner.
+        - `mock_llm_empty` — boş string döner.
+        - `mock_llm_malformed` — bozuk JSON döner (`{"key":}`).
+        - `mock_llm_rate_limit` — `LLMClientError` fırlatır.
+        - `mock_llm_with_markdown` — JSON'u ` ```json ... ``` ` içinde döner.
+    - [ ] CI workflow (`.github/workflows/test.yml`) yoksa oluştur, `pytest tests/regression/` adımını ekle.
+    - [ ] `docs/prompt_versioning.md` — prompt değişiklik prosedürünü belgele.
+
+### 🟡 Issue #23: ISO/IEC/IEEE 29148 Uyum Doğrulaması ve Final Doküman Kalitesi
+*   **Sorumlu:** **Halise İncir**
+*   **Özet:** Üretilen SRS PDF'in standartla uyumunu kontrol etmek, çoklu dil font desteği eklemek ve PDF çıktı bütünlüğü testleri yazmak.
+*   **User Story:** Bir Dokümantasyon Uzmanı olarak, sistemden çıkan SRS belgesinin gerçekten ISO/IEC/IEEE 29148:2018 standardındaki 10 zorunlu bölümü içerdiğini ve farklı dillerdeki karakterleri (Türkçe, İngilizce, Arapça, Çince) sorunsuz render ettiğini doğrulayan otomatik testler istiyorum.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `docs/ISO_29148_compliance_checklist.md` belgesi 10 zorunlu bölümü ve her birinin SRS'te nasıl karşılandığını listelemeli.
+    - [ ] PDF üretici, `pypdf` ile parse edildiğinde 10 başlığı da içermeli (otomatik test).
+    - [ ] Türkçe karakter (ş, ğ, İ) + İngilizce karışık metin sorunsuz render olmalı.
+    - [ ] PDF metadata'sı doldurulmalı: title, author (AutoReq), subject (SRS), creator, creation_date.
+    - [ ] PDF dosya boyutu **<5 MB** olmalı (logo + font'lar dahil).
+*   **Görevler:**
+    - [ ] `outputs/srs_generator.py` — PDF metadata setter'ları ekle (`pdf.set_title()`, `set_author()`).
+    - [ ] Cross-platform Unicode font desteği için `outputs/fonts/` klasörü oluştur, `DejaVuSans.ttf` ve `NotoSans.ttf` paketle (veya runtime indir).
+    - [ ] PDF watermark "DRAFT — AutoReq Generated" eklenebilir opsiyonel parametre.
+    - [ ] `docs/ISO_29148_compliance_checklist.md`:
+        - Section 1: Introduction → Otomatik dolduruluyor mu? Evet/Hayır + kanıt.
+        - … 10 bölüm için aynı format.
+    - [ ] `tests/test_outputs.py::TestSRSGenerator`:
+        - `test_pdf_contains_all_iso_sections` — `pypdf` ile parse, başlık eşleşmesi.
+        - `test_pdf_metadata` — title/author kontrolü.
+        - `test_pdf_size_under_5mb` — dosya boyutu.
+        - `test_turkish_chars_render` — "ş, ğ, İ" PDF metninde extract edildiğinde bozulmamış olmalı.
+
+### 🔵 Issue #24: Test Coverage %70+, Bug Bash ve Final Demo Hazırlığı
+*   **Sorumlu:** **Agid Gülsever**
+*   **Özet:** Tüm projenin test kapsamını %70 üzerine çıkarmak, son bir bug bash session organize etmek ve demo materyallerini (senaryo, ekran görüntüleri, video script) hazırlamak.
+*   **User Story:** Bir Proje Sponsoru olarak, final demo öncesi sistemin tüm kritik akışlarının test edilmiş, görsel olarak cilalı ve sunum sırasında çökme riski sıfıra indirilmiş halde olmasını istiyorum.
+*   **Kabul Kriterleri (AC):**
+    - [ ] `pytest --cov=core --cov=modules --cov=outputs --cov-report=term` çıktısında **toplam coverage ≥ %70**.
+    - [ ] `core/`, `modules/`, `outputs/` her birinde minimum **%65** coverage.
+    - [ ] Demo için 5 hazır senaryo `data/demo_scenarios/` altında bulunmalı; her biri farklı bir özelliği vurgulamalı (çelişki, gap, improvement, multi-actor, NFR-yoğun).
+    - [ ] `docs/demo_script.md` — 10 dakikalık demo akışı, her dakika için ne yapılacağı yazılı olmalı.
+    - [ ] `README.md`'ye en az 3 ekran görüntüsü eklenmeli.
+    - [ ] Bug bash sonrası açılan tüm "Critical" ve "High" severity issue'lar kapatılmış olmalı.
+*   **Görevler:**
+    - [ ] Coverage gap analizi: `pytest --cov --cov-report=html` çalıştır, `htmlcov/index.html`'e bak, kapsanmayan satırları listele.
+    - [ ] Eksik kritik testleri yaz:
+        - `tests/test_core.py` — `TextPreprocessor`'un boş, tek kelime, çok uzun metin senaryoları.
+        - `tests/test_modules.py` — `LLMClient`'in tüm hata yollarını mock ile cover et.
+        - `tests/test_outputs.py` — Backlog priority scoring edge case'leri.
+    - [ ] `data/demo_scenarios/`:
+        - `01_e_ticaret_celisma.txt` (çelişki ağırlıklı)
+        - `02_bankacilik_eksik.txt` (gap ağırlıklı)
+        - `03_egitim_mughrak.txt` (improvement ağırlıklı)
+        - `04_kurumsal_portal_multi_actor.txt`
+        - `05_mobil_app_nfr_agirlikli.txt`
+    - [ ] `docs/demo_script.md` — dakika dakika sunum planı.
+    - [ ] Bug Bash session organize et (1 saat, tüm ekip + 1 dış gözlemci) — `docs/bug_bash_results.md`'ye sonuçları yaz.
+    - [ ] README.md'ye demo ekran görüntüleri ekle (`docs/screenshots/`).
+    - [ ] Final demo için Streamlit sayfasını "Demo Modu" toggle'ı ile özelleştir (sample dropdown + sunum-friendly UI).
+
+---
+
+## 📊 Sprint Bazlı İş Yükü Dağılımı (Özet)
+
+| Sprint | Galip (NLP/Core) | Eren (LLM Modules) | Halise (Outputs) | Agid (UI/Test) |
+|---|---|---|---|---|
+| **Sprint 3** | #9 Pipeline entegrasyonu, Stanza dedup | #10 GapAnalyzer impl | #11 Dinamik SRS PDF | #12 UI bug + test modernizasyonu |
+| **Sprint 4** | #13 Loguru migrasyonu + Priority detector | #14 RequirementImprover (Few-shot) | #15 Story + BDD üreteçleri | #16 Çelişki/gap görselleştirme |
+| **Sprint 5** | #17 Pydantic + sample data | #18 LLM cache + cost tracking | #19 Backlog + multi-format export | #20 Multi-page UI + file upload |
+| **Sprint 6** | #21 Performans + E2E testler | #22 Prompt regresyon + mock library | #23 ISO 29148 uyum + PDF kalite | #24 %70 coverage + bug bash + demo |
+
+> **PM Notu:** Sprint 3 dependencies kritiktir — Issue #10 (GapAnalyzer) tamamlanmadan Issue #9'un tüm AC'leri test edilemez; benzer şekilde Issue #11 (dinamik SRS) Issue #9'un app.py değişikliklerine bağlıdır. İlk 3 günde #10 ve #12, son 4 günde #9 ve #11'i koordine etmeniz önerilir.
+
+> **Risk:** Sprint 5'teki Pydantic migrasyonu (#17) tüm modülleri etkileyen yatay bir değişikliktir. Sprint 4 sonunda `develop` dalı tamamen yeşil değilse #17'yi Sprint 6'ya kaydırın ve onun yerine Sprint 5'te ekstra UX cilalama yapın.
+
+> **Burndown Hedefi:** Sprint 6 sonunda kalan stub modül **0**, açık kritik bug **0**, test coverage **≥ %70**, demo senaryoları **5 hazır**.

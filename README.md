@@ -156,7 +156,7 @@ python -m venv venv
 source venv/bin/activate      # Linux / macOS
 venv\Scripts\activate         # Windows
 
-# 3️⃣ Install dependencies
+# 3️⃣ Install dependencies (includes google-generativeai for the Gemini LLM layer)
 pip install -r requirements.txt
 
 # 4️⃣ Download the Stanza Turkish NLP model (~150 MB)
@@ -166,6 +166,8 @@ python -c "import stanza; stanza.download('tr')"
 cp .env.example .env          # Linux / macOS
 copy .env.example .env        # Windows
 ```
+
+> 💡 The core NLP layer (preprocessor / classifier / NER) runs without an API key. Only the LLM-powered modules (conflict detection, gap analysis) require `GEMINI_API_KEY` and the `google-generativeai` SDK.
 
 ### Environment Variables
 
@@ -227,40 +229,51 @@ AutoReq/
 │   └── ner.py                 #   Entity recognizer (actors & objects)
 │
 ├── modules/                   # 🧠 Layer 2: Intelligent Analysis (LLM)
-│   ├── llm_client.py          #   Centralized Gemini API client
-│   ├── conflict_detector.py   #   Pairwise conflict analysis
-│   ├── conflict_prompts.py    #   Prompt templates for conflict detection
-│   ├── gap_analyzer.py        #   Missing-requirement detector
-│   ├── gap_prompts.py         #   Prompt templates for gap analysis
-│   ├── improver.py            #   Vague-requirement improver
-│   └── logging_utils.py       #   Module logger utilities
+│   ├── llm_client.py              #   Centralized Gemini API client
+│   ├── conflict_detector.py       #   ✅ Pairwise conflict analysis (LLM)
+│   ├── conflict_prompts.py        #   Prompt templates for conflict detection
+│   ├── gap_analyzer.py            #   ❌ Stub — NotImplementedError
+│   ├── gap_prompts.py             #   Prompt templates for gap analysis (ready)
+│   ├── improver.py                #   ❌ Stub — NotImplementedError
+│   ├── analysis_report_parsing.py #   LLM JSON → AnalysisReport normalizer
+│   ├── llm_response_utils.py      #   extract_json_object() utility
+│   └── logging_utils.py           #   Loguru-based module logger utilities
 │
 ├── outputs/                   # 📄 Layer 3: Document Generators
-│   ├── srs_generator.py       #   ISO 29148 SRS PDF generator
-│   ├── story_generator.py     #   User Story generator
-│   ├── backlog_generator.py   #   Product Backlog generator
-│   ├── bdd_generator.py       #   Gherkin BDD scenario generator
-│   └── generated/             #   Output artifacts (gitignored)
+│   ├── srs_generator.py       #   ⚠️  Static ISO 29148 SRS PDF (no dynamic data yet)
+│   ├── story_generator.py     #   ❌ Stub — User Story generator
+│   ├── backlog_generator.py   #   ❌ Stub — Product Backlog generator
+│   ├── bdd_generator.py       #   ❌ Stub — Gherkin BDD scenario generator
+│   ├── logo_generator.py      #   Pillow-based logo PNG creator (CLI)
+│   ├── logo.png               #   Generated logo (used in SRS PDF header)
+│   ├── srs_taslak.pdf         #   Pre-generated static SRS template
+│   └── generated/             #   Runtime output artifacts (gitignored, currently empty)
 │
 ├── ui/                        # 🖥 Layer 4: Streamlit UI Components
 │   ├── dashboard.py           #   Main input screen
 │   ├── results.py             #   Tabbed results panel
-│   └── components.py          #   Reusable widgets
+│   └── components.py          #   Reusable widgets (req_card, badges, buttons)
 │
-├── tests/                     # 🧪 Test Suite
+├── tests/                     # 🧪 Test Suite (mostly stubs — see ROADMAP)
+│   ├── conftest.py            #   sys.path setup
 │   ├── test_core.py           #   Core module tests
 │   ├── test_modules.py        #   Module tests
 │   └── test_outputs.py        #   Output tests
 │
-├── data/
-│   ├── samples/               #   Sample input texts
-│   └── templates/             #   JSON requirement templates
+├── data/                      # ⚠️  Currently empty placeholders
+│   ├── samples/               #   (planned) sample input texts
+│   └── templates/             #   (planned) JSON requirement templates
 │
 └── docs/                      # 📚 Documentation
-    ├── TEAM.md                #   Team roles & RACI matrix
+    ├── AGENT_GUIDE.md         #   ⭐ Comprehensive agent-friendly project tutorial (Turkish)
+    ├── TEAM.md                #   Team roles & RACI matrix (Turkish)
     ├── FEATURES.md            #   Feature list & status
-    └── ROADMAP_AND_ISSUES.md  #   Sprint backlog & issue tracker
+    ├── CONTEXT.md             #   Source-of-truth architecture reference
+    ├── ROADMAP_AND_ISSUES.md  #   Sprint backlog & issue tracker (Turkish)
+    └── CHECKPOINTS/           #   Marp slide decks (Turkish)
 ```
+
+> 📌 **For AI assistants and new contributors:** start with [`docs/AGENT_GUIDE.md`](./docs/AGENT_GUIDE.md) — it lets you fully understand the project without reading any source file.
 
 ---
 
@@ -286,12 +299,12 @@ Phase 1 — MVP (Core Analysis Engine)                          ✅ Complete
 └── ✅ NER-based actor and object detection
 
 Phase 2 — Intelligent Modules                                 🔧 In Progress
-├── ✅ Conflict & contradiction detector (LLM)
-├── 🔲 Gap analysis & suggestion engine
-└── 🔲 Vague-expression improver
+├── ✅ Conflict & contradiction detector (LLM) — implemented but NOT yet wired into app.py
+├── 🔲 Gap analysis & suggestion engine        — prompts ready, analyzer is a stub
+└── 🔲 Vague-expression improver               — stub
 
 Phase 3 — Output & Integration                                📋 Planned
-├── ⚠️ Automated SRS PDF generation (partial)
+├── ⚠️ Automated SRS PDF generation (static template only — no dynamic data binding yet)
 ├── 🔲 User Story & Backlog export
 ├── 🔲 BDD scenario generator
 └── 🔲 Jira / Trello integration (optional)

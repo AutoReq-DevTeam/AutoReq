@@ -1,8 +1,10 @@
 # 📋 AutoReq — Feature Specification & Tracking
 
 > **Document Type:** Definitive Feature List  
-> **Last Updated:** 2026-04-12  
+> **Last Updated:** 2026-04-19  
 > **Status Legend:** `[x]` Implemented | `[ ]` Planned | `⚠️` Partial
+>
+> 📌 For a full architectural walkthrough of where each feature lives in the codebase, see [`AGENT_GUIDE.md`](./AGENT_GUIDE.md).
 
 ---
 
@@ -54,7 +56,7 @@ These are the **must-have** features required for the initial release. The syste
 - [x] **Progress Indicators** — Spinner animation and toast notifications during analysis
 - [x] **Tabbed Results Panel** — Results organized into tabs: Requirements, Conflicts, Gaps, Downloads
 - [x] **Requirement Cards** — Custom `req_card()` UI component displaying classification, actors, and objects per requirement
-- [x] **PDF Download Button** — `st.download_button` to export SRS document directly from the browser
+- [x] **PDF Download Button** — `st.download_button` to export SRS document directly from the browser. ⚠️ *Currently scans `outputs/generated/*.pdf`, which is empty until the SRS generator is dynamically invoked from `app.py`; download is therefore not yet active end-to-end.*
 
 ---
 
@@ -64,7 +66,7 @@ Features planned for subsequent sprints and later versions. Ordered by priority.
 
 ### 3.1 Intelligent Analysis — LLM-Powered (High Priority)
 
-- [x] **Conflict Detection Engine** — Pairwise analysis of all requirements using Google Gemini to identify logical contradictions (e.g., "System must be offline" vs. "System must sync in real-time")
+- [x] **Conflict Detection Engine** — Pairwise analysis of all requirements using Google Gemini to identify logical contradictions (e.g., "System must be offline" vs. "System must sync in real-time"). ⚠️ *Module is implemented and tested in isolation, but is not yet wired into `app.py → process_text()`; the UI's "Conflicts" tab therefore stays empty until that integration step is completed.*
 - [x] **Conflict Prompt Templates** — Structured system + user prompts with persona ("Senior QA Engineer") and JSON output schema for reliable LLM responses
 - [x] **LLM Client (Gemini)** — Centralized `LLMClient` class wrapping Google Generative AI SDK with lazy import, error handling, and `LLMClientError` exceptions
 - [x] **LLM JSON Response Parsing** — `extract_json_object()` utility to reliably extract JSON from LLM responses that may contain markdown fences or extra text
@@ -161,6 +163,8 @@ A feature moves from `[ ]` to `[x]` only when:
 ---
 
 > 📎 **Related Documents:**  
+> - [AGENT_GUIDE.md](./AGENT_GUIDE.md) — ⭐ Comprehensive agent-friendly project tutorial (Turkish, deep dive)  
 > - [ROADMAP_AND_ISSUES.md](./ROADMAP_AND_ISSUES.md) — Sprint backlog and weekly task breakdown  
 > - [TEAM.md](./TEAM.md) — Team roles, RACI matrix, and module ownership  
+> - [CONTEXT.md](./CONTEXT.md) — Architecture source-of-truth (English overview)  
 > - [README.md](../README.md) — Project overview and setup instructions

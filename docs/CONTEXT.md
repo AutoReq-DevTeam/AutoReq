@@ -1,7 +1,9 @@
 # CONTEXT.md — AutoReq Source of Truth
 
-> **Last Updated:** 2026-04-12  
+> **Last Updated:** 2026-04-19  
 > **Purpose:** Canonical reference for AI agents and contributors. Describes architecture, conventions, data flow, and environment setup.
+>
+> 📌 **Looking for a much deeper, agent-friendly walkthrough?** See [`AGENT_GUIDE.md`](./AGENT_GUIDE.md) (Turkish, comprehensive). This file (CONTEXT.md) is the short English overview.
 
 ---
 
@@ -81,14 +83,18 @@ AutoReq/
 │   ├── test_modules.py     #   Module tests
 │   └── test_outputs.py     #   Output tests
 │
-├── data/
-│   ├── samples/            #   Sample input texts (ornek_gereksinim.txt)
-│   └── templates/          #   JSON templates (requirement_template.json)
+├── data/                   # ⚠ Currently empty placeholder folders
+│   ├── samples/            #   (planned) sample input texts — folder exists, no files yet
+│   └── templates/          #   (planned) JSON requirement templates — folder exists, no files yet
 │
 └── docs/                   # Project documentation
-    ├── TEAM.md             #   RACI matrix, member roles, sprint calendar
+    ├── AGENT_GUIDE.md      #   ⭐ Agent-friendly comprehensive tutorial (Turkish)
+    ├── TEAM.md             #   RACI matrix, member roles, sprint calendar (Turkish)
     ├── FEATURES.md         #   Feature list & status
-    └── ROADMAP_AND_ISSUES.md  # Sprint backlog & issue tracker
+    ├── CONTEXT.md          #   This file — architecture overview
+    ├── ROADMAP_AND_ISSUES.md  # Sprint backlog & issue tracker (Turkish)
+    ├── CHECKPOINTS/        #   Marp slide decks (Turkish)
+    └── Makale/             #   Academic paper drafts (Turkish)
 ```
 
 ### 2.3 Design Patterns
@@ -297,7 +303,7 @@ python -m venv venv
 venv\Scripts\activate         # Windows
 # source venv/bin/activate    # Linux/macOS
 
-# 3. Install dependencies
+# 3. Install dependencies (includes google-generativeai for the Gemini LLM layer)
 pip install -r requirements.txt
 
 # 4. Download Stanza Turkish model (~150 MB)
@@ -339,11 +345,11 @@ pytest tests/ -v --cov=core --cov=modules --cov=outputs
 
 | Path | Purpose |
 |---|---|
-| `outputs/generated/` | Runtime-generated PDFs (gitignored) |
-| `outputs/srs_taslak.pdf` | Pre-generated SRS template |
-| `outputs/logo.png` | Logo image for PDF header |
-| `data/samples/ornek_gereksinim.txt` | Sample input text |
-| `data/templates/requirement_template.json` | Requirement JSON schema |
+| `outputs/generated/` | Runtime-generated PDFs (gitignored, currently empty) |
+| `outputs/srs_taslak.pdf` | Pre-generated static SRS template (committed) |
+| `outputs/logo.png` | Logo image for PDF header (committed) |
+| `data/samples/` | (planned) sample input texts — folder exists but is empty |
+| `data/templates/` | (planned) requirement JSON schema — folder exists but is empty |
 
 ---
 
@@ -356,6 +362,8 @@ pytest tests/ -v --cov=core --cov=modules --cov=outputs
 3. **Shared models contract**: `core/models.py` is the interface boundary. Changes to `Requirement`, `ParsedDocument`, or `AnalysisReport` affect all 4 team members.
 4. **LLM output parsing**: LLM responses may contain markdown fences or extra text. `extract_json_object()` handles this by finding the first `{...}` block.
 5. **Stanza loads twice**: `TextPreprocessor` and `EntityRecognizer` each instantiate their own `stanza.Pipeline` — both cached via `@st.cache_resource` in `app.py`.
-6. **Tests are mostly stubs**: The test suite has many `TODO` / `pass` placeholders. Only `test_gap_analyzer_not_implemented`, `test_basic`, and two `test_*_raises_not_implemented` tests have real assertions.
-7. **SRS generator is Windows-coupled**: Font paths hardcoded to `C:\Windows\Fonts\arial.ttf`. Falls back to Helvetica on non-Windows.
-8. **License**: GNU GPL v3.
+6. **Tests are mostly stubs**: The test suite has many `TODO` / `pass` placeholders. The two `test_*_raises_not_implemented` tests in `test_core.py` are now **outdated** (the underlying functions have been implemented) and will fail on `main` — see ROADMAP Issue #8.
+7. **SRS generator is Windows-coupled**: Font paths hardcoded to `C:\Windows\Fonts\arial.ttf`. Falls back to Helvetica on non-Windows. Also writes to `outputs/srs_taslak.pdf` while UI scans `outputs/generated/*.pdf` — these don't currently match.
+8. **`ConflictDetector` not wired into `app.py`**: `process_text()` returns `conflicts=[]` even though `ConflictDetector.analyze()` is fully implemented. Integration is pending.
+9. **Classifier false positives**: NFR keyword list contains `"kullanıcı"` and `"şifre"`, so most functional sentences mentioning users/passwords are mis-classified as NON_FUNCTIONAL. Will be replaced by an ML model later.
+10. **License**: GNU GPL v3.
