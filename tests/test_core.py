@@ -10,7 +10,7 @@ import pytest
 from core.classifier import RequirementClassifier
 from core.ner import EntityRecognizer
 
-# TODO: Üye 1 ile koordineli olarak test senaryolarını doldur
+# TODO: Üye 4 — Üye 1 ile koordineli olarak test senaryolarını doldur
 
 
 class TestTextPreprocessor:

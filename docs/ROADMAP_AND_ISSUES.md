@@ -181,29 +181,29 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 *   **Özet:** `app.py` orkestrasyonunu LLM analiz modülleriyle birleştirip sistemi gerçekten "akıllı" yapmak.
 *   **User Story:** Bir Yazılım Mimarı olarak, hazır olan `ConflictDetector` ve `GapAnalyzer` çıktılarının arayüze otomatik yansımasını ve bir LLM hatası oluşsa bile uygulamanın çökmemesini istiyorum, böylece son kullanıcı kesintisiz analiz deneyimi yaşasın.
 *   **Kabul Kriterleri (AC):**
-    - [ ] `process_text()` fonksiyonu çağrıldığında `report.conflicts` ve `report.gaps` boş olmamalı (en az 2 maddeli demo metninde 0'dan büyük sonuç dönmeli).
-    - [ ] `GEMINI_API_KEY` tanımlı değilken bile uygulama çökmeden çalışmalı; UI'da bilgilendirici uyarı gözükmeli.
-    - [ ] `LLMClientError` veya `ValueError` fırlatılırsa pipeline `conflicts=[]` / `gaps=[]` ile devam etmeli, traceback UI'a yansımamalı.
-    - [ ] `app.py` içindeki `time.sleep(2)` kaldırılmalı; gerçek pipeline süresi spinner'da yansıtılmalı.
+    - [x] `process_text()` fonksiyonu çağrıldığında `report.conflicts` ve `report.gaps` boş olmamalı (en az 2 maddeli demo metninde 0'dan büyük sonuç dönmeli).
+    - [x] `GEMINI_API_KEY` tanımlı değilken bile uygulama çökmeden çalışmalı; UI'da bilgilendirici uyarı gözükmeli.
+    - [x] `LLMClientError` veya `ValueError` fırlatılırsa pipeline `conflicts=[]` / `gaps=[]` ile devam etmeli, traceback UI'a yansımamalı.
+    - [x] `app.py` içindeki `time.sleep(2)` kaldırılmalı; gerçek pipeline süresi spinner'da yansıtılmalı.
 *   **Görevler:**
-    - [ ] `app.py::process_text()` içine `ConflictDetector().analyze(parsed_doc)` çağrısını ekle ve `AnalysisReport.conflicts`'e ata.
-    - [ ] Aynı şekilde `GapAnalyzer().analyze(parsed_doc)` çağrısını ekle (Issue #10 ile koordine).
-    - [ ] LLM çağrılarını `try/except (LLMClientError, ValueError)` ile sarmala; hata durumunda Loguru ile log at, boş liste dön.
-    - [ ] `time.sleep(2)` satırını sil; spinner mesajını "Stanza ile ön işleme yapılıyor..." → "LLM ile çelişki analizi..." gibi adım adım güncelle.
-    - [ ] `EntityRecognizer` ve `TextPreprocessor`'ın iki ayrı Stanza pipeline yüklemesi sorununu gider — tek bir paylaşılan pipeline (ör. `core/nlp_engine.py`) oluştur.
-    - [ ] `load_nlp_pipeline()` cache'inde bu paylaşılan pipeline'ı kullan.
+    - [x] `app.py::process_text()` içine `ConflictDetector().analyze(parsed_doc)` çağrısını ekle ve `AnalysisReport.conflicts`'e ata.
+    - [x] Aynı şekilde `GapAnalyzer().analyze(parsed_doc)` çağrısını ekle (Issue #10 ile koordine).
+    - [x] LLM çağrılarını `try/except (LLMClientError, ValueError)` ile sarmala; hata durumunda Loguru ile log at, boş liste dön.
+    - [x] `time.sleep(2)` satırını sil; spinner mesajını "Stanza ile ön işleme yapılıyor..." → "LLM ile çelişki analizi..." gibi adım adım güncelle.
+    - [x] `EntityRecognizer` ve `TextPreprocessor`'ın iki ayrı Stanza pipeline yüklemesi sorununu gider — tek bir paylaşılan pipeline (ör. `core/nlp_engine.py`) oluştur.
+    - [x] `load_nlp_pipeline()` cache'inde bu paylaşılan pipeline'ı kullan.
 
-### 🟠 Issue #10: GapAnalyzer Modülünün Tamamlanması
+### 🟠 Issue #10: GapAnalyzer Modülünün Tamamlanması ✅
 *   **Sorumlu:** **Eren Eyyüpkoca**
 *   **Özet:** Hazır olan `gap_prompts.py` altyapısını kullanarak `GapAnalyzer.analyze()` metodunun stub'tan kurtarılması.
 *   **User Story:** Bir Kalite Uzmanı olarak, sistemin "Giriş var ama şifremi unuttum yok" gibi standart eksiklikleri otomatik raporlamasını istiyorum, böylece sprint planlamadan önce tüm kritik akışları kapatmış olalım.
 *   **Kabul Kriterleri (AC):**
-    - [ ] `GapAnalyzer().analyze(doc)` artık `NotImplementedError` fırlatmamalı; `list[dict]` dönmeli.
-    - [ ] Dönen her dict, AGENT_GUIDE'da tanımlanan sözleşmeye uygun olmalı: `missing_area`, `suggestion`, `severity` zorunlu.
-    - [ ] Sadece "Kullanıcı giriş yapabilmeli" gibi tek gereksinim verilse bile en az 1 anlamlı eksiklik (parola sıfırlama, MFA vb.) önermeli.
-    - [ ] Mock LLM ile yazılmış unit test (`tests/test_modules.py::TestGapAnalyzer`) PASS olmalı.
+    - [x] `GapAnalyzer().analyze(doc)` artık `NotImplementedError` fırlatmamalı; `list[dict]` dönmeli.
+    - [x] Dönen her dict, AGENT_GUIDE'da tanımlanan sözleşmeye uygun olmalı: `missing_area`, `suggestion`, `severity` zorunlu.
+    - [x] Sadece "Kullanıcı giriş yapabilmeli" gibi tek gereksinim verilse bile en az 1 anlamlı eksiklik (parola sıfırlama, MFA vb.) önermeli.
+    - [x] Mock LLM ile yazılmış unit test (`tests/test_modules.py::TestGapAnalyzer`) PASS olmalı.
 *   **Görevler:**
-    - [ ] `modules/gap_analyzer.py` içine `ConflictDetector`'ın 7 adımlık akışını birebir uyarla:
+    - [x] `modules/gap_analyzer.py` içine `ConflictDetector`'ın 7 adımlık akışını birebir uyarla:
         1. Boş `doc.requirements` → erken dönüş.
         2. `_format_requirements_block(doc)` (helper'ı paylaş veya tekrar yaz).
         3. `build_gap_analysis_user_prompt(...)` + `build_gap_analysis_system_prompt()`.
@@ -211,10 +211,10 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
         5. `extract_json_object(response.content)`.
         6. `gaps_payload_to_report_dicts(payload)`.
         7. `list[dict]` dön.
-    - [ ] Constructor'a `llm_client: Optional[LLMClient] = None` ekle (DI için).
-    - [ ] `GapAnalyzer.analyze(doc, *, domain_hint: Optional[str] = None)` parametre desteği aç (gap_prompts opsiyonel hint kabul ediyor).
-    - [ ] `tests/test_modules.py::TestGapAnalyzer::test_detects_missing_password_reset` → mock LLM yanıtıyla gerçek assertion.
-    - [ ] Loguru ile başlangıç/bitiş loglarını ekle (`get_module_logger("gap_analyzer")`).
+    - [x] Constructor'a `llm_client: Optional[LLMClient] = None` ekle (DI için).
+    - [x] `GapAnalyzer.analyze(doc, *, domain_hint: Optional[str] = None)` parametre desteği aç (gap_prompts opsiyonel hint kabul ediyor).
+    - [x] `tests/test_modules.py::TestGapAnalyzer::test_detects_missing_password_reset` → mock LLM yanıtıyla gerçek assertion.
+    - [x] Loguru ile başlangıç/bitiş loglarını ekle (`get_module_logger("gap_analyzer")`).
 
 ### 🟡 Issue #11: Dinamik SRS PDF Üretimi (AnalysisReport → PDF)
 *   **Sorumlu:** **Halise İncir**

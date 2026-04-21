@@ -7,11 +7,17 @@ AutoReq sisteminin ana giriş ekranıdır. Kullanıcı metin girişi, analiz tet
 ve işlem durumu takibi süreçlerini yönetir.
 """
 
+import os
+
 import streamlit as st
 
 
 def render_dashboard():
-    """Ana giriş ekranını render eder."""
+    """Ana giriş ekranını render eder.
+
+    Döndürür:
+        tuple[str, bool]: (kullanıcının girdiği metin, analiz butonuna basılıp basılmadığı)
+    """
     st.title("🚀 AutoReq")
     st.subheader("Otomatik Yazılım Gereksinim Analizörü")
     st.info("Proje geliştirme aşamasındadır. Modüller entegre edildikçe bu ekran güncellenecektir.")
@@ -26,6 +32,12 @@ def render_dashboard():
     st.sidebar.success("Sistem aktif")
     st.sidebar.markdown("**Arayüz:** Hazır")
     st.sidebar.markdown("**Testler:** Çalışıyor")
+
+    # API Key durumu göstergesi
+    if os.getenv("GEMINI_API_KEY"):
+        st.sidebar.markdown("✅ **API Key:** OK")
+    else:
+        st.sidebar.warning("❌ API Key tanımsız — LLM analizi devre dışı")
 
     col1, col2 = st.columns(2)
 

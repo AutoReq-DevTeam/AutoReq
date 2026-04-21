@@ -14,23 +14,32 @@ kelimelerin köklerini (lemma) %90'ın üzerinde bir başarıyla tespit edebilir
 hatasız ayırt edilmesini sağlar.
 """
 
-import logging
-import stanza
+from loguru import logger
 
 from .models import Requirement
+from .nlp_engine import get_shared_stanza_pipeline
 
-logger = logging.getLogger(__name__)
+_log = logger.bind(module="ner")
+
 
 class EntityRecognizer:
     """Stanza kullanarak metindeki varlıkları tanır."""
 
-    def __init__(self):
-        # Stanza Türkçe NLP pipeline'ını yükle
+    def __init__(self) -> None:
+        """EntityRecognizer başlatıcısı.
+
+        Paylaşılan Stanza pipeline'ını kullanır. Pipeline yüklenemezse
+        fallback (düz string eşleştirmesi) moduna geçer.
+        """
+        # Paylaşılan Stanza pipeline'ını kullan (bellek tasarrufu)
         try:
-            # Sadece NER ve Lemma için gerekli processörleri kullanıyoruz
-            self.nlp = stanza.Pipeline(lang='tr', processors='tokenize,mwt,pos,lemma,ner', use_gpu=False)
+            self.nlp = get_shared_stanza_pipeline()
         except Exception as e:
-            logger.warning(f"Stanza modeli yüklenirken hata oluştu. 'stanza.download(\"tr\")' komutunu çalıştırdınız mı? Hata: {e}")
+            _log.warning(
+                "Stanza modeli yüklenirken hata oluştu. "
+                "'stanza.download(\"tr\")' komutunu çalıştırdınız mı? Hata: {}",
+                e,
+            )
             self.nlp = None
         
         # Gündelik yazılım gereksinimlerinde sık geçen "Aktör" örüntüleri (köken kelimeler/lemma)
@@ -43,6 +52,12 @@ class EntityRecognizer:
         """
         Gereksinim içindeki tüm kelimelerin köklerine (lemma) bakar ve 
         "kullanıcı", "şifre" gibi bizim sistemimizde kritik olan aktör/nesneleri ayıklar.
+
+        Parametreler:
+            requirement: Analiz edilecek gereksinim nesnesi.
+
+        Döndürür:
+            Requirement: actors ve objects alanları doldurulmuş gereksinim.
         """
         # Burada list [] yerine set () kullandık. Çünkü eğer müşteri 
         # "Kullanıcı şifresini girer ve kullanıcı onaylar" derse, listeye iki tane
@@ -65,6 +80,7 @@ class EntityRecognizer:
         else:
             # Fallback Modu: Eğer sunucuda Stanza modeli çökürse kodun patlamaması için (Graceful Degradation)
             # Düz string eşleştirmesi ile hayat kurtaran B planı.
+            _log.warning("Stanza pipeline kullanılamıyor, fallback modunda çalışılıyor.")
             text_lower = requirement.text.lower()
             for actor in self.actor_lemmas:
                 if actor in text_lower:

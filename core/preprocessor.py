@@ -8,25 +8,28 @@ normalizasyon ve cümle bazlı ayrıştırma (tokenization) işlemlerinden sorum
 """
 
 import re
-import stanza
 import nltk
 from nltk.corpus import stopwords
+from loguru import logger
+
 from .models import ParsedDocument, Requirement
+from .nlp_engine import get_shared_stanza_pipeline
+
+_log = logger.bind(module="preprocessor")
 
 
 class TextPreprocessor:
     """Ham metni ayrıştırır ve Requirement listesine dönüştürür."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
-        Sınıf başlatıldığında Stanza sadece bir kere indirilir ve başlatılır.
-        Bu sayede her seferinde indirme işlemi yapılmaz ve hız kazanılır.
+        Sınıf başlatıldığında paylaşılan Stanza pipeline kullanılır ve
+        NLTK stopwords listesi hazırlanır.
         """
-        print("Stanza indiriliyor...")
+        _log.info("TextPreprocessor başlatılıyor...")
 
-        # Türkçe için pipeline
-        # processors="tokenize,pos,lemma" → cümlelere ayırır, kelimelerin türünü belirler, köklerini bulur
-        self.nlp = stanza.Pipeline("tr", processors="tokenize,pos,lemma", verbose=False)
+        # Paylaşılan Stanza pipeline'ı kullan (bellek tasarrufu)
+        self.nlp = get_shared_stanza_pipeline()
 
         # NLTK stopwords listesini hazırlar, eğer inik değil ise indirir
         try:
@@ -38,7 +41,7 @@ class TextPreprocessor:
         # Eğer List olarak kalsaydı her kelime için listeyi baştan sona taraması gerekirdi bu da O(N) karmaşıklığa yol açardı
         # Set olarak kullanınca O(1) karmaşıklıkta işlem yaparız
         self.stop_words = set(stopwords.words("turkish"))
-        print("Stanza indirildi.")
+        _log.info("TextPreprocessor hazır.")
 
     def process(self, raw_text: str) -> ParsedDocument:
         """
