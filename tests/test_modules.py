@@ -9,6 +9,7 @@ from unittest.mock import MagicMock
 
 from core.models import ParsedDocument, Requirement
 from modules.gap_analyzer import GapAnalyzer
+from modules.improver import RequirementImprover
 from modules.llm_client import LLMResponse
 
 
@@ -98,6 +99,42 @@ class TestGapAnalyzer:
 
 
 class TestRequirementImprover:
-    def test_improves_vague_requirement(self):
-        # TODO: Üye 4 — "Hızlı olmalı" ifadesi ölçülebilir öneriye dönüşmeli
-        pass
+    def test_improves_vague_requirement(self) -> None:
+        """Mock LLM: muğlak hız ifadesi sayısal eşik içeren metne dönüşmeli."""
+        llm_json = """
+        {
+          "improved": "Sistem, 1000 eşzamanlı kullanıcı yükünde p95 yanıt süresi 500 ms altında olmalıdır.",
+          "reason": "Hız beklentisi, eşzamanlı kullanıcı ve p95 gecikme eşiği ile ölçülebilir hale getirildi."
+        }
+        """
+        mock_client = MagicMock()
+        mock_client.chat.return_value = LLMResponse(content=llm_json, raw={})
+
+        req = Requirement(
+            id="REQ_001",
+            text="Sistem hızlı olmalı",
+            req_type="FUNCTIONAL",
+        )
+        improver = RequirementImprover(llm_client=mock_client)
+        result = improver.improve(req)
+
+        assert result["original"] == "Sistem hızlı olmalı"
+        assert "500" in result["improved"] or "ms" in result["improved"].lower()
+        assert result["reason"]
+        assert set(result.keys()) == {"improved", "original", "reason"}
+        mock_client.chat.assert_called_once()
+
+    def test_skips_llm_when_no_vague_keyword(self) -> None:
+        """Metinde muğlak anahtar kelime yoksa LLM çağrılmamalı, original==improved olmalı."""
+        mock_client = MagicMock()
+        req = Requirement(
+            id="REQ_001",
+            text="Kullanıcı e-posta adresiyle giriş yapabilmelidir.",
+            req_type="FUNCTIONAL",
+        )
+        improver = RequirementImprover(llm_client=mock_client)
+        result = improver.improve(req)
+
+        assert result["original"] == result["improved"]
+        assert "token" in result["reason"].lower() or "atlandı" in result["reason"].lower()
+        mock_client.chat.assert_not_called()
