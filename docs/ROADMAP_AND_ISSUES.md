@@ -283,29 +283,29 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
     - [ ] `core/__init__.py`'a `PriorityDetector` export'u ekle.
     - [ ] `tests/test_core.py::TestPriorityDetector` ile 3 senaryo testi yaz.
 
-### 🟠 Issue #14: Muğlak Gereksinim İyileştirici (Improver) Modülü
+### 🟠 Issue #14: Muğlak Gereksinim İyileştirici (Improver) Modülü ✅
 *   **Sorumlu:** **Eren Eyyüpkoca**
 *   **Özet:** "Hızlı olmalı", "kolay olmalı" gibi ölçülemeyen ifadeleri LLM ile teknik, ölçülebilir kriterlere dönüştürmek.
 *   **User Story:** Bir Yazılım Mimarı olarak, müşterinin "süper hızlı olsun" gibi muğlak ifadelerinin sistem tarafından "Sistem yanıt süresi 1000 eşzamanlı kullanıcıda 500ms altında olmalıdır" gibi ölçülebilir kriterlere otomatik çevrilmesini istiyorum, böylece geliştirme aşamasında belirsizlik kalmasın.
 *   **Kabul Kriterleri (AC):**
-    - [ ] `RequirementImprover().improve(requirement)` artık `NotImplementedError` fırlatmamalı.
-    - [ ] Dönen dict şu sözleşmeye uymalı: `{"original": str, "improved": str, "reason": str}`.
-    - [ ] Sadece muğlak ifadeler (`vague_keyword_dictionary` ön kontrolünden geçenler) LLM'e gönderilmeli (token tasarrufu).
-    - [ ] "Sistem hızlı olmalı" → `improved` alanında bir sayısal eşik (ms/saniye) içermeli.
-    - [ ] Mock LLM'le yazılmış unit test PASS olmalı.
+    - [x] `RequirementImprover().improve(requirement)` artık `NotImplementedError` fırlatmamalı.
+    - [x] Dönen dict şu sözleşmeye uymalı: `{"original": str, "improved": str, "reason": str}`.
+    - [x] Sadece muğlak ifadeler (`vague_keyword_dictionary` ön kontrolünden geçenler) LLM'e gönderilmeli (token tasarrufu).
+    - [x] "Sistem hızlı olmalı" → `improved` alanında bir sayısal eşik (ms/saniye) içermeli.
+    - [x] Mock LLM'le yazılmış unit test PASS olmalı.
 *   **Görevler:**
-    - [ ] `modules/improver_prompts.py` oluştur:
+    - [x] `modules/improver_prompts.py` oluştur:
         - `CORE_IMPROVER_PERSONA` — "Sen, gereksinim ölçülebilirlik uzmanısın..."
         - `IMPROVEMENT_SYSTEM_PROMPT` — JSON şeması (`{"improved": ..., "reason": ...}`).
         - **Few-shot örnekler** ekle (en az 3 tane: hız, kullanılabilirlik, güvenlik).
         - `build_improvement_user_prompt(requirement_text)` builder'ı.
-    - [ ] `modules/improver.py` içinde:
+    - [x] `modules/improver.py` içinde:
         - `vague_keywords = {"hızlı", "kolay", "basit", "güvenli", "şık", "modern", "kullanışlı", "iyi", "kötü", "büyük", "küçük"}`
         - Ön filtre: gereksinim metninde bu kelimelerden biri yoksa LLM çağrısını atla, `original == improved` döndür.
-    - [ ] `LLMClient` enjeksiyonu için constructor parametresi ekle (test edilebilirlik).
-    - [ ] `app.py::process_text()` içine her requirement için `improver.improve(req)` çağrısı ekle, `report.improvements`'e ata.
-    - [ ] `tests/test_modules.py::TestRequirementImprover::test_improves_vague_requirement` mock'lu gerçek test.
-    - [ ] `modules/__init__.py`'a yeni prompt fonksiyonlarını ekle.
+    - [x] `LLMClient` enjeksiyonu için constructor parametresi ekle (test edilebilirlik).
+    - [ ] `app.py::process_text()` içine her requirement için `improver.improve(req)` çağrısı ekle, `report.improvements`'e ata. (🚩 *Not: Issue #14 kapsamında uygulanmadı — `app.py` orkestrasyonu Üye 1 / Galip Efe sorumluluğunda; entegrasyon delege edildi. Rapor: `reports/agent-runs/issue-14-Eren-2026-04-23.md`.*)
+    - [x] `tests/test_modules.py::TestRequirementImprover::test_improves_vague_requirement` mock'lu gerçek test.
+    - [x] `modules/__init__.py`'a yeni prompt fonksiyonlarını ekle.
 
 ### 🟡 Issue #15: User Story ve BDD Senaryosu Üreteçleri
 *   **Sorumlu:** **Halise İncir**

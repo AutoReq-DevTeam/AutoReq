@@ -44,36 +44,34 @@ def test_basic():
     from core.classifier import RequirementClassifier
 
 
-def test_classifier_raises_not_implemented():
+def test_classifier_classifies_requirement():
     classifier = RequirementClassifier()
 
     class DummyRequirement:
         def __init__(self, text):
             self.text = text
+            self.req_type = "UNKNOWN"
 
-    req = DummyRequirement("Kullanıcı giriş yapabilmeli.")
+    req = DummyRequirement("Sistem verileri hızlı işlemeli.")
+    result = classifier.classify(req)
+    assert result.req_type == "NON_FUNCTIONAL"
 
-    try:
-        classifier.classify(req)
-    except NotImplementedError:
-        assert True
-    else:
-        assert False
-        from core.ner import EntityRecognizer
+    req2 = DummyRequirement("Admin rapor oluşturabilmeli.")
+    result2 = classifier.classify(req2)
+    assert result2.req_type == "FUNCTIONAL"
 
 
-def test_ner_raises_not_implemented():
+def test_ner_recognizes_entities():
     ner = EntityRecognizer()
 
     class DummyRequirement:
         def __init__(self, text):
             self.text = text
+            self.actors = []
+            self.objects = []
 
     req = DummyRequirement("Kullanıcı profilini güncelleyebilir.")
-
-    try:
-        ner.recognize(req)
-    except NotImplementedError:
-        assert True
-    else:
-        assert False
+    result = ner.recognize(req)
+    assert isinstance(result.actors, list)
+    assert isinstance(result.objects, list)
+    assert "kullanıcı" in result.actors

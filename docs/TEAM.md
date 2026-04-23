@@ -61,10 +61,10 @@ Giriş                     : Ham string (müşteri metni)
 
 ### Teknik Detaylar
 ```
-Kullanılacak Kütüphaneler : LangChain, OpenAI/Ollama API, Stanza, pydantic
+Kullanılacak Kütüphaneler : google-generativeai (Gemini), Loguru
 Giriş                     : ParsedDocument (Üye 1'den gelir)
 Çıkış                     : AnalysisReport dataclass (Mantıksal ve anlamsal analiz eklenmiş)
-Şablonlar & Promptlar     : data/templates/ ve prompts/ dizinlerinden okunur
+Şablonlar & Promptlar     : modules/*_prompts.py dosyalarında (conflict, gap, improver)
 ```
 
 ### Kabul Kriterleri

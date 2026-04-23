@@ -19,6 +19,7 @@ from core.classifier import RequirementClassifier
 from core.ner import EntityRecognizer
 from modules.conflict_detector import ConflictDetector
 from modules.gap_analyzer import GapAnalyzer
+from modules.improver import RequirementImprover
 from modules.llm_client import LLMClientError
 from ui.dashboard import render_dashboard
 from ui.results import render_results
@@ -66,9 +67,9 @@ def process_text(raw_text: str) -> AnalysisReport:
     Bu fonksiyon projenin Orkestrasyon (Orchestrator) merkezidir.
     Tıpkı bir fabrika bandı (Pipeline Pattern) gibi çalışır. Ham maddeyi (metni) alır, 
     sırasıyla preprocessor, classifier ve ner istasyonlarına göndererek analiz zincirini tamamlar.
-    Ardından LLM modülleri (ConflictDetector, GapAnalyzer) ile çelişki ve eksiklik analizlerini
-    gerçekleştirir. LLM hata toleransı sayesinde API key eksikse veya LLM hatası oluşursa
-    pipeline çökmeden devam eder.
+    Ardından LLM modülleri (ConflictDetector, GapAnalyzer, RequirementImprover) ile çelişki,
+    eksiklik ve iyileştirme analizlerini gerçekleştirir. LLM hata toleransı sayesinde API key
+    eksikse veya LLM hatası oluşursa pipeline çökmeden devam eder.
 
     Parametreler:
         raw_text: Kullanıcıdan gelen ham gereksinim metni.
@@ -112,12 +113,30 @@ def process_text(raw_text: str) -> AnalysisReport:
     else:
         _log.info("GEMINI_API_KEY tanımlı değil — eksiklik analizi atlanıyor.")
 
+    # 5. LLM Gereksinim İyileştirme (RequirementImprover)
+    improvements = []
+    if _is_llm_available():
+        try:
+            _log.info("LLM ile gereksinim iyileştirme başlatılıyor...")
+            improver = RequirementImprover()
+            for req in parsed_doc.requirements:
+                result = improver.improve(req)
+                # Yalnızca metni gerçekten değişen gereksinimleri ekle (UI gürültüsünü azaltır)
+                if result.get("improved") != result.get("original"):
+                    improvements.append(result)
+            _log.info("Gereksinim iyileştirme tamamlandı | improvements={}", len(improvements))
+        except (LLMClientError, ValueError) as exc:
+            _log.warning("Gereksinim iyileştirme başarısız — boş liste ile devam ediliyor | hata={}", exc)
+            improvements = []
+    else:
+        _log.info("GEMINI_API_KEY tanımlı değil — gereksinim iyileştirme atlanıyor.")
+
     # fmt: off
     report = AnalysisReport(
         parsed_doc=parsed_doc,
         conflicts=conflicts,
         gaps=gaps,
-        improvements=[]
+        improvements=improvements,
     )
     # fmt: on
 
