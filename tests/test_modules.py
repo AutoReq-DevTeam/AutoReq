@@ -5,12 +5,15 @@ Sahibi: Üye 4 (Test koordinasyonu) + Üye 2 (içerik)
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 from core.models import ParsedDocument, Requirement
 from modules.gap_analyzer import GapAnalyzer
 from modules.improver import RequirementImprover
-from modules.llm_client import LLMResponse
+from modules.llm_cache import LLMPromptCache
+from modules.llm_client import LLMClient, LLMResponse
 
 
 class TestConflictDetector:
@@ -96,6 +99,39 @@ class TestGapAnalyzer:
         analyzer = GapAnalyzer(llm_client=mock_client)
         assert analyzer.analyze(doc) == []
         mock_client.chat.assert_not_called()
+
+
+class TestLLMClient:
+    def test_cache_hit(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Aynı prompt ile ikinci chat çağrısı API'ye gitmeden önbellekten dönmeli."""
+        monkeypatch.setenv("GEMINI_API_KEY", "test-cache-key")
+
+        mock_response = MagicMock()
+        mock_response.text = '{"cached": false}'
+        mock_um = MagicMock()
+        mock_um.prompt_token_count = 100
+        mock_um.candidates_token_count = 50
+        mock_response.usage_metadata = mock_um
+
+        with patch("google.generativeai.configure"):
+            with patch("google.generativeai.GenerativeModel") as mock_gen:
+                send = mock_gen.return_value.start_chat.return_value.send_message
+                send.return_value = mock_response
+
+                isolated = LLMPromptCache(default_ttl_seconds=3600)
+                client = LLMClient(prompt_cache=isolated)
+
+                first = client.chat("system prompt", "user prompt")
+                second = client.chat("system prompt", "user prompt")
+
+                assert send.call_count == 1
+                assert first.content == second.content
+                assert first.raw["usage_metadata"]["input_tokens"] == 100
+                assert first.raw["usage_metadata"]["output_tokens"] == 50
+                assert "estimated_cost_usd" in first.raw["usage_metadata"]
+                assert second.raw["usage_metadata"].get("cache_hit") is True
+                assert second.raw["usage_metadata"]["input_tokens"] == 0
+                assert "usage" in first.raw and "usage" in second.raw
 
 
 class TestRequirementImprover:

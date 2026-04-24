@@ -28,6 +28,11 @@ def render_dashboard():
     if "analysis_report" not in st.session_state:
         st.session_state.analysis_report = None
 
+    if "total_tokens_used" not in st.session_state:
+        st.session_state.total_tokens_used = 0
+    if "total_cost_usd" not in st.session_state:
+        st.session_state.total_cost_usd = 0.0
+
     st.sidebar.title("📊 Proje Durumu")
     st.sidebar.success("Sistem aktif")
     st.sidebar.markdown("**Arayüz:** Hazır")
@@ -38,6 +43,12 @@ def render_dashboard():
         st.sidebar.markdown("✅ **API Key:** OK")
     else:
         st.sidebar.warning("❌ API Key tanımsız — LLM analizi devre dışı")
+
+    session_tokens = int(st.session_state.total_tokens_used)
+    session_cost = float(st.session_state.total_cost_usd)
+    st.sidebar.markdown(
+        f"**Bu oturumda harcanan:** ~**${session_cost:.2f}** (**{session_tokens}** token)"
+    )
 
     col1, col2 = st.columns(2)
 
