@@ -1,5 +1,8 @@
 from fpdf import FPDF
 import os
+from loguru import logger
+
+_log = logger.bind(module="srs_generator")
 
 # GÖREV: SRS PDF Motoru Altyapısı (Font Hatası Giderilmiş Versiyon)
 class SRSGenerator(FPDF):
@@ -63,7 +66,7 @@ def generate_srs():
     output_path = os.path.join(current_dir, "srs_taslak.pdf")
     
     pdf.output(output_path)
-    print(f"\n[BAŞARILI] PDF oluşturuldu: {output_path}")
+    _log.info("PDF oluşturuldu: {}", output_path)
     
     # Otomatik açma
     try:

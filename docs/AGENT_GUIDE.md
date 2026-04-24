@@ -2,7 +2,7 @@
 
 > **Bu dosyanın amacı:** Bir AI kodlama asistanının (özellikle düşük/orta kapasiteli modellerin) **tek bir dosyayı okuyarak** projenin tamamına hakim olmasını sağlamaktır. Kodu açmadan önce bu dosyayı sonuna kadar oku. Burada her modülün **ne yaptığı**, **hangi sözleşmelere uyduğu**, **hangi tuzakların bulunduğu** ve **bir özelliği değiştirirken nereyi değiştirmen gerektiği** anlatılır.
 >
-> **Son güncelleme:** 2026-04-23 · **Hedef kitle:** AI kodlama ajanları + yeni katılan geliştiriciler
+> **Son güncelleme:** 2026-04-24 · **Hedef kitle:** AI kodlama ajanları + yeni katılan geliştiriciler
 >
 > 📌 **Not:** Diğer dökümanlar (README.md, CONTEXT.md, FEATURES.md, ROADMAP_AND_ISSUES.md, TEAM.md) hâlâ geçerli ve daha kısa özetler sunar. Bu dosya onların **en kapsamlı, kod-doğruluğu denetlenmiş, ajan dostu** versiyonudur.
 
@@ -42,7 +42,8 @@ str (raw_text)
 ParsedDocument(requirements=[Requirement, ...])
    ↓ RequirementClassifier.classify()  (her Requirement için)
    ↓ EntityRecognizer.recognize()      (her Requirement için)
-ParsedDocument (artık req.req_type, req.actors, req.objects dolu)
+   ↓ PriorityDetector.detect()         (her Requirement için) ✅ (Issue #13)
+ParsedDocument (artık req.req_type, req.actors, req.objects, req.priority dolu)
    ↓ AnalysisReport(parsed_doc=..., conflicts=[], gaps=[], improvements=[])
 AnalysisReport
    ↓ ConflictDetector.analyze(doc)  → conflicts listesi ✅ (Issue #9'dan beri app.py::process_text'e bağlı)
@@ -55,7 +56,7 @@ Streamlit Sekmeli UI
 PDF Çıktı
 ```
 
-> ✅ **Güncel durum (Issue #9 + #10 + #14):** `app.py → process_text()` artık `core/` ardından `ConflictDetector().analyze()`, `GapAnalyzer().analyze()` ve her requirement için `RequirementImprover().improve(req)` çağırır. LLM hataları (`LLMClientError`, `ValueError`) try/except ile yakalanıp graceful degradation uygulanır.
+> ✅ **Güncel durum (Issue #9 + #10 + #13 + #14):** `app.py → process_text()` artık `core/` ardından her requirement için `PriorityDetector().detect(req)` çağırır; `ConflictDetector().analyze()`, `GapAnalyzer().analyze()` ve `RequirementImprover().improve(req)` da çalışır. LLM hataları (`LLMClientError`, `ValueError`) try/except ile yakalanıp graceful degradation uygulanır. `outputs/srs_generator.py` dahil tüm `print()` çağrıları Loguru'ya taşındı.
 
 ---
 
@@ -79,7 +80,8 @@ AutoReq/
 │
 ├── modules/                     Layer 2 — Akıllı Analiz (Üye 2: Eren)
 │   ├── __init__.py              ConflictDetector, GapAnalyzer, RequirementImprover, build_analysis_report_from_llm export
-│   ├── llm_client.py            ★ Merkezi Gemini istemcisi (LLMClient, LLMResponse, LLMClientError)
+│   ├── llm_client.py            ★ Merkezi Gemini istemcisi (LLMClient, LLMResponse, LLMClientError) + önbellek + retry
+│   ├── llm_cache.py             ✅ TTL'li bellek içi LLM prompt önbelleği (Issue #18)
 │   ├── conflict_detector.py     ✅ Tamamlanmış: pairwise çelişki analizi
 │   ├── conflict_prompts.py      Persona + JSON şeması + user prompt builder (çelişki için)
 │   ├── gap_analyzer.py          ✅ Tamamlanmış: 7-adımlık LLM akışı + auth fallback (Issue #10)
@@ -109,8 +111,8 @@ AutoReq/
 │
 ├── tests/                       Pytest test takımı (Üye 4: Agid)
 │   ├── conftest.py              sys.path'a proje kökünü ekler
-│   ├── test_core.py             ⚠ ÇOĞU STUB; bazıları YANLIŞ (NotImplementedError bekliyor ama fonksiyonlar artık IMPLEMENTED)
-│   ├── test_modules.py          ⚠ Sadece test_gap_analyzer_not_implemented gerçek
+│   ├── test_core.py             Classifier, NER, Preprocessor gerçek davranış testleri (Issue #9 ile güncellendi)
+│   ├── test_modules.py          GapAnalyzer, ConflictDetector, RequirementImprover, LLMClient mock testleri
 │   └── test_outputs.py          ⚠ Tamamen TODO
 │
 ├── data/
@@ -211,11 +213,14 @@ Bu üç dataclass **modüller arası ortak dildir**. Hiçbir modül kendi format
 **Görevi:** Streamlit girişi + NLP pipeline'ı belleğe yükleme + `process_text()` orchestration.
 
 **İçerdiği fonksiyonlar:**
-- `load_nlp_pipeline()` — `@st.cache_resource` ile dekoratörlüdür. Stanza modellerini RAM'e **bir kez** yükler. `{"preprocessor", "classifier", "ner"}` dict döner.
+- `load_nlp_pipeline()` — `@st.cache_resource` ile dekoratörlüdür. Stanza modellerini RAM'e **bir kez** yükler. `{"preprocessor", "classifier", "ner", "priority_detector"}` dict döner.
 - `process_text(raw_text: str) -> AnalysisReport` — Pipeline'ı çalıştırır:
   1. `preprocessor.process(raw_text)` → `ParsedDocument`
-  2. Her requirement için `classifier.classify(req)` ve `ner.recognize(req)` (in-place değiştirir)
-  3. Boş `conflicts/gaps/improvements` ile `AnalysisReport` döner
+  2. Her requirement için `classifier.classify(req)`, `ner.recognize(req)` ve `priority_detector.detect(req)` (in-place değiştirir) ✅ (Issue #13)
+  3. `ConflictDetector().analyze(doc)` → `conflicts` listesi (LLM; hata toleranslı try/except)
+  4. `GapAnalyzer().analyze(doc)` → `gaps` listesi (LLM; hata toleranslı try/except)
+  5. Her requirement için `RequirementImprover().improve(req)` → `improvements` listesi (LLM; hata toleranslı try/except)
+  6. Dolu `AnalysisReport(parsed_doc, conflicts, gaps, improvements)` döner
 
 **UI akışı:**
 - `render_dashboard()` çağrılır → `(user_text, analyze_clicked)` döner
@@ -225,7 +230,8 @@ Bu üç dataclass **modüller arası ortak dildir**. Hiçbir modül kendi format
 **🚨 Eksiklikler (modeller bunu bilmeli):**
 1. `ConflictDetector` ve `GapAnalyzer` Issue #9 ile `process_text()` içine bağlandı. ✅
 2. `RequirementImprover` Issue #14 ile tamamlandı ve `process_text()` içine bağlandı. ✅
-3. SRS PDF üretimi `outputs/generated/`'a hiç yazılmıyor. UI o klasörden okuyor → "PDF bulunamadı" uyarısı verir.
+3. `PriorityDetector` Issue #13 ile oluşturuldu ve `process_text()` içine bağlandı. ✅
+4. SRS PDF üretimi `outputs/generated/`'a hiç yazılmıyor. UI o klasörden okuyor → "PDF bulunamadı" uyarısı verir.
 
 ---
 
@@ -295,19 +301,22 @@ Bu üç dataclass **modüller arası ortak dildir**. Hiçbir modül kendi format
 | `api_key` | — (zorunlu) | `GEMINI_API_KEY` env veya parametre |
 | `max_output_tokens` | `2048` | parametre |
 | `temperature` | `0.2` | parametre (düşük = deterministik) |
+| `cache_ttl_seconds` | `86400` (24 saat) | `LLM_CACHE_TTL_SECONDS` env veya parametre (Issue #18) |
+| `prompt_cache` | `None` (paylaşımlı singleton) | parametre — test için DI (Issue #18) |
 
 **Hata politikası:** 
 - API key yoksa → `LLMClientError` (init'te)
 - Provider gemini değilse → `ValueError`
 - `google-generativeai` paketi kurulu değilse → `LLMClientError` (lazy import sırasında)
-- Çağrı sırasında her hata → `LLMClientError` ile sarmalanır
+- Çağrı sırasında geçici hata (429/5xx) → **exponential backoff ile 3 retry** (1s, 2s, 4s) (Issue #18)
+- Kalıcı hata → `LLMClientError` ile sarmalanır
 
 **Ana metod:**
 ```python
-client.chat(system_prompt: str, user_prompt: str, *, metadata=None, history=None) -> LLMResponse
+client.chat(system_prompt: str, user_prompt: str, *, metadata=None, history=None, bypass_cache=False) -> LLMResponse
 ```
 
-`LLMResponse(content: str, raw: dict)` döner. **Diğer modüller `raw` alanına asla bağımlı olmamalıdır** — sadece debug/log için.
+`LLMResponse(content: str, raw: dict)` döner. `raw` alanında `usage_metadata` (`input_tokens`, `output_tokens`, `estimated_cost_usd`) ve `cache_hit` bilgisi bulunur (Issue #18). Aynı `(system_prompt, user_prompt)` çifti ile yapılan ikinci çağrı önbellekten döner (`bypass_cache=True` ile atlanabilir).
 
 **Bağımlılık:** `google-generativeai` paketi `requirements.txt` içinde tanımlıdır → `pip install -r requirements.txt` yeterlidir. Eğer paket eksikse `LLMClient.__init__` net bir `LLMClientError` fırlatır.
 
@@ -336,7 +345,7 @@ client.chat(system_prompt: str, user_prompt: str, *, metadata=None, history=None
 7. `conflicts_payload_to_report_dicts(payload)` → `AnalysisReport.conflicts` formatına normalize eder
 8. `meta.total_requirements` her zaman gerçek sayı ile **override edilir** (LLM yanlış sayarsa korunmak için)
 
-**🚨 Hata davranışı:** LLM JSON döndüremezse `LLMClientError` fırlatır → `app.py`'da yakalanmıyor → tüm UI çöker. ROADMAP Issue #6'da uyarılan sorun. Çözüm: `try/except LLMClientError → conflicts=[]` ile değiştirilebilir.
+**Hata davranışı:** LLM JSON döndüremezse `LLMClientError` fırlatır → ~~`app.py`'da yakalanmıyor → tüm UI çöker~~ Issue #9 ile `app.py::process_text()` içinde `try/except (LLMClientError, ValueError)` ile sarmalandı; hata durumunda `conflicts=[]` ile graceful degradation uygulanır. ✅
 
 ---
 
@@ -393,7 +402,7 @@ client.chat(system_prompt: str, user_prompt: str, *, metadata=None, history=None
 
 **Testler:** `TestRequirementImprover::test_improves_vague_requirement`, `test_skips_llm_when_no_vague_keyword` — PASS.
 
-**⚠ Dikkat:** `RequirementImprover` hazır ancak **henüz `app.py::process_text()` içine bağlanmadı** (bkz. Tuzak #15). Entegrasyon için `process_text` içinde her requirement için döngü + `LLMClientError` try/except gerekir.
+**✅ Entegrasyon (Issue #14):** `RequirementImprover` `app.py::process_text()` içine bağlandı. Her requirement için döngü + `LLMClientError` try/except ile graceful degradation uygulanıyor. Yalnızca `original != improved` olan gereksinimler `report.improvements` listesine ekleniyor (UI gürültüsünü azaltır).
 
 ---
 
@@ -431,7 +440,7 @@ Loguru wrapper'ı:
 - `get_module_logger("conflict_detector")` → `logger.bind(module="conflict_detector")` döner
 - `log_with_context(module, level, message, *, request_id=None, **extra)` → ek context bağlama
 
-**Konvansiyon:** Tüm `modules/` dosyaları `_log = get_module_logger("modul_adı")` pattern'ini kullanır. `core/ner.py` istisnadır (stdlib `logging` kullanır — ileride uyumlulaştırılmalı).
+**Konvansiyon:** Tüm `modules/` ve `core/` dosyaları `_log = logger.bind(module="...")` veya `get_module_logger("modul_adı")` pattern'ini kullanır. Issue #9 ile `core/ner.py` ve `core/preprocessor.py` de Loguru'ya geçirildi. ✅
 
 ---
 
@@ -506,7 +515,7 @@ GEMINI_MODEL_NAME=gemini-3.0-flash    # OPSİYONEL (varsayılan)
 
 **Hangi özellikler API key OLMADAN çalışır?**
 - ✅ Preprocessor, Classifier, NER, UI dashboard, statik SRS PDF
-- ❌ ConflictDetector (init'te `LLMClientError` fırlatır)
+- ⚠ ConflictDetector, GapAnalyzer, RequirementImprover — API key yoksa `app.py` bu adımları atlar (`_is_llm_available()` kontrolü); uygulama çökmez, `conflicts=[]` / `gaps=[]` / `improvements=[]` ile devam eder. Sidebar'da "❌ API Key tanımsız" uyarısı gösterilir.
 
 ### 5.2 Kurulum (yeniden çıkartılabilir)
 
@@ -542,10 +551,7 @@ pytest tests/ -v
 pytest tests/ -v --cov=core --cov=modules --cov=outputs
 ```
 
-**🚨 Bilinen test failure'ları (`main` dalında):**
-- `test_classifier_raises_not_implemented` — fonksiyon artık IMPLEMENT edilmiş, test güncel değil → FAIL
-- `test_ner_raises_not_implemented` — aynı sebep → FAIL
-- Bu testler ROADMAP Issue #8'de "revize edilecek" olarak işaretli.
+**✅ Test durumu (`main` dalında):** Tüm testler geçiyor. Eski `test_classifier_raises_not_implemented` ve `test_ner_raises_not_implemented` stub testleri, `test_classifier_classifies_requirement` ve `test_ner_recognizes_entities` gerçek davranış testleriyle değiştirildi (Issue #9).
 
 ---
 
@@ -651,11 +657,11 @@ PR:        En az 1 reviewer onayı
 | 7 | ~~**Stanza model 2x yükleniyor**~~ ✅ | Issue #9 ile `core/nlp_engine.py` paylaşılan singleton pipeline getirildi. Bellek tasarrufu sağlandı. |
 | 8 | ~~**`time.sleep(2)` `app.py`'da**~~ ✅ | Issue #9 ile kaldırıldı. |
 | 9 | ~~**Test stubları yanlış**~~ ✅ | `test_classifier_classifies_requirement` ve `test_ner_recognizes_entities` ile gerçek davranış testleri yazıldı. |
-| 10 | ~~**Logging hibrit kullanım**~~ ✅ | `core/ner.py` Issue #9 ile Loguru'ya geçirildi. Tüm modüller artık Loguru kullanıyor. |
+| 10 | ~~**Logging hibrit kullanım**~~ ✅ | `core/ner.py` Issue #9 ile Loguru'ya geçirildi; Issue #13 ile `get_module_logger("ner")` pattern'ine tam uyum sağlandı. `outputs/srs_generator.py`'deki son `print()` de Issue #13'te Loguru'ya taşındı. Tüm modüller artık Loguru kullanıyor. |
 | 15 | ~~**`RequirementImprover` app.py'a bağlı değil**~~ ✅ | `process_text()` içine bağlandı. Her requirement için döngü + `LLMClientError` try/except + `report.improvements` doldurma eklendi. |
 | 11 | **`data/samples/` ve `data/templates/` boş** | Eski README'de bahsedilen dosyalar mevcut değil. |
 | 12 | **Türkçe-only** | Tüm prompt'lar, NLP, UI Türkçe. İngilizce desteği için ayrı sprint gerekir. |
-| 13 | **LLM hatası UI'yı çökertir** | `LLMClientError` `app.py`'da yakalanmıyor. |
+| 13 | ~~**LLM hatası UI'yı çökertir**~~ ✅ | `LLMClientError` ve `ValueError` `app.py::process_text()` içinde her LLM bloğu için ayrı `try/except` ile yakalanıyor; hata durumunda `[]` ile devam ediliyor. |
 | 14 | **Classifier yanlış-pozitif** | "kullanıcı" ve "şifre" NFR sayılır → çoğu fonksiyonel cümle yanlış sınıflanır. |
 
 ---
@@ -667,6 +673,7 @@ PR:        En az 1 reviewer onayı
 | Yeni Requirement alanı eklemek istiyorum | `core/models.py::Requirement` |
 | Yeni NFR kelimesi eklemek istiyorum | `core/classifier.py::nfr_keywords` |
 | Yeni aktör/nesne eklemek istiyorum | `core/ner.py::actor_lemmas` veya `object_lemmas` |
+| Gereksinim önceliğini değiştirmek istiyorum | `core/priority_detector.py::HIGH_KEYWORDS` veya `LOW_KEYWORDS` |
 | LLM modelini değiştirmek istiyorum | `.env` → `GEMINI_MODEL_NAME` |
 | Yeni LLM provider eklemek istiyorum | `modules/llm_client.py::__init__` + yeni `_chat_*()` |
 | Conflict prompt'unu iyileştirmek istiyorum | `modules/conflict_prompts.py` |
@@ -684,10 +691,10 @@ PR:        En az 1 reviewer onayı
 2. **🟢 Kolay — UI bug'ı:** `ui/results.py:_safe_get(req_dict, "type", ...)` → `"req_type"` (tek satır değişikliği).
 3. ~~**🟢 Kolay — Test düzeltmeleri:** `test_classifier_raises_not_implemented` ve `test_ner_raises_not_implemented`~~ ✅ `test_classifier_classifies_requirement` ve `test_ner_recognizes_entities` ile değiştirildi.
 4. ~~**🟡 Orta — `GapAnalyzer`:** `ConflictDetector` şablonunu kopyala~~ ✅ Issue #10 tamamlandı.
-5. ~~**🟡 Orta — `print()` → Loguru:** `core/preprocessor.py`~~ ✅ Issue #9 ile tamamlandı. `outputs/srs_generator.py` hâlâ bekliyor.
+5. ~~**🟡 Orta — `print()` → Loguru:** `core/preprocessor.py` ve `outputs/srs_generator.py`~~ ✅ Issue #9 + Issue #13 ile tamamen tamamlandı.
 6. **🟡 Orta — SRS dinamikleştirme:** `outputs/srs_generator.py::generate_srs()` → `generate_srs(report: AnalysisReport, output_path: Optional[Path] = None)` imzasına çevir, `outputs/generated/`'a yaz.
 7. **🟠 Zor — Cross-platform font:** `srs_generator.py` font logic'ini OS'a göre ayır (Windows: arial, Linux: DejaVuSans, macOS: HelveticaNeue).
-8. ~~**🟠 Zor — `RequirementImprover`:** Few-shot prompting ile muğlak cümleleri ölçülebilir hale çevir~~ ✅ Issue #14 tamamlandı. **Kalan:** `app.py::process_text()` entegrasyonu (bkz. Tuzak #15).
+8. ~~**🟠 Zor — `RequirementImprover`:** Few-shot prompting ile muğlak cümleleri ölçülebilir hale çevir~~ ✅ Issue #14 tamamlandı.
 9. ~~**🟠 Zor — `RequirementImprover` → `app.py` entegrasyonu**~~ ✅ `process_text()` içine bağlandı; muğlak kelime içeren gereksinimler iyileştiriliyor.
 10. **🔴 Çok Zor — ML classifier:** `scikit-learn` ile gerçek FR/NFR sınıflandırıcısı (Türkçe annotated dataset gerekir).
 

@@ -17,6 +17,7 @@ from core.models import AnalysisReport
 from core.preprocessor import TextPreprocessor
 from core.classifier import RequirementClassifier
 from core.ner import EntityRecognizer
+from core.priority_detector import PriorityDetector
 from modules.conflict_detector import ConflictDetector
 from modules.gap_analyzer import GapAnalyzer
 from modules.improver import RequirementImprover
@@ -45,6 +46,7 @@ def load_nlp_pipeline():
         "preprocessor": TextPreprocessor(),
         "classifier": RequirementClassifier(),
         "ner": EntityRecognizer(),
+        "priority_detector": PriorityDetector(),
     }
     # fmt: on
 
@@ -86,6 +88,8 @@ def process_text(raw_text: str) -> AnalysisReport:
         req = nlp_engines["classifier"].classify(req)
         # Varlık Çıkarımı (Aktör ve Nesneler)
         req = nlp_engines["ner"].recognize(req)
+        # Öncelik Belirleme (HIGH / MEDIUM / LOW)
+        req = nlp_engines["priority_detector"].detect(req)
 
     # 3. LLM Çelişki Analizi (ConflictDetector)
     conflicts = []

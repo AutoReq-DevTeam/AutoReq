@@ -38,6 +38,21 @@ Issue #9, Sprint 1-2'de hazırlanan LLM analiz modüllerini (ConflictDetector, G
 3. **AGENT_GUIDE.md Tuzak #7:** "Stanza model 2x yükleniyor" — Bu artık çözüldü, tek paylaşılan pipeline kullanılıyor.
 4. **AGENT_GUIDE.md Tuzak #8:** "`time.sleep(2)` app.py'da" — Bu artık kaldırıldı.
 
+## 8. Scrum Master İncelemesi & Yapılan İşlemler
+
+*İnceleyen:* Galip Efe Öncü (Scrum Master)  
+*Tarih:* 2026-04-24
+
+| Madde | Durum | Not |
+|-------|-------|-----|
+| Test güncellemeleri (`test_classifier_raises_not_implemented`, `test_ner_raises_not_implemented`) | ✅ **Tamamlandı** | `tests/test_core.py` zaten `test_classifier_classifies_requirement` ve `test_ner_recognizes_entities` gerçek davranış testleri içeriyor — stub testler kaldırılmış. |
+| AGENT_GUIDE.md §4.2 preprocessor processor güncellemesi | ✅ **Tamamlandı** | §4.2 paylaşılan pipeline (`tokenize,mwt,pos,lemma,ner`) ile güncel. |
+| AGENT_GUIDE.md §4.4 NER Loguru notu | ✅ **Tamamlandı** | §4.4 Tuzaklar bölümündeki `stdlib logging` notu ✅ işaretlendi; §4.12 "istisna" notu kaldırıldı. |
+| AGENT_GUIDE.md Tuzak #7 (Stanza 2x) | ✅ **Tamamlandı** | Tuzak tablosunda ~~üstü çizili~~ ve ✅. |
+| AGENT_GUIDE.md Tuzak #8 (time.sleep) | ✅ **Tamamlandı** | Tuzak tablosunda ~~üstü çizili~~ ve ✅. |
+
+---
+
 ## 7. Önerilen Commit Mesajı
 ```
 feat: integrate LLM modules into pipeline with error tolerance (#9)

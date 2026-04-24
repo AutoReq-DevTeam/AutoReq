@@ -14,12 +14,12 @@ kelimelerin köklerini (lemma) %90'ın üzerinde bir başarıyla tespit edebilir
 hatasız ayırt edilmesini sağlar.
 """
 
-from loguru import logger
+from modules.logging_utils import get_module_logger
 
 from .models import Requirement
 from .nlp_engine import get_shared_stanza_pipeline
 
-_log = logger.bind(module="ner")
+_log = get_module_logger("ner")
 
 
 class EntityRecognizer:

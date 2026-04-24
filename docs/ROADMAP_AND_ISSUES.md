@@ -261,27 +261,27 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 
 > 🎯 **Sprint Hedefi:** Çelişki/eksiklik analizi artık çalıştığına göre, sistemin değer üretme katmanını kapatmak: muğlak ifadelerin ölçülebilir kriterlere dönüştürülmesi (Improver), Agile User Story üretimi, BDD (Gherkin) test senaryoları ve UI'da bunların görselleştirilmesi.
 
-### 🔴 Issue #13: Logging Standardizasyonu ve Önceliklendirme Motoru
+### 🔴 Issue #13: Logging Standardizasyonu ve Önceliklendirme Motoru ✅
 *   **Sorumlu:** **Galip Efe Öncü**
 *   **Özet:** Tüm core modüllerini Loguru'ya geçirmek ve gereksinimlere otomatik öncelik atayan bir mekanizma kurmak.
 *   **User Story:** Bir Yazılım Mimarı olarak, projedeki tüm log çıktılarının tek tip (Loguru) olmasını ve gereksinimlerin kritiklik düzeyine göre HIGH/MEDIUM/LOW etiketlenmesini istiyorum, böylece geliştirme sürecinde hata izleme tutarlı olsun ve PM'ler önceliği görebilsin.
 *   **Kabul Kriterleri (AC):**
-    - [ ] `core/preprocessor.py` ve `outputs/srs_generator.py`'deki tüm `print()` çağrıları kalkmış olmalı.
-    - [ ] `core/ner.py` artık stdlib `logging` yerine Loguru `get_module_logger("ner")` kullanmalı.
-    - [ ] Her `Requirement.priority` alanı pipeline çıkışında `"HIGH"`, `"MEDIUM"` veya `"LOW"` ile dolu olmalı (None kalmamalı).
-    - [ ] "Kritik" / "güvenlik" / "must" gibi kelimeler içeren cümleler `HIGH` olmalı; nötr cümleler `MEDIUM`; iyi-olur ifadeleri `LOW`.
+    - [x] `core/preprocessor.py` ve `outputs/srs_generator.py`'deki tüm `print()` çağrıları kalkmış olmalı.
+    - [x] `core/ner.py` artık stdlib `logging` yerine Loguru `get_module_logger("ner")` kullanmalı.
+    - [x] Her `Requirement.priority` alanı pipeline çıkışında `"HIGH"`, `"MEDIUM"` veya `"LOW"` ile dolu olmalı (None kalmamalı).
+    - [x] "Kritik" / "güvenlik" / "must" gibi kelimeler içeren cümleler `HIGH` olmalı; nötr cümleler `MEDIUM`; iyi-olur ifadeleri `LOW`.
 *   **Görevler:**
-    - [ ] `core/preprocessor.py` içindeki "Stanza indiriliyor..." ve "Stanza indirildi." print'lerini `_log.info()` ile değiştir.
-    - [ ] `outputs/srs_generator.py` içindeki "[BAŞARILI] PDF oluşturuldu..." print'lerini Loguru'ya çevir.
-    - [ ] `core/ner.py` başında `from .logging_utils import get_module_logger` (veya `modules/logging_utils.py`'tan) ile Loguru'ya geç.
-    - [ ] `core/priority_detector.py` (yeni dosya) oluştur:
+    - [x] `core/preprocessor.py` içindeki "Stanza indiriliyor..." ve "Stanza indirildi." print'lerini `_log.info()` ile değiştir.
+    - [x] `outputs/srs_generator.py` içindeki "[BAŞARILI] PDF oluşturuldu..." print'lerini Loguru'ya çevir.
+    - [x] `core/ner.py` başında `from .logging_utils import get_module_logger` (veya `modules/logging_utils.py`'tan) ile Loguru'ya geç.
+    - [x] `core/priority_detector.py` (yeni dosya) oluştur:
         - `PriorityDetector.detect(req: Requirement) -> Requirement` — `req.priority` alanını doldurur.
         - HIGH keywords: `kritik, mutlaka, asla, şart, güvenlik, mahremiyet, must, zorunlu`
         - LOW keywords: `tercihen, isteğe bağlı, ileride, opsiyonel, nice-to-have`
         - Diğerleri MEDIUM.
-    - [ ] `app.py::process_text()` içine NER'den sonra `priority_detector.detect(req)` çağrısı ekle.
-    - [ ] `core/__init__.py`'a `PriorityDetector` export'u ekle.
-    - [ ] `tests/test_core.py::TestPriorityDetector` ile 3 senaryo testi yaz.
+    - [x] `app.py::process_text()` içine NER'den sonra `priority_detector.detect(req)` çağrısı ekle.
+    - [x] `core/__init__.py`'a `PriorityDetector` export'u ekle.
+    - [x] `tests/test_core.py::TestPriorityDetector` ile 3 senaryo testi yaz.
 
 ### 🟠 Issue #14: Muğlak Gereksinim İyileştirici (Improver) Modülü ✅
 *   **Sorumlu:** **Eren Eyyüpkoca**
@@ -374,24 +374,24 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
     - [ ] `tests/test_core.py::TestModels` — 5 yeni validation testi ekle.
     - [ ] `ui/dashboard.py`'a "Örnek Veri Yükle" dropdown'ı ekle (`data/samples/*.txt` içinden seçim).
 
-### 🟠 Issue #18: LLM Hata Toleransı, Önbellek ve Maliyet Takibi
+### 🟠 Issue #18: LLM Hata Toleransı, Önbellek ve Maliyet Takibi ✅
 *   **Sorumlu:** **Eren Eyyüpkoca**
 *   **Özet:** LLM çağrılarını cache'leyerek aynı metnin tekrar tekrar API'a gönderilmesini önlemek + retry/backoff + token tüketim takibi.
 *   **User Story:** Bir Sistem Tasarımcısı olarak, kullanıcı aynı metni 5 kez analiz ettiğinde Gemini API'a 5 kez para ödemek yerine, ikinci ve sonraki çağrıların yerel önbellekten gelmesini istiyorum; ayrıca her sprint sonunda kaç token harcandığını görebilmek istiyorum.
 *   **Kabul Kriterleri (AC):**
-    - [ ] Aynı `(system_prompt + user_prompt)` çiftiyle yapılan ikinci `LLMClient.chat()` çağrısı API'a gitmeden önbellekten dönmeli (en az 100x daha hızlı).
-    - [ ] Cache TTL yapılandırılabilir olmalı (default: 24 saat).
-    - [ ] Gemini 5xx veya rate-limit hatalarında **3 kez** exponential backoff (1s, 2s, 4s) ile retry yapılmalı.
-    - [ ] Her `LLMResponse.raw` içinde `usage_metadata` (input_tokens, output_tokens, estimated_cost_usd) bulunmalı.
-    - [ ] Sidebar'da "Bu oturumda harcanan: ~$0.XX (YYY token)" göstergesi olmalı.
+    - [x] Aynı `(system_prompt + user_prompt)` çiftiyle yapılan ikinci `LLMClient.chat()` çağrısı API'a gitmeden önbellekten dönmeli (en az 100x daha hızlı).
+    - [x] Cache TTL yapılandırılabilir olmalı (default: 24 saat).
+    - [x] Gemini 5xx veya rate-limit hatalarında **3 kez** exponential backoff (1s, 2s, 4s) ile retry yapılmalı.
+    - [x] Her `LLMResponse.raw` içinde `usage_metadata` (input_tokens, output_tokens, estimated_cost_usd) bulunmalı.
+    - [x] Sidebar'da "Bu oturumda harcanan: ~$0.XX (YYY token)" göstergesi olmalı.
 *   **Görevler:**
-    - [ ] `modules/llm_cache.py` oluştur: `diskcache` veya `functools.lru_cache` tabanlı, key = `hashlib.sha256(system+user)`.
-    - [ ] `LLMClient._chat_gemini` çağrısını cache wrapper ile sarmala; `bypass_cache=True` parametresi ile cache'i atlama opsiyonu.
-    - [ ] `tenacity` veya manuel `for attempt in range(3): try: ... except: time.sleep(2**attempt)` retry logic ekle.
-    - [ ] `LLMResponse.raw["usage"]` içine token sayıları + tahmini maliyet (Gemini Flash pricing).
-    - [ ] `st.session_state.total_tokens_used` ve `total_cost_usd` accumulator'ları.
-    - [ ] `ui/dashboard.py` sidebar'ına maliyet metric'ini ekle.
-    - [ ] `tests/test_modules.py::TestLLMClient::test_cache_hit` — aynı prompt 2x çağrılınca mock fonksiyon 1x çalışmalı.
+    - [x] `modules/llm_cache.py` oluştur: `diskcache` veya `functools.lru_cache` tabanlı, key = `hashlib.sha256(system+user)`.
+    - [x] `LLMClient._chat_gemini` çağrısını cache wrapper ile sarmala; `bypass_cache=True` parametresi ile cache'i atlama opsiyonu.
+    - [x] `tenacity` veya manuel `for attempt in range(3): try: ... except: time.sleep(2**attempt)` retry logic ekle.
+    - [x] `LLMResponse.raw["usage"]` içine token sayıları + tahmini maliyet (Gemini Flash pricing).
+    - [x] `st.session_state.total_tokens_used` ve `total_cost_usd` accumulator'ları.
+    - [x] `ui/dashboard.py` sidebar'ına maliyet metric'ini ekle.
+    - [x] `tests/test_modules.py::TestLLMClient::test_cache_hit` — aynı prompt 2x çağrılınca mock fonksiyon 1x çalışmalı.
 
 ### 🟡 Issue #19: Product Backlog Üreteci ve Çoklu Format Export
 *   **Sorumlu:** **Halise İncir**

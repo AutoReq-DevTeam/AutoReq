@@ -47,7 +47,7 @@ def render_results(report):
             for i, req in enumerate(requirements, start=1):
                 req_dict = getattr(req, "__dict__", {})
                 req_text = _safe_get(req_dict, "text", str(req))
-                req_type = _safe_get(req_dict, "type", "FUNCTIONAL")
+                req_type = _safe_get(req_dict, "req_type", "UNKNOWN")
                 req_id = _safe_get(req_dict, "id", f"REQ-{i}")
 
                 req_card(
