@@ -1,4 +1,4 @@
-# 🧭 AGENT_GUIDE — AutoReq için Yapay Zeka Modeli Öğreticisi
+﻿# 🧭 AGENT_GUIDE — AutoReq için Yapay Zeka Modeli Öğreticisi
 
 > **Bu dosyanın amacı:** Bir AI kodlama asistanının (özellikle düşük/orta kapasiteli modellerin) **tek bir dosyayı okuyarak** projenin tamamına hakim olmasını sağlamaktır. Kodu açmadan önce bu dosyayı sonuna kadar oku. Burada her modülün **ne yaptığı**, **hangi sözleşmelere uyduğu**, **hangi tuzakların bulunduğu** ve **bir özelliği değiştirirken nereyi değiştirmen gerektiği** anlatılır.
 >
@@ -116,8 +116,8 @@ AutoReq/
 │   └── test_outputs.py          ⚠ Tamamen TODO
 │
 ├── data/
-│   ├── samples/                 ⚠ BOŞ (README'de bahsedilen ornek_gereksinim.txt mevcut DEĞİL)
-│   └── templates/               ⚠ BOŞ (README'de bahsedilen requirement_template.json mevcut DEĞİL)
+│   ├── samples/                 ✅ Issue #17 ile dolduruldu: ornek_eticaret.txt, ornek_bankacilik.txt, ornek_egitim.txt, ornek_gereksinim.txt
+│   └── templates/               ✅ Issue #17 ile güncellendi: requirement_template.json → JSON Schema draft 2020-12
 │
 └── docs/
     ├── AGENT_GUIDE.md           ★ Bu dosya — AI ajan öğreticisi (Türkçe)
@@ -650,7 +650,7 @@ PR:        En az 1 reviewer onayı
 |---|---|---|
 | 1 | **Mutable default** | Dataclass'larda `= []` yazma. Her zaman `field(default_factory=list)`. |
 | 2 | ~~**ConflictDetector app.py'a bağlı değil**~~ ✅ | Issue #9 ile `ConflictDetector` ve `GapAnalyzer` `process_text()` içine bağlandı; try/except ile graceful degradation eklendi. |
-| 3 | **`req_type` vs `type` UI bug'ı** | `ui/results.py:_safe_get(req_dict, "type", ...)` → `"req_type"` olmalı. |
+| 3 | ~~**`req_type` vs `type` UI bug’ı**~~ ✅ | `ui/results.py` içindeki `getattr(req, "__dict__", {})` + `_safe_get(..., "type", ...)` kaldırıldı; `getattr(req, "req_type", "UNKNOWN")` ile değiştirildi (Issue #17). |
 | 4 | **SRS dinamik değil** | `outputs/srs_generator.py` her seferinde aynı statik PDF üretir. |
 | 5 | **SRS yanlış klasöre yazıyor** | `outputs/srs_taslak.pdf` üretiliyor; UI `outputs/generated/*.pdf` bekliyor. |
 | 6 | **Windows font hardcoding** | `C:\Windows\Fonts\arial.ttf` → cross-platform değil. Türkçe karakter bozulur. |
@@ -658,11 +658,11 @@ PR:        En az 1 reviewer onayı
 | 8 | ~~**`time.sleep(2)` `app.py`'da**~~ ✅ | Issue #9 ile kaldırıldı. |
 | 9 | ~~**Test stubları yanlış**~~ ✅ | `test_classifier_classifies_requirement` ve `test_ner_recognizes_entities` ile gerçek davranış testleri yazıldı. |
 | 10 | ~~**Logging hibrit kullanım**~~ ✅ | `core/ner.py` Issue #9 ile Loguru'ya geçirildi; Issue #13 ile `get_module_logger("ner")` pattern'ine tam uyum sağlandı. `outputs/srs_generator.py`'deki son `print()` de Issue #13'te Loguru'ya taşındı. Tüm modüller artık Loguru kullanıyor. |
-| 15 | ~~**`RequirementImprover` app.py'a bağlı değil**~~ ✅ | `process_text()` içine bağlandı. Her requirement için döngü + `LLMClientError` try/except + `report.improvements` doldurma eklendi. |
-| 11 | **`data/samples/` ve `data/templates/` boş** | Eski README'de bahsedilen dosyalar mevcut değil. |
+| 11 | ~~**`data/samples/` ve `data/templates/` boş**~~ ✅ | Issue #17 ile 3 domain örnek metni (`ornek_eticaret.txt`, `ornek_bankacilik.txt`, `ornek_egitim.txt`) ve JSON Schema draft 2020-12 template eklendi. |
 | 12 | **Türkçe-only** | Tüm prompt'lar, NLP, UI Türkçe. İngilizce desteği için ayrı sprint gerekir. |
 | 13 | ~~**LLM hatası UI'yı çökertir**~~ ✅ | `LLMClientError` ve `ValueError` `app.py::process_text()` içinde her LLM bloğu için ayrı `try/except` ile yakalanıyor; hata durumunda `[]` ile devam ediliyor. |
 | 14 | **Classifier yanlış-pozitif** | "kullanıcı" ve "şifre" NFR sayılır → çoğu fonksiyonel cümle yanlış sınıflanır. |
+| 15 | ~~**`RequirementImprover` app.py'a bağlı değil**~~ ✅ | `process_text()` içine bağlandı. Her requirement için döngü + `LLMClientError` try/except + `report.improvements` doldurma eklendi. |
 
 ---
 

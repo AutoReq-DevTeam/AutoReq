@@ -1,0 +1,29 @@
+Kullanıcı sisteme e-posta ve şifre ile giriş yapabilmelidir.
+Kullanıcı şifresini unuttuğunda e-posta ile sıfırlama bağlantısı alabilmelidir.
+Yeni kullanıcı ad, soyad, e-posta ve şifre girerek kayıt olabilmelidir.
+Kullanıcı profilindeki ad, soyad ve iletişim bilgilerini güncelleyebilmelidir.
+Admin paneli üzerinden kullanıcı hesapları yönetilebilmelidir.
+
+Kullanıcı ürünleri kategoriye, fiyata ve puana göre filtreleyebilmelidir.
+Ürün arama özelliği en az 3 karakter girildiğinde otomatik tamamlama önerileri sunmalıdır.
+Her ürün sayfasında stok durumu, fiyat, görseller ve kullanıcı yorumları görüntülenmelidir.
+Kullanıcı bir ürünü favorilere ekleyebilmeli ve favori listesini görebilmelidir.
+Ürün karşılaştırma özelliği en fazla 3 ürünü yan yana göstermelidir.
+
+Kullanıcı sepete ürün ekleyebilmeli, miktarı güncelleyebilmeli ve ürünü sepetten çıkarabilmelidir.
+Sepet içeriği kullanıcı oturumunu kapattıktan sonra da korunmalıdır.
+Sistem ödeme sırasında kredi kartı, banka transferi ve dijital cüzdan seçeneklerini desteklemelidir.
+Ödeme işlemi sırasında kullanıcının kart bilgileri şifreli iletilmelidir.
+Sipariş onaylandığında kullanıcıya e-posta ile fatura gönderilmelidir.
+
+Kullanıcı aktif ve geçmiş siparişlerini görüntüleyebilmelidir.
+Sipariş durumu (hazırlanıyor, kargoda, teslim edildi) gerçek zamanlı olarak takip edilebilmelidir.
+Kullanıcı teslim edilmiş siparişi 30 gün içinde iade talebinde bulunabilmelidir.
+İade onaylandığında ödeme tutarı 5 iş günü içinde iade edilmelidir.
+
+Sistem 1000 eşzamanlı kullanıcı ile kesintisiz çalışabilmelidir.
+Ürün arama sonuçları 2 saniye içinde döndürülmelidir.
+Sistem günlük en az %99,5 erişilebilirlik oranını sağlamalıdır.
+Ödeme sayfası SSL/TLS ile şifrelenmiş olmalıdır.
+Kullanıcı verileri KVKK uyumlu şekilde saklanmalı ve işlenmelidir.
+Mobil cihazlarda arayüz duyarlı (responsive) tasarımla görüntülenmelidir.

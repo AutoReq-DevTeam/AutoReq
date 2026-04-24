@@ -45,16 +45,11 @@ def render_results(report):
 
         if requirements:
             for i, req in enumerate(requirements, start=1):
-                req_dict = getattr(req, "__dict__", {})
-                req_text = _safe_get(req_dict, "text", str(req))
-                req_type = _safe_get(req_dict, "req_type", "UNKNOWN")
-                req_id = _safe_get(req_dict, "id", f"REQ-{i}")
+                req_text = getattr(req, "text", str(req))
+                req_type = getattr(req, "req_type", "UNKNOWN")
+                req_id = getattr(req, "id", f"REQ-{i}")
 
-                req_card(
-                    req_id=req_id,
-                    text=req_text,
-                    req_type=req_type,
-                )
+                req_card(req_id=req_id, text=req_text, req_type=req_type)
         else:
             st.warning("Henüz ayrıştırılmış gereksinim bulunamadı.")
 

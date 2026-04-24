@@ -1,0 +1,30 @@
+Müşteri TC kimlik numarası ve şifre ile internet bankacılığına giriş yapabilmelidir.
+İlk girişte müşteriye SMS ile tek kullanımlık doğrulama kodu gönderilmelidir.
+Üç hatalı giriş denemesinin ardından hesap geçici olarak kilitlenmelidir.
+Müşteri şifresini en az 8 karakter, büyük harf ve rakam içerecek şekilde belirleyebilmelidir.
+Oturum 10 dakika işlem yapılmazsa otomatik olarak sonlandırılmalıdır.
+
+Müşteri vadesiz ve vadeli hesaplarının bakiyesini ve hareketlerini görüntüleyebilmelidir.
+Hesap hareketleri tarih aralığı ve işlem türüne göre filtrelenebilmelidir.
+Müşteri son 12 aylık hesap ekstresi PDF formatında indirilebilmelidir.
+Sistem anlık döviz kurlarını en az 5 dakikada bir güncelleyebilmelidir.
+Müşteri döviz hesabı açabilmeli ve döviz alım-satım işlemi yapabilmelidir.
+
+Müşteri aynı bankadaki hesaplar arasında anlık EFT yapabilmelidir.
+Farklı bankalara havale işlemi iş günlerinde mesai saatlerinde gerçekleştirilebilmelidir.
+IBAN ile para transferi sırasında alıcı ismi doğrulaması yapılmalıdır.
+Tekrarlayan ödemeler için otomatik ödeme talimatı oluşturulabilmelidir.
+Transfer onayında SMS ile doğrulama kodu talep edilmelidir.
+
+Müşteri kredi başvurusunu internet bankacılığı üzerinden yapabilmelidir.
+Sistem müşteri kredi notunu sorgulayarak ön değerlendirme sonucunu 60 saniye içinde sunmalıdır.
+Onaylanan kredi tutarı 1 iş günü içinde müşterinin hesabına aktarılmalıdır.
+Kredi taksit ödemeleri otomatik olarak hesaptan tahsil edilmelidir.
+Gecikmeli ödeme durumunda müşteriye SMS ve e-posta bildirimi gönderilmelidir.
+
+Tüm finansal işlemler 256-bit AES şifreleme ile korunmalıdır.
+İşlem kayıtları yetkisiz erişime karşı korunmalı ve en az 10 yıl saklanmalıdır.
+Sistem BDDK ve PCI DSS düzenlemelerine uygun olmalıdır.
+Kritik sistem bileşenlerinde yedeklilik sağlanmalı ve yıllık kesinti süresi 4 saati geçmemelidir.
+Sistem anlık olarak 5000 eşzamanlı işlemi destekleyebilmelidir.
+Şüpheli işlem tespit edildiğinde otomatik alarm üretilmeli ve güvenlik ekibine bildirim yapılmalıdır.

@@ -1,0 +1,31 @@
+Öğrenci e-posta adresi ve şifre ile platforma giriş yapabilmelidir.
+Öğretmen kurumsal e-posta ile kayıt olup yönetici onayı bekleyebilmelidir.
+Yönetici kullanıcı hesaplarını aktif veya pasif duruma getirebilmelidir.
+Tek oturum açma (SSO) desteği ile kurumsal kimlik bilgileri kullanılabilmelidir.
+
+Öğrenci kendine atanmış aktif dersleri ve tamamlama oranlarını görebilmelidir.
+Ders içerikleri video, PDF doküman ve interaktif sınav bölümlerinden oluşabilmelidir.
+Öğrenci bir video izlerken ilerleyişi otomatik kaydedilmeli ve kaldığı yerden devam edebilmelidir.
+Öğretmen yeni ders oluşturabilmeli, bölüm ekleyebilmeli ve içerik yükleyebilmelidir.
+Yüklenen video dosyaları 720p ve 1080p çözünürlüklerde işlenip sunulabilmelidir.
+Ders materyalleri sürümlendirilmeli; eski sürümlere geri dönüş yapılabilmelidir.
+
+Öğrenci bir ders bölümünü tamamladıktan sonra sınava girebilmelidir.
+Sınav soruları çoktan seçmeli, doğru-yanlış ve kısa cevap formatlarında olabilmelidir.
+Sınav tamamlandığında öğrenci anında puan ve doğru cevapları görebilmelidir.
+Öğretmen sınav sonuçlarını sınıf bazında analiz edebilmeli ve rapor alabilmelidir.
+Öğrenci üç başarısız sınav denemesinin ardından tekrar deneyebilmek için 24 saat beklemelidir.
+
+Öğrenci bir dersi başarıyla tamamladığında dijital sertifika alabilmelidir.
+Sertifikalar PDF olarak indirilebilmeli ve doğrulama bağlantısı içermelidir.
+Öğrenci elde ettiği sertifikaları profil sayfasında sergileyebilmelidir.
+
+Öğretmen öğrenci ile birebir mesajlaşabilmelidir.
+Bir ders için tartışma forumu oluşturulabilmeli ve öğrenciler soru sorabilmelidir.
+Öğrenci canlı ders oturumuna katılabilmeli; sesini ve kamerasını açıp kapatabilmelidir.
+Canlı dersler kaydedilmeli ve sonradan izlenebilir hale getirilmelidir.
+
+Video içerikleri tercihen otomatik altyazı ile sunulabilmelidir.
+Platform ekran okuyucu araçlarıyla uyumlu (WCAG 2.1 AA) olmalıdır.
+Sistem aynı anda 2000 eşzamanlı öğrenciyi destekleyebilmelidir.
+Sayfa yükleme süresi 3 saniyenin altında kalmalıdır.
