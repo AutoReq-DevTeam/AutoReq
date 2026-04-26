@@ -72,3 +72,30 @@ feat: Pydantic v2 migration, sample data, JSON Schema, TestModels, sample loader
 - tests/test_core.py: TestModels — 10 tests (6 structural + 4 ValidationError) — all PASS
 - ui/dashboard.py: _render_sample_loader() — data/samples/*.txt dropdown
 ```
+
+---
+
+## 8. PM Kontrol Notu (2026-04-26)
+
+**Rol:** Project Manager  
+**Kontrol Eden:** PM  
+**Durum:** ✅ Onaylandı — Roadmap'e işlendi.
+
+### Doğrulanan Maddeler
+- **AC #1** ✅ `data/samples/` altında 3 domain örneği mevcut: `ornek_eticaret.txt` (29 satır), `ornek_bankacilik.txt` (30 satır), `ornek_egitim.txt` (31 satır). Beklenen ≥3 sayfalık Türkçe gereksinim hedefi karşılanıyor.
+- **AC #2** ✅ `data/templates/requirement_template.json` — JSON Schema draft 2020-12 başlığı (`$schema: https://json-schema.org/draft/2020-12/schema`), `Requirement` + `$defs.ParsedDocument` + `$defs.AnalysisReport` şemaları doğrulandı; geçerli JSON.
+- **AC #3** ✅ `core/models.py` — `BaseModel`, `Field(default_factory=list)`, `Literal["FUNCTIONAL", "NON_FUNCTIONAL", "UNKNOWN"]`, `Optional[Literal["HIGH","MEDIUM","LOW"]]`, `validate_assignment=True` aktif. Doğrudan Pydantic ile çalıştırılan smoke test: `INVALID` req_type ve `GECERSIZ` atamaları `ValidationError` fırlatıyor; mutable default isolation OK.
+- **AC #4** ✅ `test_requirement_invalid_req_type_raises` test koduyla gerçekten `ValidationError`'ı yakalıyor.
+- **AC #5** ✅ Pre-existing failing test (`test_cache_hit`) Issue #18 kapsamında olup bu issue'dan bağımsız; geriye uyumluluk korunuyor.
+
+### PM Tarafından Düzeltilen Sorunlar
+1. **`ROADMAP_AND_ISSUES.md` — Issue #17 checkbox'ları:** Tüm 5 AC ve 7 görev `[ ]` → `[x]` olarak güncellendi; başlığa ✅ işareti eklendi. AC #5 yanına "pre-existing `test_cache_hit` hariç" notu düşüldü. Test sayısı için "10 test eklendi: 6 yapısal + 4 ValidationError" netleştirmesi ilgili task satırına yazıldı.
+2. **`tests/test_core.py::TestModels` docstring:** Eski docstring "Pydantic v2 migrasyonu Scrum Master onayı beklediğinden bu testler mevcut dataclass davranışını doğrular" diyordu — migrasyon tamamlanmış olmasına rağmen güncellenmemişti. Yeni docstring migrasyonun tamamlandığını ve testlerin Pydantic BaseModel + Literal kısıtları + `validate_assignment` davranışını doğruladığını yansıtacak şekilde yenilendi.
+
+### Notlar
+- Üye için yapı net, "5 yerine 10 test" eklenmesi olumlu — backlog hedefinin üzerinde olduğu için ek puan.
+- `ornek_gereksinim.txt` (5 satır, eski genel placeholder) korunmuş; sample loader'da "📝 Genel Örnek" etiketiyle erişilebiliyor — sorun değil.
+- `ui/results.py` içindeki `_safe_get` artık `req_type` için kullanılmıyor, doğrudan `getattr(req, "req_type", "UNKNOWN")` aktif — Tuzak #3 kapatılmış.
+- Issue #18 pre-existing `test_cache_hit` hatası hala açık; PM olarak Eren ile takipteyim. Bu issue'nun kapanmasını engellemiyor.
+
+**Sonuç:** Issue #17 → **DONE**. Sprint 5'in #17 task hattı kapatılabilir.

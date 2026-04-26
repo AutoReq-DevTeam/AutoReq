@@ -81,11 +81,12 @@ def test_ner_recognizes_entities():
 
 
 class TestModels:
-    """core/models.py dataclass'larının yapısal ve varsayılan değer testleri.
+    """core/models.py Pydantic v2 BaseModel'lerinin yapısal ve doğrulama testleri.
 
-    Not: Issue #17 kapsamında Pydantic v2 migrasyonu Scrum Master onayı beklediğinden
-    bu testler mevcut dataclass davranışını doğrular. Migrasyon sonrasında aynı
-    testler Pydantic BaseModel üzerinde de PASS alması beklenmektedir.
+    Issue #17 kapsamında Pydantic v2 migrasyonu tamamlanmıştır (Scrum Master onaylı,
+    2026-04-24). Yapısal testler varsayılan değer ve mutable default izolasyonunu;
+    ValidationError testleri Literal alan kısıtlarını (req_type, priority) ve
+    validate_assignment davranışını doğrular.
     """
 
     def test_requirement_default_req_type(self) -> None:

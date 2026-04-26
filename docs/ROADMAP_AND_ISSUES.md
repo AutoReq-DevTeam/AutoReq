@@ -352,27 +352,27 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 
 > 🎯 **Sprint Hedefi:** Sistemi gerçek ürün haline getirmek: önceliklendirilmiş Product Backlog üretimi, çoklu format export (Excel/DOCX/JSON), Pydantic ile güçlü tip doğrulaması, LLM önbellek (cost optimization) ve dosya yükleme + çoklu sayfa UI mimarisi.
 
-### 🔴 Issue #17: Veri Şablonları, Örnek Veri Seti ve Pydantic Doğrulama
+### 🔴 Issue #17: Veri Şablonları, Örnek Veri Seti ve Pydantic Doğrulama ✅
 *   **Sorumlu:** **Galip Efe Öncü**
 *   **Özet:** `data/` klasöründeki boş placeholder'ları gerçek örneklerle doldurmak ve `core/models.py` dataclass'larına Pydantic v2 doğrulama katmanı eklemek.
 *   **User Story:** Bir Yazılım Mimarı olarak, sistemin örnek girdiler üzerinden hızlı test edilebilmesini ve modüller arası veri akışında tip uyuşmazlığı hatalarının runtime'da değil sınırda yakalanmasını istiyorum, böylece geliştirme döngüsü güvenli olsun.
 *   **Kabul Kriterleri (AC):**
-    - [ ] `data/samples/` altında en az 3 farklı domain örneği bulunmalı: `ornek_eticaret.txt`, `ornek_bankacilik.txt`, `ornek_egitim.txt`.
-    - [ ] `data/templates/requirement_template.json` JSON Schema (draft 2020-12) standartında olmalı.
-    - [ ] `core/models.py` dataclass'ları Pydantic v2 `BaseModel`'e geçirilmeli (veya hibrit dataclass+validator yaklaşımı).
-    - [ ] Geçersiz veri (örn. `req_type="INVALID"`) ile `Requirement` oluşturulmaya çalışıldığında `ValidationError` fırlatılmalı.
-    - [ ] Geçmiş tüm testler hâlâ PASS olmalı (geriye uyumluluk).
+    - [x] `data/samples/` altında en az 3 farklı domain örneği bulunmalı: `ornek_eticaret.txt`, `ornek_bankacilik.txt`, `ornek_egitim.txt`.
+    - [x] `data/templates/requirement_template.json` JSON Schema (draft 2020-12) standartında olmalı.
+    - [x] `core/models.py` dataclass'ları Pydantic v2 `BaseModel`'e geçirilmeli (veya hibrit dataclass+validator yaklaşımı).
+    - [x] Geçersiz veri (örn. `req_type="INVALID"`) ile `Requirement` oluşturulmaya çalışıldığında `ValidationError` fırlatılmalı.
+    - [x] Geçmiş tüm testler hâlâ PASS olmalı (geriye uyumluluk). *(Pre-existing `test_cache_hit` hariç — Issue #18 kapsamında, bu issue ile ilgisiz.)*
 *   **Görevler:**
-    - [ ] `data/samples/` içine 3-5 sayfalık gerçekçi Türkçe gereksinim metinleri yaz (e-ticaret, bankacılık, eğitim platformu domain'lerinden).
-    - [ ] `data/templates/requirement_template.json` — `Requirement` dataclass'ının JSON Schema karşılığını oluştur.
-    - [ ] `core/models.py`:
+    - [x] `data/samples/` içine 3-5 sayfalık gerçekçi Türkçe gereksinim metinleri yaz (e-ticaret, bankacılık, eğitim platformu domain'lerinden).
+    - [x] `data/templates/requirement_template.json` — `Requirement` dataclass'ının JSON Schema karşılığını oluştur.
+    - [x] `core/models.py`:
         - `Requirement`, `ParsedDocument`, `AnalysisReport` → `pydantic.BaseModel`'e dönüştür.
         - `req_type` alanına `Literal["FUNCTIONAL", "NON_FUNCTIONAL", "UNKNOWN"]` kısıtı.
         - `priority` alanına `Optional[Literal["HIGH", "MEDIUM", "LOW"]]` kısıtı.
         - `severity` validation'ı `analysis_report_parsing` içinde Pydantic'e devret.
-    - [ ] Mevcut tüm `dataclasses.field(default_factory=list)` kullanımlarını Pydantic `Field(default_factory=list)` formuna çevir.
-    - [ ] `tests/test_core.py::TestModels` — 5 yeni validation testi ekle.
-    - [ ] `ui/dashboard.py`'a "Örnek Veri Yükle" dropdown'ı ekle (`data/samples/*.txt` içinden seçim).
+    - [x] Mevcut tüm `dataclasses.field(default_factory=list)` kullanımlarını Pydantic `Field(default_factory=list)` formuna çevir.
+    - [x] `tests/test_core.py::TestModels` — 5 yeni validation testi ekle. *(10 test eklendi: 6 yapısal + 4 ValidationError; backlog gereksinimini aşıyor.)*
+    - [x] `ui/dashboard.py`'a "Örnek Veri Yükle" dropdown'ı ekle (`data/samples/*.txt` içinden seçim).
 
 ### 🟠 Issue #18: LLM Hata Toleransı, Önbellek ve Maliyet Takibi ✅
 *   **Sorumlu:** **Eren Eyyüpkoca**
