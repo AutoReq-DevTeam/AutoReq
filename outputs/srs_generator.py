@@ -523,7 +523,10 @@ def _render_conflicts_section(pdf: SRSGenerator, report: "AnalysisReport") -> No
         pdf.add_bullet_item(
             f"Çelişki #{idx} ({severity}) — Gereksinimler: {ids_str}"
         )
-        pdf.add_body_text(f"  Gerekçe: {reason[:300]}")
+        if reason: safe_reason = str(reason).replace("\n", " ").strip()
+    pdf.set_x(pdf.l_margin)
+    pdf.add_body_text(f"Gerekçe: {safe_reason[:300]}")
+    
 
     pdf.ln(4)
 
