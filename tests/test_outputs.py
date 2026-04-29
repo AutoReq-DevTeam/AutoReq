@@ -400,3 +400,235 @@ class TestBDDGenerator:
         assert "Feature:" in full_text
         assert "Given" in full_text
 
+
+# ---------------------------------------------------------------------------
+# BacklogGenerator Testleri (Issue #19)
+# ---------------------------------------------------------------------------
+
+
+class TestBacklogGenerator:
+    """BacklogGenerator.generate() için birim testler.
+
+    Tüm testler mock veya sahte AnalysisReport nesneleri kullanır;
+    gerçek LLM veya NLP çağrısı yapılmaz.
+    """
+
+    def _make_req(
+        self,
+        req_id: str = "REQ_001",
+        text: str = "Kullanıcı sisteme giriş yapabilmeli.",
+        req_type: str = "FUNCTIONAL",
+        priority: str = "HIGH",
+    ) -> Requirement:
+        return Requirement(
+            id=req_id,
+            text=text,
+            req_type=req_type,
+            priority=priority,
+        )
+
+    def test_priority_scoring_basic(self) -> None:
+        """HIGH + FUNCTIONAL gereksinim için beklenen skoru doğrular.
+
+        HIGH(3) x FUNCTIONAL(1.0) x no_conflict(1.0) = 3.0
+        """
+        from outputs.backlog_generator import BacklogGenerator
+
+        req = self._make_req(priority="HIGH", req_type="FUNCTIONAL")
+        report = _make_report(requirements=[req])
+
+        generator = BacklogGenerator()
+        backlog = generator.generate(report)
+
+        assert len(backlog) == 1
+        item = backlog[0]
+        assert item["req_id"] == "REQ_001"
+        assert item["priority_score"] == 3.0
+        assert item["type"] == "FUNCTIONAL"
+        assert isinstance(item["story_points"], int)
+        assert item["story_points"] >= 1
+
+    def test_conflict_penalty_applied(self) -> None:
+        """Celiski listesindeki req_id'ye x1.5 carpani uygulanmali.
+
+        MEDIUM(2) x FUNCTIONAL(1.0) x conflict(1.5) = 3.0
+        """
+        from outputs.backlog_generator import BacklogGenerator
+
+        req = self._make_req(req_id="REQ_001", priority="MEDIUM", req_type="FUNCTIONAL")
+        report = _make_report(requirements=[req])
+        report.conflicts.append(
+            {
+                "req_ids": ["REQ_001", "REQ_002"],
+                "conflict_type": "logic",
+                "reason": "Test celiskisi.",
+            }
+        )
+
+        generator = BacklogGenerator()
+        backlog = generator.generate(report)
+
+        assert len(backlog) == 1
+        assert backlog[0]["priority_score"] == 3.0
+
+    def test_nfr_weight_applied(self) -> None:
+        """NON_FUNCTIONAL gereksinimlere 0.7 agirlik uygulanmali.
+
+        HIGH(3) x NON_FUNCTIONAL(0.7) x no_conflict(1.0) = 2.1
+        """
+        from outputs.backlog_generator import BacklogGenerator
+
+        req = self._make_req(
+            req_id="REQ_001",
+            text="Sistem 200ms altinda yanit vermeli.",
+            req_type="NON_FUNCTIONAL",
+            priority="HIGH",
+        )
+        report = _make_report(requirements=[req])
+
+        generator = BacklogGenerator()
+        backlog = generator.generate(report)
+
+        assert len(backlog) == 1
+        assert abs(backlog[0]["priority_score"] - 2.1) < 0.01
+
+    def test_generate_returns_sorted_list(self) -> None:
+        """generate() sonucu priority_score'a gore azalan sirayla donmeli."""
+        from outputs.backlog_generator import BacklogGenerator
+
+        req_low = self._make_req(req_id="REQ_001", priority="LOW", req_type="FUNCTIONAL")
+        req_high = self._make_req(req_id="REQ_002", priority="HIGH", req_type="FUNCTIONAL")
+        req_medium = self._make_req(req_id="REQ_003", priority="MEDIUM", req_type="FUNCTIONAL")
+
+        report = _make_report(requirements=[req_low, req_high, req_medium])
+
+        generator = BacklogGenerator()
+        backlog = generator.generate(report)
+
+        scores = [item["priority_score"] for item in backlog]
+        assert scores == sorted(scores, reverse=True), (
+            "Backlog azalan priority_score sirasinda olmali."
+        )
+        assert backlog[0]["req_id"] == "REQ_002"
+        assert backlog[-1]["req_id"] == "REQ_001"
+
+    def test_empty_report_returns_empty(self) -> None:
+        """Gereksinim yoksa generate() bos liste dondürmeli."""
+        from outputs.backlog_generator import BacklogGenerator
+
+        doc = ParsedDocument(raw_text="", requirements=[], total_sentences=0)
+        report = AnalysisReport(parsed_doc=doc)
+
+        generator = BacklogGenerator()
+        backlog = generator.generate(report)
+
+        assert backlog == []
+
+    def test_backlog_item_structure(self) -> None:
+        """Her backlog ogesi req_id, title, priority_score, story_points, type, depends_on icermeli."""
+        from outputs.backlog_generator import BacklogGenerator
+
+        req = self._make_req()
+        report = _make_report(requirements=[req])
+
+        generator = BacklogGenerator()
+        backlog = generator.generate(report)
+
+        assert len(backlog) == 1
+        item = backlog[0]
+        required_keys = {"req_id", "title", "priority_score", "story_points", "type", "depends_on"}
+        assert required_keys.issubset(item.keys()), (
+            f"Backlog ogesinde eksik alanlar: {required_keys - item.keys()}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Exporters Testleri (Issue #19)
+# ---------------------------------------------------------------------------
+
+
+class TestExporters:
+    """outputs/exporters.py icin birim testler."""
+
+    def test_export_report_json_creates_file(self, tmp_path: Path) -> None:
+        """export_report_json() gecerli JSON dosyasi olusturmali."""
+        from outputs.exporters import export_report_json
+
+        report = _make_report()
+        output_path = tmp_path / "report.json"
+
+        result_path = export_report_json(report, path=output_path)
+
+        assert result_path.exists(), "JSON dosyasi olusturulmaliydi."
+        assert result_path.suffix == ".json"
+        assert result_path.stat().st_size > 0
+
+    def test_export_report_json_valid_json(self, tmp_path: Path) -> None:
+        """export_report_json() ciktisi gecerli JSON olmali ve req verilerini icermeli."""
+        import json as json_module
+
+        from outputs.exporters import export_report_json
+
+        req = _make_requirement(
+            req_id="REQ_001",
+            text="Kullanici sisteme giris yapabilmeli.",
+        )
+        report = _make_report(requirements=[req])
+        output_path = tmp_path / "report.json"
+
+        result_path = export_report_json(report, path=output_path)
+
+        content = result_path.read_text(encoding="utf-8")
+        data = json_module.loads(content)
+
+        assert "parsed_doc" in data
+        assert "conflicts" in data
+        assert "gaps" in data
+        assert "improvements" in data
+
+        reqs = data["parsed_doc"]["requirements"]
+        assert len(reqs) == 1
+        assert reqs[0]["id"] == "REQ_001"
+
+    def test_export_backlog_xlsx_creates_file(self, tmp_path: Path) -> None:
+        """export_backlog_xlsx() gecerli .xlsx dosyasi olusturmali."""
+        pytest.importorskip("openpyxl")
+        from outputs.exporters import export_backlog_xlsx
+
+        backlog = [
+            {
+                "req_id": "REQ_001",
+                "title": "Kullanici giris yapabilmeli.",
+                "priority_score": 3.0,
+                "story_points": 5,
+                "type": "FUNCTIONAL",
+                "depends_on": [],
+            }
+        ]
+        output_path = tmp_path / "backlog.xlsx"
+        result_path = export_backlog_xlsx(backlog, path=output_path)
+
+        assert result_path.exists(), ".xlsx dosyasi olusturulmaliydi."
+        assert result_path.suffix == ".xlsx"
+        assert result_path.stat().st_size > 0
+
+    def test_export_stories_docx_creates_file(self, tmp_path: Path) -> None:
+        """export_stories_docx() gecerli .docx dosyasi olusturmali."""
+        pytest.importorskip("docx")
+        from outputs.exporters import export_stories_docx
+
+        stories = [
+            {
+                "req_id": "REQ_001",
+                "role": "kullanici",
+                "goal": "sisteme giris yapabilmek",
+                "benefit": "hesabima erismek",
+                "acceptance_criteria": ["Giris formu calismali."],
+            }
+        ]
+        output_path = tmp_path / "stories.docx"
+        result_path = export_stories_docx(stories, path=output_path)
+
+        assert result_path.exists(), ".docx dosyasi olusturulmaliydi."
+        assert result_path.suffix == ".docx"
+        assert result_path.stat().st_size > 0
