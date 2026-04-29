@@ -1,24 +1,202 @@
 {
-  "requirement_areas": [
-    {
-      "area": "Kimlik Doğrulama",
-      "required": ["Kullanıcı Girişi", "Kullanıcı Çıkışı"],
-      "suggested": ["Şifre Sıfırlama", "İki Faktörlü Doğrulama", "Oturum Zaman Aşımı"]
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://autoreq.dev/schemas/requirement.schema.json",
+  "title": "Requirement",
+  "description": "AutoReq sisteminde tek bir gereksinim cümlesini temsil eden veri şeması. core/models.py::Requirement dataclass'ının JSON Schema karşılığıdır.",
+  "type": "object",
+  "required": ["id", "text"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Gereksinim benzersiz tanımlayıcısı. REQ_NNN formatında, sıfır dolgulu 3 haneli.",
+      "pattern": "^REQ_[0-9]{3,}$",
+      "examples": ["REQ_001", "REQ_042"]
     },
-    {
-      "area": "Kullanıcı Yönetimi",
-      "required": ["Kullanıcı Kaydı"],
-      "suggested": ["Profil Güncelleme", "Hesap Silme", "Rol Yönetimi"]
+    "text": {
+      "type": "string",
+      "description": "Gereksinim cümlesinin orijinal hali.",
+      "minLength": 1
     },
-    {
-      "area": "Performans",
-      "required": [],
-      "suggested": ["Yanıt Süresi Limiti", "Eşzamanlı Kullanıcı Kapasitesi", "Yük Testi Eşiği"]
+    "req_type": {
+      "type": "string",
+      "description": "Gereksinim türü: Fonksiyonel, Fonksiyonel Olmayan veya Bilinmiyor.",
+      "enum": ["FUNCTIONAL", "NON_FUNCTIONAL", "UNKNOWN"],
+      "default": "UNKNOWN"
     },
-    {
-      "area": "Güvenlik",
-      "required": [],
-      "suggested": ["Veri Şifreleme", "SQL Injection Koruması", "XSS Koruması"]
+    "actors": {
+      "type": "array",
+      "description": "NER ile tespit edilen aktörlerin lemma listesi.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "examples": [["kullanıcı", "sistem"], ["admin"]]
+    },
+    "objects": {
+      "type": "array",
+      "description": "NER ile tespit edilen nesnelerin lemma listesi.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "examples": [["şifre", "form"], ["rapor", "hesap"]]
+    },
+    "priority": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": ["HIGH", "MEDIUM", "LOW"],
+          "description": "Gereksinim önceliği. PriorityDetector tarafından atanır."
+        },
+        {
+          "type": "null",
+          "description": "Henüz öncelik atanmamış."
+        }
+      ],
+      "default": null
+    },
+    "original_text": {
+      "type": "string",
+      "description": "Ön işlemden geçmemiş orijinal ham metin. Şu an preprocessor tarafından doldurulmamaktadır.",
+      "default": ""
+    },
+    "tokens": {
+      "type": "array",
+      "description": "Stopword'siz, küçük harfli kelimeler.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "lemmas": {
+      "type": "array",
+      "description": "Stanza ile üretilmiş kelime kökleri (lemma).",
+      "items": {
+        "type": "string"
+      }
+    },
+    "pos_tags": {
+      "type": "array",
+      "description": "Universal POS (UPOS) etiketleri.",
+      "items": {
+        "type": "string",
+        "enum": ["NOUN", "VERB", "ADJ", "ADV", "PRON", "DET", "ADP", "NUM", "PUNCT", "CCONJ", "SCONJ", "AUX", "PROPN", "INTJ", "SYM", "X"]
+      }
+    },
+    "source_index": {
+      "type": "integer",
+      "description": "Kaynak metin içindeki cümle sıra numarası (0-tabanlı).",
+      "minimum": 0,
+      "default": 0
     }
-  ]
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "ParsedDocument": {
+      "title": "ParsedDocument",
+      "description": "Üye 1 → Üye 2 arası veri transferi. Ham metni cümlelere ayırıp her cümleden bir Requirement oluşturur.",
+      "type": "object",
+      "required": ["raw_text"],
+      "properties": {
+        "raw_text": {
+          "type": "string",
+          "description": "Kullanıcının girdiği orijinal ham metin."
+        },
+        "requirements": {
+          "type": "array",
+          "description": "Cümle başına bir Requirement nesnesi.",
+          "items": {
+            "$ref": "#"
+          }
+        },
+        "language": {
+          "type": "string",
+          "description": "Metin dili kodu.",
+          "default": "tr"
+        },
+        "total_sentences": {
+          "type": "integer",
+          "description": "Stanza'nın tespit ettiği toplam cümle sayısı.",
+          "minimum": 0,
+          "default": 0
+        },
+        "created_at": {
+          "type": "string",
+          "description": "İşleme zaman damgası (ISO 8601 formatında).",
+          "format": "date-time"
+        }
+      }
+    },
+    "AnalysisReport": {
+      "title": "AnalysisReport",
+      "description": "Üye 2 → Üye 3 arası veri transferi. LLM analiz sonuçlarını tutar.",
+      "type": "object",
+      "required": ["parsed_doc"],
+      "properties": {
+        "parsed_doc": {
+          "$ref": "#/$defs/ParsedDocument"
+        },
+        "conflicts": {
+          "type": "array",
+          "description": "Tespit edilen çelişkiler listesi.",
+          "items": {
+            "type": "object",
+            "required": ["req_ids", "conflict_type", "reason"],
+            "properties": {
+              "req_ids": {
+                "type": "array",
+                "items": { "type": "string" },
+                "minItems": 2
+              },
+              "conflict_type": {
+                "type": "string",
+                "enum": ["logic", "business_rule", "performance", "security", "usability", "other"]
+              },
+              "reason": {
+                "type": "string"
+              },
+              "id": { "type": "string" },
+              "severity": {
+                "type": "string",
+                "enum": ["high", "medium", "low"]
+              },
+              "suggested_resolution": { "type": "string" }
+            }
+          }
+        },
+        "gaps": {
+          "type": "array",
+          "description": "Tespit edilen eksiklikler listesi.",
+          "items": {
+            "type": "object",
+            "required": ["missing_area", "suggestion", "severity"],
+            "properties": {
+              "missing_area": { "type": "string" },
+              "suggestion": { "type": "string" },
+              "severity": {
+                "type": "string",
+                "enum": ["high", "medium", "low"]
+              },
+              "id": { "type": "string" },
+              "scenario": { "type": "string" },
+              "related_standard_step": { "type": "string" },
+              "rationale": { "type": "string" }
+            }
+          }
+        },
+        "improvements": {
+          "type": "array",
+          "description": "Muğlak gereksinim iyileştirme önerileri listesi.",
+          "items": {
+            "type": "object",
+            "required": ["original", "improved", "reason"],
+            "properties": {
+              "original": { "type": "string" },
+              "improved": { "type": "string" },
+              "reason": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
 }

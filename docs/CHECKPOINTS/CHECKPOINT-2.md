@@ -93,6 +93,16 @@ style: |
 
 ---
 
+## 🎯 Proje Genel Yol Haritası ve Tamamlanan Aşamalar
+
+**Ana Hedef:** Projenin toplam **6 Sprint (6 Hafta)** içerisinde uçtan uca tamamlanarak nihai ürüne dönüştürülmesi hedeflenmektedir.
+
+**Mevcut Durum ve Yapılan Sprintler:**
+*   **Sprint 1 (Tamamlanmış İşler):** Proje temel iskeleti (modeller), LLM entegrasyonu, statik PDF raporlama altyapısı ve temel Streamlit arayüzü kuruldu.
+*   **Sprint 2 (Mevcut Checkpoint Hedefi):** Doğal Dil İşleme (NLP) motorunun devresi (NER, Sınıflandırma), LLM ile çelişki tespiti ve dinamik dashboard entegrasyonuna odaklanıldı.
+
+---
+
 ## 1. Sprint Hedefi ve Amaçlar (Sprint Goal)
 
 **Hedef Özeti:**

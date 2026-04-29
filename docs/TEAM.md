@@ -2,6 +2,8 @@
 
 > **Metodoloji:** Scrum | **Sprint Süresi:** 2 hafta | **Ekip:** 4 Kişi  
 > Her üye kendi modülünden tam sorumludur. Modüller arası iletişim `interface` katmanı üzerinden sağlanır.
+>
+> 📌 Projeye yeni katılan ekip üyeleri ve AI ajanları için kapsamlı bir öğretici: [`AGENT_GUIDE.md`](./AGENT_GUIDE.md) — kodu okumadan tüm projeye hakim olabilmen için tek dosyalık rehber.
 
 ---
 
@@ -59,10 +61,10 @@ Giriş                     : Ham string (müşteri metni)
 
 ### Teknik Detaylar
 ```
-Kullanılacak Kütüphaneler : LangChain, OpenAI/Ollama API, Stanza, pydantic
+Kullanılacak Kütüphaneler : google-generativeai (Gemini), Loguru
 Giriş                     : ParsedDocument (Üye 1'den gelir)
 Çıkış                     : AnalysisReport dataclass (Mantıksal ve anlamsal analiz eklenmiş)
-Şablonlar & Promptlar     : data/templates/ ve prompts/ dizinlerinden okunur
+Şablonlar & Promptlar     : modules/*_prompts.py dosyalarında (conflict, gap, improver)
 ```
 
 ### Kabul Kriterleri

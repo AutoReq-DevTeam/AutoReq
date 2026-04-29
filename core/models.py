@@ -1,58 +1,56 @@
 """
-core/models.py — Ortak Veri Modelleri (Dataclasses)
+core/models.py — Ortak Veri Modelleri (Pydantic v2 BaseModel)
 Sahibi: Üye 1  |  Tüm üyeler bu dosyayı okur, değiştirmek için PR açılır.
 
 Bu dosyadaki modeller, modüller arası veri akışını standartlaştırır.
+Pydantic v2 kullanılır; geçersiz alan değerleri ValidationError fırlatır.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Literal, Optional
+
+from pydantic import BaseModel, Field
 
 
-@dataclass
-class Requirement:
+class Requirement(BaseModel):
     """Tek bir gereksinim cümlesini temsil eder.
-    Mimari Karar: Modüller arası veri transferinde (Data Transfer Object) standart Python 
-    sınıfları yerine '@dataclass' kullanılarak __init__, __repr__ metotları otomatik 
-    yönetilmiş ve Type Hinting aracılığıyla veri bütünlüğü (Data Integrity) güvence altına alınmıştır.
+
+    Pydantic v2 BaseModel kullanılarak tip doğrulaması sağlanmıştır.
+    validate_assignment=True ile in-place atamalar da doğrulanır
+    (req.req_type = 'FUNCTIONAL' gibi kullanımlar güvenlidir).
     """
+
+    model_config = {"validate_assignment": True}
 
     id: str
     text: str
-    req_type: str = "UNKNOWN"  # "FUNCTIONAL" | "NON_FUNCTIONAL" | "UNKNOWN"
-    
-    # Neden default_factory=list? Eğer list = [] deseydik, Python'da listeler mutable (değiştirilebilir) 
-    # olduğu için tüm Requirement nesneleri aynı hafızadaki listeyi (referansı) paylaşırdı.
-    # default_factory her yeni nesnede bellekte SIFIRDAN bir liste yaratmasını garanti eder.
-    actors: List[str] = field(default_factory=list)  
-    objects: List[str] = field(default_factory=list)
-    priority: Optional[str] = None  # "HIGH" | "MEDIUM" | "LOW"
-
-    original_text: str = ""  # Orijinal metin
-    tokens: List[str] = field(default_factory=list)  # Token'lar
-    lemmas: List[str] = field(default_factory=list)  # Lemmalar
-    pos_tags: List[str] = field(default_factory=list)  # POS etiketleri
-    source_index: int = 0  # Metin içindeki cümle sıra numarası (0, 1, 2...)
+    req_type: Literal["FUNCTIONAL", "NON_FUNCTIONAL", "UNKNOWN"] = "UNKNOWN"
+    actors: List[str] = Field(default_factory=list)
+    objects: List[str] = Field(default_factory=list)
+    priority: Optional[Literal["HIGH", "MEDIUM", "LOW"]] = None
+    original_text: str = ""
+    tokens: List[str] = Field(default_factory=list)
+    lemmas: List[str] = Field(default_factory=list)
+    pos_tags: List[str] = Field(default_factory=list)
+    source_index: int = 0
 
 
-@dataclass
-class ParsedDocument:
+class ParsedDocument(BaseModel):
     """Üye 1 → Üye 2 arası veri transferi.
-    Ham metni cümlelere ayırır ve her cümleden bir requirement oluşturup bu sınıfa koyar
+
+    Ham metni cümlelere ayırır ve her cümleden bir Requirement oluşturup tutar.
     """
 
     raw_text: str
-    requirements: List[Requirement] = field(default_factory=list)
+    requirements: List[Requirement] = Field(default_factory=list)
     language: str = "tr"
+    total_sentences: int = 0
+    created_at: str = Field(default_factory=lambda: datetime.now().isoformat())
 
-    total_sentences: int = 0  # Toplam cümle sayısı
-    created_at: str = field(default_factory=lambda: datetime.now().isoformat())  # İşleme zamanı
 
-
-@dataclass
-class AnalysisReport:
+class AnalysisReport(BaseModel):
     """Üye 2 → Üye 3 arası veri transferi.
+
     LLM analiz sonuçlarını tutar.
 
     conflicts öğeleri (modules.analysis_report_parsing ile üretilir): en az
@@ -60,9 +58,11 @@ class AnalysisReport:
 
     gaps öğeleri: en az missing_area, suggestion, severity; isteğe bağlı id,
     scenario, related_standard_step, rationale.
+
+    improvements öğeleri: original, improved, reason.
     """
 
     parsed_doc: ParsedDocument
-    conflicts: List[dict] = field(default_factory=list)  # Çelişkiler
-    gaps: List[dict] = field(default_factory=list)  # Eksikler
-    improvements: List[dict] = field(default_factory=list)  # İyileştirmeler
+    conflicts: List[dict] = Field(default_factory=list)
+    gaps: List[dict] = Field(default_factory=list)
+    improvements: List[dict] = Field(default_factory=list)
