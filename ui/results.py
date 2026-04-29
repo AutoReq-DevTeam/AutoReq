@@ -11,7 +11,13 @@ from pathlib import Path
 
 import streamlit as st
 
-from ui.components import download_button, req_card
+from ui.components import (
+    conflict_card,
+    download_button,
+    gap_card,
+    improvement_diff_card,
+    req_card,
+)
 
 
 def _safe_get(dictionary, key, default="-"):
@@ -28,6 +34,9 @@ def render_results(report):
         report: AnalysisReport nesnesi
     """
     requirements = report.parsed_doc.requirements
+    conflicts = getattr(report, "conflicts", [])
+    gaps = getattr(report, "gaps", [])
+    improvements = getattr(report, "improvements", [])
 
     st.header("📊 Analiz Sonuçları")
 
@@ -49,20 +58,26 @@ def render_results(report):
                 req_type = getattr(req, "req_type", "UNKNOWN")
                 req_id = getattr(req, "id", f"REQ-{i}")
 
+                st.markdown(f"<a id='{req_id}'></a>", unsafe_allow_html=True)
                 req_card(req_id=req_id, text=req_text, req_type=req_type)
         else:
             st.warning("Henüz ayrıştırılmış gereksinim bulunamadı.")
 
     with tab2:
+        metric_col1, metric_col2 = st.columns(2)
+
+        with metric_col1:
+            st.metric("Toplam Çelişki", len(conflicts))
+
+        with metric_col2:
+            st.metric("Toplam Eksiklik", len(gaps))
+
         st.subheader("Çelişkiler")
 
-        if report.conflicts:
-            for i, conflict in enumerate(report.conflicts, start=1):
-                st.markdown(f"### Çelişki {i}")
-
+        if conflicts:
+            for conflict in conflicts:
                 if isinstance(conflict, dict):
-                    for key, value in conflict.items():
-                        st.write(f"**{key}:** {value}")
+                    conflict_card(conflict)
                 else:
                     st.write(conflict)
         else:
@@ -70,28 +85,34 @@ def render_results(report):
 
         st.subheader("Eksiklikler")
 
-        if report.gaps:
-            for i, gap in enumerate(report.gaps, start=1):
-                st.markdown(f"### Eksiklik {i}")
+        if gaps:
+            grouped_gaps = {}
 
+            for gap in gaps:
                 if isinstance(gap, dict):
-                    for key, value in gap.items():
-                        st.write(f"**{key}:** {value}")
+                    scenario = gap.get("scenario", "unknown")
+                    grouped_gaps.setdefault(scenario, []).append(gap)
                 else:
-                    st.write(gap)
+                    grouped_gaps.setdefault("unknown", []).append(gap)
+
+            for scenario, scenario_gaps in grouped_gaps.items():
+                st.markdown(f"### 📂 {scenario}")
+
+                for gap in scenario_gaps:
+                    if isinstance(gap, dict):
+                        gap_card(gap)
+                    else:
+                        st.write(gap)
         else:
             st.info("Eksiklik bulunamadı.")
 
     with tab3:
         st.subheader("İyileştirme Önerileri")
 
-        if report.improvements:
-            for i, improvement in enumerate(report.improvements, start=1):
-                st.markdown(f"### Öneri {i}")
-
+        if improvements:
+            for improvement in improvements:
                 if isinstance(improvement, dict):
-                    for key, value in improvement.items():
-                        st.write(f"**{key}:** {value}")
+                    improvement_diff_card(improvement)
                 else:
                     st.write(improvement)
         else:

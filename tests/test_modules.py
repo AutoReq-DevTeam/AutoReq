@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from core.models import ParsedDocument, Requirement
+from modules.conflict_detector import ConflictDetector
 from modules.gap_analyzer import GapAnalyzer
 from modules.improver import RequirementImprover
 from modules.llm_cache import LLMPromptCache
@@ -17,9 +18,51 @@ from modules.llm_client import LLMClient, LLMResponse
 
 
 class TestConflictDetector:
-    def test_detects_contradiction(self):
-        # TODO: Üye 4 — Zıt ifadeler içeren bir belgede çelişki tespit edilmeli
-        pass
+    def test_detects_contradiction(self) -> None:
+        """Mock LLM: zıt gereksinimler için çelişki satırı üretilmeli."""
+        payload_json = """
+        {
+          "conflicts": [
+            {
+              "id": "C1",
+              "req_ids": ["REQ_001", "REQ_002"],
+              "conflict_type": "logic",
+              "severity": "high",
+              "reason": "Bir gereksinim sistemin açık olmasını isterken diğeri kapalı olmasını söylüyor."
+            }
+          ],
+          "meta": { "confidence": "high", "total_conflicts": 1 }
+        }
+        """
+        mock_client = MagicMock()
+        mock_client.chat.return_value = LLMResponse(content=payload_json, raw={})
+
+        doc = ParsedDocument(
+            raw_text="Sistem açık olmalı. Sistem kapalı olmalı.",
+            requirements=[
+                Requirement(
+                    id="REQ_001",
+                    text="Sistem açık olmalı.",
+                    req_type="FUNCTIONAL",
+                ),
+                Requirement(
+                    id="REQ_002",
+                    text="Sistem kapalı olmalı.",
+                    req_type="FUNCTIONAL",
+                ),
+            ],
+            total_sentences=2,
+        ) 
+        detector = ConflictDetector(llm_client=mock_client)
+        result = detector.detect(doc)
+
+        assert isinstance(result, list)
+        assert len(result) >= 1
+        assert "req_ids" in result[0]
+        assert isinstance(result[0]["req_ids"], list)
+        assert result[0]["severity"] in ("high", "medium", "low")
+        assert result[0]["reason"]
+        mock_client.chat.assert_called_once()
 
 
 class TestGapAnalyzer:
