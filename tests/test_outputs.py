@@ -16,6 +16,13 @@ import pytest
 
 from core.models import AnalysisReport, ParsedDocument, Requirement
 
+# pypdf isteğe bağlı; kurulu değilse ilgili testler atlanır
+try:
+    from pypdf import PdfReader as _PdfReader  # type: ignore
+    _PYPDF_AVAILABLE = True
+except ImportError:
+    _PYPDF_AVAILABLE = False
+
 
 # ---------------------------------------------------------------------------
 # Yardımcı Fabrikalar
@@ -208,6 +215,71 @@ class TestSRSGenerator:
         generated_dir = tmp_path / "generated"
         assert generated_dir.exists()
         assert result_path.parent == generated_dir
+
+    @pytest.mark.skipif(not _PYPDF_AVAILABLE, reason="pypdf kurulu değil")
+    def test_generate_srs_functional_requirements_in_pdf(self, tmp_path: Path) -> None:
+        """Dinamik SRS PDF'inde FUNCTIONAL gereksinimlerin metin olarak bulunduğunu doğrular.
+
+        Issue #11 AC: Fonksiyonel Gereksinimler bölümü gerçek req_type==FUNCTIONAL
+        maddeleri içermeli.
+        """
+        from outputs.srs_generator import generate_srs
+
+        func_req = _make_requirement(
+            req_id="REQ_001",
+            text="Kullanıcı sisteme giriş yapabilmeli.",
+            req_type="FUNCTIONAL",
+        )
+        nfr_req = _make_requirement(
+            req_id="REQ_002",
+            text="Sistem 200ms altında yanıt vermeli.",
+            req_type="NON_FUNCTIONAL",
+        )
+        report = _make_report(requirements=[func_req, nfr_req])
+        output_path = tmp_path / "dynamic_srs.pdf"
+
+        result_path = generate_srs(report=report, output_path=output_path)
+
+        assert result_path.exists(), "PDF dosyası oluşturulmalıydı."
+        reader = _PdfReader(str(result_path))
+        full_text = "".join(page.extract_text() or "" for page in reader.pages)
+
+        # Fonksiyonel bölüm başlığı
+        assert "Fonksiyonel Gereksinimler" in full_text, (
+            "PDF 'Fonksiyonel Gereksinimler' başlığını içermeli."
+        )
+        # REQ_001 ID'si tabloda görünmeli
+        assert "REQ_001" in full_text, "FUNCTIONAL gereksinim ID'si PDF'de bulunmalı."
+
+    @pytest.mark.skipif(not _PYPDF_AVAILABLE, reason="pypdf kurulu değil")
+    def test_generate_srs_includes_conflicts_section(self, tmp_path: Path) -> None:
+        """Çelişki varsa SRS PDF'inde Tespit Edilen Çelişkiler bölümü yer almalı.
+
+        Issue #11 AC: 'Tespit Edilen Çelişkiler' bölümü report.conflicts boş değilse
+        her madde gerekçesiyle yazılmalı.
+        """
+        from outputs.srs_generator import generate_srs
+
+        report = _make_report()
+        # Manuel olarak çelişki ekle
+        report.conflicts.append(
+            {
+                "req_ids": ["REQ_001", "REQ_002"],
+                "conflict_type": "logic",
+                "reason": "Test çelişki gerekçesi.",
+                "severity": "high",
+            }
+        )
+        output_path = tmp_path / "conflicts_srs.pdf"
+
+        result_path = generate_srs(report=report, output_path=output_path)
+
+        reader = _PdfReader(str(result_path))
+        full_text = "".join(page.extract_text() or "" for page in reader.pages)
+
+        assert "Tespit Edilen" in full_text, (
+            "Çelişki bölümü başlığı PDF'de bulunmalı."
+        )
 
 
 # ---------------------------------------------------------------------------
