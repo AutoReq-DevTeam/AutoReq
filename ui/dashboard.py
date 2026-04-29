@@ -34,10 +34,7 @@ def _render_sample_loader() -> None:
     if not sample_files:
         return
 
-    options = {
-        _SAMPLE_LABELS.get(f.name, f"📄 {f.stem}"): f
-        for f in sample_files
-    }
+    options = {_SAMPLE_LABELS.get(f.name, f"📄 {f.stem}"): f for f in sample_files}
     label_list = ["— Örnek veri seç —"] + list(options.keys())
 
     selected_label = st.selectbox(
@@ -78,6 +75,7 @@ def render_dashboard():
 
     if "total_tokens_used" not in st.session_state:
         st.session_state.total_tokens_used = 0
+
     if "total_cost_usd" not in st.session_state:
         st.session_state.total_cost_usd = 0.0
 
@@ -86,11 +84,10 @@ def render_dashboard():
     st.sidebar.markdown("**Arayüz:** Hazır")
     st.sidebar.markdown("**Testler:** Çalışıyor")
 
-    # API Key durumu göstergesi
     if os.getenv("GEMINI_API_KEY"):
-        st.sidebar.markdown("✅ **API Key:** OK")
+        st.sidebar.success("✅ API Key OK")
     else:
-        st.sidebar.warning("❌ API Key tanımsız — LLM analizi devre dışı")
+        st.sidebar.warning("❌ API Key tanımsız")
 
     session_tokens = int(st.session_state.total_tokens_used)
     session_cost = float(st.session_state.total_cost_usd)

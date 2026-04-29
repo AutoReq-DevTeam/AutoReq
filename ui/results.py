@@ -14,12 +14,6 @@ import streamlit as st
 from ui.components import download_button, req_card
 
 
-def _safe_get(dictionary, key, default="-"):
-    if isinstance(dictionary, dict):
-        return dictionary.get(key, default)
-    return default
-
-
 def render_results(report):
     """
     Analiz raporunu sekmeli panelde görüntüler.
