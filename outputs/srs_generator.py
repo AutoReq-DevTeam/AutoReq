@@ -9,14 +9,20 @@ AnalysisReport nesnesinden gelen gerçek veriyi ISO/IEC/IEEE 29148 standardında
 Kullanım:
     # Streamlit/app.py içinden:
     from outputs.srs_generator import generate_srs
-    path = generate_srs(report)           # outputs/generated/srs_<timestamp>.pdf
-    path = generate_srs(report, my_path)  # özel yol
+    path = generate_srs(report)                         # outputs/generated/srs_<timestamp>.pdf
+    path = generate_srs(report, my_path)                # özel yol
+    path = generate_srs(report, draft_watermark=True)   # DRAFT filigranı ile
 
     # CLI olarak (eski davranış — boş demo PDF):
     python outputs/srs_generator.py
 
 Bilinen Sınırlamalar:
     - os.startfile() yalnızca Windows'ta çalışır; diğer platformlarda sessizce atlanır.
+
+Değişiklikler (Issue #23):
+    - PDF metadata (title, author, subject, creator, creation_date) eklendi.
+    - Opsiyonel draft_watermark parametresi eklendi.
+    - outputs/fonts/ dizininden DejaVuSans.ttf yükleme desteği eklendi.
 """
 
 from __future__ import annotations
@@ -94,6 +100,23 @@ def _resolve_turkish_font_path() -> tuple[Optional[Path], Optional[Path]]:
 
 
 # ---------------------------------------------------------------------------
+# Fonts dizininden font yükleme (Issue #23)
+# ---------------------------------------------------------------------------
+
+_FONTS_DIR: Path = Path(__file__).parent / "fonts"
+
+# outputs/fonts/ dizinindeki adayları BAŞA ekle (paketlenmiş fontlar öncelikli)
+_BUNDLED_FONT_CANDIDATES: List[Path] = [
+    _FONTS_DIR / "DejaVuSans.ttf",
+    _FONTS_DIR / "NotoSans-Regular.ttf",
+]
+_BUNDLED_BOLD_CANDIDATES: List[Path] = [
+    _FONTS_DIR / "DejaVuSans-Bold.ttf",
+    _FONTS_DIR / "NotoSans-Bold.ttf",
+]
+
+
+# ---------------------------------------------------------------------------
 # SRS PDF Sınıfı
 # ---------------------------------------------------------------------------
 
@@ -104,18 +127,25 @@ class SRSGenerator(FPDF):
     FPDF'yi miras alır; header/footer özelleştirmesi sağlar.
     """
 
-    def __init__(self, font_regular: Optional[Path] = None, font_bold: Optional[Path] = None) -> None:
+    def __init__(
+        self,
+        font_regular: Optional[Path] = None,
+        font_bold: Optional[Path] = None,
+        draft_watermark: bool = False,
+    ) -> None:
         """SRSGenerator başlatıcı.
 
         Args:
             font_regular: Normal ağırlık için font dosya yolu.
             font_bold: Kalın ağırlık için font dosya yolu.
+            draft_watermark: True ise her sayfaya 'DRAFT — AutoReq Generated' filigranı ekler.
         """
         super().__init__()
         self._font_regular = font_regular
         self._font_bold = font_bold
         self._font_name = "TurkishFont"
         self._has_custom_font = False
+        self._draft_watermark = draft_watermark
 
     def _load_fonts(self) -> None:
         """Font dosyalarını FPDF'ye kaydeder.
@@ -168,11 +198,67 @@ class SRSGenerator(FPDF):
         self.cell(0, 10, "Yazılım Gereksinim Spesifikasyonu (SRS)", border=False, ln=1, align="C")
         self.ln(5)
 
+        # DRAFT filigranı (Issue #23)
+        if self._draft_watermark:
+            self._add_watermark()
+
     def footer(self) -> None:
         """Her sayfanın altına sayfa numarası ekler."""
         self.set_y(-15)
         self._set_font_normal(8)
         self.cell(0, 10, f"Sayfa {self.page_no()}/{{nb}}", align="C")
+
+    def _add_watermark(self) -> None:
+        """Sayfaya yarı saydam DRAFT filigranı ekler.
+
+        İkincil bir cell ile sayfanın ortasına gri renkte 45 derece döndürülmüş
+        metin simüle edilir (FPDF doğrudan döndürme desteklemediğinden köşegen konuma
+        yerleştirilir).
+        """
+        self.set_text_color(200, 200, 200)  # açık gri
+        self._set_font_bold(28)
+        # Sayfanın yaklaşık ortasına konumlan
+        page_width = self.w
+        page_height = self.h
+        x_center = page_width / 2 - 55
+        y_center = page_height / 2 - 8
+        self.set_xy(x_center, y_center)
+        self.cell(0, 10, "DRAFT -- AutoReq Generated", border=False, ln=False)
+        # Rengi sıfırla
+        self.set_text_color(0, 0, 0)
+
+    def set_metadata(
+        self,
+        title: str = "Software Requirements Specification",
+        author: str = "AutoReq",
+        subject: str = "SRS - ISO/IEC/IEEE 29148:2018",
+        creator: str = "AutoReq PDF Generator",
+        creation_date: Optional[str] = None,
+    ) -> None:
+        """PDF belge metadata alanlarını doldurur (Issue #23).
+
+        Not: fpdf 1.7.x metadata'yı latin-1 ile kodlar. Bu nedenle
+        tüm metadata string'leri ASCII-safe olmalıdır (özel Unicode karakterler
+        UnicodeEncodeError'a yol açar).
+
+        Args:
+            title: Belge başlığı (ASCII-safe).
+            author: Yazar (varsayılan: AutoReq).
+            subject: Konu açıklaması (ASCII-safe).
+            creator: Oluşturucu araç (ASCII-safe).
+            creation_date: ISO 8601 tarih string'i (None ise şu an kullanılır).
+        """
+        if creation_date is None:
+            creation_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        self.set_title(title)
+        self.set_author(author)
+        self.set_subject(subject)
+        self.set_creator(creator)
+        # FPDF2 set_creation_date destekler; eski versiyonlar için try/except
+        try:
+            self.set_creation_date(creation_date)  # type: ignore[arg-type]
+        except (AttributeError, TypeError):
+            _log.debug("set_creation_date desteklenmiyor; atlanıyor.")
 
     def add_section_title(self, title: str) -> None:
         """Bölüm başlığı satırı ekler.
@@ -450,6 +536,7 @@ def _render_conflicts_section(pdf: SRSGenerator, report: "AnalysisReport") -> No
 def generate_srs(
     report: Optional["AnalysisReport"] = None,
     output_path: Optional[Path] = None,
+    draft_watermark: bool = False,
 ) -> Path:
     """AnalysisReport'tan ISO/IEC/IEEE 29148 uyumlu SRS PDF üretir.
 
@@ -461,6 +548,7 @@ def generate_srs(
                 None verilirse statik demo PDF üretilir.
         output_path: Çıktı PDF yolu. None ise outputs/generated/srs_{timestamp}.pdf
                      konumuna yazılır.
+        draft_watermark: True ise her sayfaya 'DRAFT — AutoReq Generated' filigranı eklenir.
 
     Returns:
         Path: Üretilen PDF dosyasının tam yolu.
@@ -475,11 +563,32 @@ def generate_srs(
 
     output_path = Path(output_path)
 
-    # Font çözümü
-    font_regular, font_bold = _resolve_turkish_font_path()
+    # Font çözümü — bundled fontlar öncelikli (Issue #23)
+    bundled_regular = _resolve_font(_BUNDLED_FONT_CANDIDATES)
+    bundled_bold = _resolve_font(_BUNDLED_BOLD_CANDIDATES)
 
-    pdf = SRSGenerator(font_regular=font_regular, font_bold=font_bold)
+    if bundled_regular:
+        font_regular, font_bold = bundled_regular, bundled_bold
+    else:
+        font_regular, font_bold = _resolve_turkish_font_path()
+
+    pdf = SRSGenerator(
+        font_regular=font_regular,
+        font_bold=font_bold,
+        draft_watermark=draft_watermark,
+    )
     pdf._load_fonts()
+
+    # PDF Metadata (Issue #23)
+    # Not: fpdf 1.7.x latin-1 kullaniyor; metadata ASCII-safe olmali.
+    project_name = "AutoReq Projesi"
+    pdf.set_metadata(
+        title=f"SRS - {project_name}",
+        author="AutoReq",
+        subject="Software Requirements Specification - ISO/IEC/IEEE 29148:2018",
+        creator="AutoReq PDF Generator v1.0",
+    )
+
     pdf.alias_nb_pages()
     pdf.add_page()
 
@@ -534,9 +643,4 @@ def generate_srs(
 
 
 # ---------------------------------------------------------------------------
-# CLI giriş noktası (geriye dönük uyumluluk)
-# ---------------------------------------------------------------------------
-
-if __name__ == "__main__":
-    path = generate_srs()
-    print(f"PDF oluşturuldu: {path}")
+# CLI giriş noktası (geriye dönük uyu
