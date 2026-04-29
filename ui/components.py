@@ -28,6 +28,90 @@ def req_card(req_id: str, text: str, req_type: str):
         st.divider()
 
 
+def conflict_card(conflict: dict):
+    """Tek bir çelişkiyi severity rozeti, req_ids ve açıklama ile gösterir."""
+    severity = str(conflict.get("severity", "medium")).lower()
+    severity_icons = {
+        "high": "🔴 HIGH",
+        "medium": "🟡 MEDIUM",
+        "low": "🟢 LOW",
+    }
+    severity_label = severity_icons.get(severity, "⚪ UNKNOWN")
+
+    req_ids = conflict.get("req_ids", [])
+    reason = conflict.get("reason", "Çelişki açıklaması bulunamadı.")
+    conflict_type = conflict.get("conflict_type", "Genel Çelişki")
+
+    with st.container():
+        st.markdown(f"### ⚠️ {conflict_type}")
+        st.markdown(f"**Severity:** `{severity_label}`")
+
+        if req_ids:
+            st.markdown("**İlgili Gereksinimler:**")
+            req_links = [
+                f"<a href='#{req_id}'>{req_id}</a>"
+                for req_id in req_ids
+            ]
+            st.markdown(" | ".join(req_links), unsafe_allow_html=True)
+        else:
+            st.caption("İlgili gereksinim ID bilgisi bulunamadı.")
+
+        with st.expander("Çelişki nedenini göster"):
+            st.write(reason)
+
+        st.divider()
+
+
+def gap_card(gap: dict):
+    """Tek bir eksikliği scenario, missing_area, suggestion ve severity ile gösterir."""
+    scenario = gap.get("scenario", "unknown")
+    missing_area = gap.get("missing_area", "Eksik alan belirtilmemiş.")
+    suggestion = gap.get("suggestion", "Öneri bulunamadı.")
+    severity = str(gap.get("severity", "medium")).lower()
+
+    severity_icons = {
+        "high": "🔴 HIGH",
+        "medium": "🟡 MEDIUM",
+        "low": "🟢 LOW",
+    }
+    severity_label = severity_icons.get(severity, "⚪ UNKNOWN")
+
+    with st.container():
+        st.markdown(f"### ✅ {scenario}")
+        st.markdown(f"**Eksik Alan:** {missing_area}")
+        st.markdown(f"**Severity:** `{severity_label}`")
+        st.checkbox(
+            f"Öneri: {suggestion}",
+            value=False,
+            key=f"gap_{scenario}_{missing_area}_{suggestion}",
+        )
+        st.divider()
+
+
+def improvement_diff_card(improvement: dict):
+    """İyileştirme önerisini original/improved karşılaştırması olarak gösterir."""
+    original = improvement.get("original", "Önceki ifade bulunamadı.")
+    improved = improvement.get("improved", "İyileştirilmiş ifade bulunamadı.")
+    reason = improvement.get("reason", "")
+
+    with st.container():
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown("#### Önce")
+            st.warning(original)
+
+        with col2:
+            st.markdown("#### Sonra")
+            st.success(improved)
+
+        if reason:
+            with st.expander("İyileştirme gerekçesi"):
+                st.write(reason)
+
+        st.divider()
+
+
 def priority_badge(priority: str):
     """Öncelik etiketi (HIGH / MEDIUM / LOW) gösterir."""
     colors = {"HIGH": "🔴", "MEDIUM": "🟡", "LOW": "🟢"}
