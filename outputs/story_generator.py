@@ -220,9 +220,9 @@ class StoryGenerator:
 
     def _export_to_docx(self, stories: List[dict], output_path: Path) -> Path:
         """User Story listesini DOCX formatında dışa aktarır.
-
-        Her story için 'As a [role], I want [goal] so that [benefit].' formatında
-        başlık ve acceptance criteria tablosu içeren bir Word belgesi oluşturur.
+        
+        Her story için 'Rol, Hedef, Fayda' formatında Türkçe başlıklar ve 
+        kabul kriterleri içeren bir Word belgesi oluşturur.
 
         Args:
             stories: generate() metodundan dönen user story sözlük listesi.
@@ -245,10 +245,10 @@ class StoryGenerator:
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         doc = Document()
-        doc.add_heading("AutoReq — User Stories", 0)
+        doc.add_heading("AutoReq — Kullanıcı Hikayeleri (User Stories)", 0)
         doc.add_paragraph(
-            f"Toplam {len(stories)} user story oluşturuldu. "
-            "Yalnızca FUNCTIONAL gereksinimler dahil edilmiştir."
+            f"Toplam {len(stories)} kullanıcı hikayesi oluşturuldu. "
+            "Yalnızca FONKSİYONEL gereksinimler dahil edilmiştir."
         )
         doc.add_paragraph("")
 
@@ -262,11 +262,11 @@ class StoryGenerator:
             # Story başlığı
             heading = doc.add_heading(level=2)
             heading.add_run(f"[{req_id}] ").bold = True
-            heading.add_run(f"As a {role}, I want {goal} so that {benefit}.")
+            heading.add_run(f"Bir {role} olarak, {benefit} amacıyla {goal} istiyorum.")
 
             # Acceptance Criteria
             if acceptance_criteria:
-                doc.add_paragraph("Acceptance Criteria:", style="Intense Quote")
+                doc.add_paragraph("Kabul Kriterleri:", style="Intense Quote")
                 for criterion in acceptance_criteria:
                     doc.add_paragraph(criterion, style="List Bullet")
 

@@ -12,13 +12,13 @@ import streamlit as st
 
 def req_card(req_id: str, text: str, req_type: str):
     """Tek bir gereksinimi kart formatında gösterir."""
-    icon = "🟢" if req_type == "FUNCTIONAL" else "🔵"
+    type_label = "[F]" if req_type == "FUNCTIONAL" else "[NFR]"
 
     with st.container():
         col1, col2 = st.columns([1, 8])
 
         with col1:
-            st.markdown(f"### {icon}")
+            st.markdown(f"<h3 style='color:#D4AF37;'>{type_label}</h3>", unsafe_allow_html=True)
 
         with col2:
             st.markdown(f"**{req_id}**")
@@ -30,20 +30,15 @@ def req_card(req_id: str, text: str, req_type: str):
 
 def conflict_card(conflict: dict):
     """Tek bir çelişkiyi severity rozeti, req_ids ve açıklama ile gösterir."""
-    severity = str(conflict.get("severity", "medium")).lower()
-    severity_icons = {
-        "high": "🔴 HIGH",
-        "medium": "🟡 MEDIUM",
-        "low": "🟢 LOW",
-    }
-    severity_label = severity_icons.get(severity, "⚪ UNKNOWN")
+    severity = str(conflict.get("severity", "medium")).upper()
+    severity_label = severity
 
     req_ids = conflict.get("req_ids", [])
     reason = conflict.get("reason", "Çelişki açıklaması bulunamadı.")
     conflict_type = conflict.get("conflict_type", "Genel Çelişki")
 
     with st.container():
-        st.markdown(f"### ⚠️ {conflict_type}")
+        st.markdown(f"### {conflict_type}")
         st.markdown(f"**Severity:** `{severity_label}`")
 
         if req_ids:
@@ -67,17 +62,11 @@ def gap_card(gap: dict):
     scenario = gap.get("scenario", "unknown")
     missing_area = gap.get("missing_area", "Eksik alan belirtilmemiş.")
     suggestion = gap.get("suggestion", "Öneri bulunamadı.")
-    severity = str(gap.get("severity", "medium")).lower()
-
-    severity_icons = {
-        "high": "🔴 HIGH",
-        "medium": "🟡 MEDIUM",
-        "low": "🟢 LOW",
-    }
-    severity_label = severity_icons.get(severity, "⚪ UNKNOWN")
+    severity = str(gap.get("severity", "medium")).upper()
+    severity_label = severity
 
     with st.container():
-        st.markdown(f"### ✅ {scenario}")
+        st.markdown(f"### {scenario}")
         st.markdown(f"**Eksik Alan:** {missing_area}")
         st.markdown(f"**Severity:** `{severity_label}`")
         st.checkbox(
@@ -114,9 +103,7 @@ def improvement_diff_card(improvement: dict):
 
 def priority_badge(priority: str):
     """Öncelik etiketi (HIGH / MEDIUM / LOW) gösterir."""
-    colors = {"HIGH": "🔴", "MEDIUM": "🟡", "LOW": "🟢"}
-    icon = colors.get(priority, "⚪")
-    st.markdown(f"{icon} `{priority}`")
+    st.markdown(f"`{priority}`")
 
 
 def download_button(label: str, data: bytes, filename: str, mime: str):

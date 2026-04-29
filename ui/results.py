@@ -13,7 +13,6 @@ import streamlit as st
 
 from ui.components import (
     conflict_card,
-    download_button,
     gap_card,
     improvement_diff_card,
     req_card,
@@ -38,25 +37,37 @@ def render_results(report):
     gaps = getattr(report, "gaps", [])
     improvements = getattr(report, "improvements", [])
 
-    st.header("📊 Analiz Sonuçları")
+    st.header("Analiz Sonuçları")
 
-    tab1, tab2, tab3, tab4 = st.tabs(
+    tab1, tab2, tab3 = st.tabs(
         [
-            "📋 Gereksinimler",
-            "⚠️ Çelişkiler & Eksiklikler",
-            "✨ İyileştirme Önerileri",
-            "📥 İndirilebilir Çıktılar",
+            "Gereksinimler",
+            "Çelişkiler & Eksiklikler",
+            "İyileştirme Önerileri",
         ]
     )
 
     with tab1:
-        st.subheader("Ayrıştırılan Gereksinimler")
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.subheader("Ayrıştırılan Gereksinimler")
+        with col2:
+            filter_type = st.selectbox(
+                "Filtrele", 
+                ["Tümü", "Fonksiyonel", "Fonksiyonel Olmayan"],
+                label_visibility="collapsed"
+            )
 
         if requirements:
             for i, req in enumerate(requirements, start=1):
                 req_text = getattr(req, "text", str(req))
                 req_type = getattr(req, "req_type", "UNKNOWN")
                 req_id = getattr(req, "id", f"REQ-{i}")
+                
+                if filter_type == "Fonksiyonel" and req_type != "FUNCTIONAL":
+                    continue
+                if filter_type == "Fonksiyonel Olmayan" and req_type != "NON_FUNCTIONAL":
+                    continue
 
                 st.markdown(f"<a id='{req_id}'></a>", unsafe_allow_html=True)
                 req_card(req_id=req_id, text=req_text, req_type=req_type)
@@ -96,7 +107,7 @@ def render_results(report):
                     grouped_gaps.setdefault("unknown", []).append(gap)
 
             for scenario, scenario_gaps in grouped_gaps.items():
-                st.markdown(f"### 📂 {scenario}")
+                st.markdown(f"### {scenario}")
 
                 for gap in scenario_gaps:
                     if isinstance(gap, dict):
@@ -117,22 +128,4 @@ def render_results(report):
                     st.write(improvement)
         else:
             st.info("Henüz iyileştirme önerisi bulunmuyor.")
-
-    with tab4:
-        st.subheader("İndirilebilir Çıktılar")
-
-        generated_dir = Path("outputs") / "generated"
-        pdf_files = list(generated_dir.glob("*.pdf"))
-
-        if pdf_files:
-            pdf_path = pdf_files[0]
-
-            with open(pdf_path, "rb") as pdf_file:
-                download_button(
-                    label=f"📄 {pdf_path.name} dosyasını indir",
-                    data=pdf_file.read(),
-                    filename=pdf_path.name,
-                    mime="application/pdf",
-                )
-        else:
-            st.warning("outputs/generated klasöründe henüz PDF çıktısı bulunamadı.")
+

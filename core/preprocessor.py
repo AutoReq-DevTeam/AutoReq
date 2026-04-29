@@ -78,7 +78,7 @@ class TextPreprocessor:
                 # Eğer kelime stop-word ve noktalama işareti değilse
                 if word_text not in self.stop_words and word.upos != "PUNCT":  # PUNCT = punctuation
                     tokens.append(word_text)  # Orijinal halini listeye ekle
-                    lemmas.append(word.lemma.lower())  # Kökünü ekler
+                    lemmas.append(word.lemma.lower() if word.lemma else word_text)  # Kökünü ekler
                     pos_tags.append(word.upos)  # Türünü ekler
 
             # Elimizdeki verilerle requirement nesnesini oluşturuyoruz

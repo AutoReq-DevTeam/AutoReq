@@ -18,28 +18,44 @@ from core.priority_detector import PriorityDetector
 
 class TestTextPreprocessor:
     def test_tokenization(self):
-        # TODO: Üye 4 — Tokenizasyon çıktısını doğrula
-        pass
+        from core.preprocessor import TextPreprocessor
+        from core.models import ParsedDocument
+        preprocessor = TextPreprocessor()
+        doc = preprocessor.process("Bu bir test cümlesidir. Başka bir cümledir.")
+        assert isinstance(doc, ParsedDocument)
+        assert doc.total_sentences == 2
+        assert len(doc.requirements) == 2
 
     def test_empty_input(self):
-        # TODO: Üye 4 — Boş string girildiğinde hata fırlatılmamalı
-        pass
+        from core.preprocessor import TextPreprocessor
+        from core.models import ParsedDocument
+        preprocessor = TextPreprocessor()
+        doc = preprocessor.process("")
+        assert isinstance(doc, ParsedDocument)
+        assert doc.total_sentences == 0
+        assert len(doc.requirements) == 0
 
 
 class TestRequirementClassifier:
     def test_functional_classification(self):
-        # TODO: Üye 4 — Fonksiyonel bir cümleyi doğru sınıflandırmalı
-        pass
+        classifier = RequirementClassifier()
+        req = Requirement(id="1", text="Kullanıcı sisteme giriş yapabilmeli.")
+        result = classifier.classify(req)
+        assert result.req_type == "FUNCTIONAL"
 
     def test_non_functional_classification(self):
-        # TODO: Üye 4 — NFR cümlesini doğru sınıflandırmalı
-        pass
+        classifier = RequirementClassifier()
+        req = Requirement(id="2", text="Sistem hızlı olmalı.")
+        result = classifier.classify(req)
+        assert result.req_type == "NON_FUNCTIONAL"
 
 
 class TestEntityRecognizer:
     def test_actor_detection(self):
-        # TODO: Üye 4 — "Kullanıcı" aktörünü tespit etmeli
-        pass
+        ner = EntityRecognizer()
+        req = Requirement(id="1", text="Kullanıcı sisteme şifresi ile girebilir.")
+        result = ner.recognize(req)
+        assert "kullanıcı" in [actor.lower() for actor in result.actors]
 
 
 def test_basic():

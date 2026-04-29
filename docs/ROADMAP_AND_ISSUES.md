@@ -106,13 +106,13 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 *   **Özet:** Kullanıcının etkileşime gireceği arayüzü ve projenin test disiplinini kurmak.
 *   **User Story:** Bir Son Kullanıcı olarak, tarayıcım üzerinden metinleri yapıştırabileceğim ve analizi anlık takip edebileceğim temiz bir arayüz (dashboard) istiyorum.
 *   **Kabul Kriterleri (AC):**
-    - [ ] Streamlit arayüzünde çoklu sekme (st.tabs) yapısı çalışır durumda olmalıdır.
-    - [ ] Analiz ve bekleme süreci boyunca kullanıcıya oyalayıcı bir spinner (yükleniyor barı) gösterilmelidir.
+    - [x] Streamlit arayüzünde çoklu sekme (st.tabs) yapısı çalışır durumda olmalıdır.
+    - [x] Analiz ve bekleme süreci boyunca kullanıcıya oyalayıcı bir spinner (yükleniyor barı) gösterilmelidir.
 *   **Görevler:**
-    - [ ] `ui/dashboard.py` üzerinde `st.sidebar` ile proje durumunu ve `st.tabs` ile analiz sonuçlarını ayır.
-    - [ ] Metin giriş alanı için `st.text_area` ve örnek gereksinim metinlerini içeren bir "Demo" butonu ekle.
-    - [ ] `tests/test_core.py` ve `tests/test_modules.py` dosyalarını oluştur; ilk unit testleri yaz.
-    - [ ] Analiz sırasında kullanıcıyı bilgilendiren dinamik bildirimler (toast/spinner) ekle.
+    - [x] `ui/dashboard.py` üzerinde `st.sidebar` ile proje durumunu ve `st.tabs` ile analiz sonuçlarını ayır.
+    - [x] Metin giriş alanı için `st.text_area` ve örnek gereksinim metinlerini içeren bir "Demo" butonu ekle.
+    - [x] `tests/test_core.py` ve `tests/test_modules.py` dosyalarını oluştur; ilk unit testleri yaz.
+    - [x] Analiz sırasında kullanıcıyı bilgilendiren dinamik bildirimler (toast/spinner) ekle.
 
 ---
 
@@ -137,7 +137,7 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 *   **User Story:** Bir Kalite Uzmanı (QA) olarak, sistemin gereksinimlerdeki kendi içinde zıtlık/çelişki yaratan maddeleri bulmasını istiyorum, böylece yazılım ekibi gereksiz ve çatışan kodlar yazıp maliyet oluşturmasın.
 *   **Kabul Kriterleri (AC):**
     - [x] Zıt maddeler eklendiğinde LLM bunu başarıyla yakalayan bir analiz dönmelidir.
-    - [ ] Analiz sonucu alınan String/JSON yapıları hata fırlatmadan (Exception atılmadan) `AnalysisReport` nesnesine bağlanmalıdır. (🚩 *Not: JSON hatalı döndüğünde sistem ValueError fırlatarak çöküyor. Hata yakalanıp boş `[]` dönecek şekilde revize edilmeli.*)
+    - [x] Analiz sonucu alınan String/JSON yapıları hata fırlatmadan (Exception atılmadan) `AnalysisReport` nesnesine bağlanmalıdır. (🚩 *Not: JSON hatalı döndüğünde sistem ValueError fırlatarak çöküyor. Hata yakalanıp boş `[]` dönecek şekilde revize edilmeli.*)
 *   **Görevler:**
     - [x] `modules/conflict_detector.py` içindeki `analyze()` fonksiyonunda `LLMClient` sınıfını entegre et.
     - [x] Hazırladığın system prompt'ları kullanarak gereksinimleri LLM'e gönderip "Hangi gereksinimler birbiriyle çelişiyor?" analizini kur.
@@ -149,11 +149,11 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 *   **Özet:** "As a [role], I want..." hikayelerini üretmek ve SRS şablonunu dinamikleştirmek.
 *   **User Story:** Bir Çevik Proje Yöneticisi (Product Owner) olarak, teknik gereksinimlerin "Agile User Story" formatına otonom çevirilmesini istiyorum, böylece bu kartları doğrudan geliştiricilerin sprint backlog'una atabileyim.
 *   **Kabul Kriterleri (AC):**
-    - [ ] Otonom çıktıların tamamı standart "As a [Actor], I want [Action] so that [Value]" İngilizce/Türkçe formatında olmalıdır.
-    - [ ] Sistem, `AnalysisReport` üzerinden gelen canlı ve dinamik veriyi `fpdf2` sayfalarına yerleştirebilmelidir.
+    - [x] Otonom çıktıların tamamı standart "As a [Actor], I want [Action] so that [Value]" İngilizce/Türkçe formatında olmalıdır.
+    - [x] Sistem, `AnalysisReport` üzerinden gelen canlı ve dinamik veriyi `fpdf2` sayfalarına yerleştirebilmelidir.
 *   **Görevler:**
-    - [ ] `outputs/story_generator.py` içine fonksiyonel gereksinimleri Agile User Story formatına çeviren kodları yaz (bunun için LLMClient'ı kullanabilirsin).
-    - [ ] Geçen hafta oluşturduğun statik `srs_generator.py` fonksiyonunu, Üye 2'den dönen gerçek `AnalysisReport` verileriyle akıllıca dolduracak şekilde dinamikleştir.
+    - [x] `outputs/story_generator.py` içine fonksiyonel gereksinimleri Agile User Story formatına çeviren kodları yaz (bunun için LLMClient'ı kullanabilirsin).
+    - [x] Geçen hafta oluşturduğun statik `srs_generator.py` fonksiyonunu, Üye 2'den dönen gerçek `AnalysisReport` verileriyle akıllıca dolduracak şekilde dinamikleştir.
     - [ ] `app.py` üzerinde analiz bittiğinde SRS PDF'inin arka planda oluşturulmasını sağlayan fonksiyon çağrısını yap.
 
 ### 🔵 Issue #8: Sonuçların Görselleştirilmesi ve Analiz Raporu Sekmeleri
@@ -163,7 +163,7 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 *   **Kabul Kriterleri (AC):**
     - [x] Arayüzde çelişkiler, eksikler ve gereksinim listeleri arayüz tasarımını veya sütunları (columns) taşırmadan gösterilmelidir.
     - [x] `st.download_button` butonu kullanılarak tarayıcı üzerinden başarılı bir şekilde dosya indirme tetiklenmelidir.
-    - [ ] `classifier.py` ve `ner.py` için oluşturulan çekirdek unit testler hatasız şekilde pass almalıdır. (🚩 *Not: Testler NotImplementedError beklediği için `main` dalında başarısız (Fail) olacaktır. Fonksiyonların gerçek çıktıları (örn: FUNCTIONAL dönmesi) test edilip pass alınması sağlanmalı.*)
+    - [x] `classifier.py` ve `ner.py` için oluşturulan çekirdek unit testler hatasız şekilde pass almalıdır. (🚩 *Not: Testler NotImplementedError beklediği için `main` dalında başarısız (Fail) olacaktır. Fonksiyonların gerçek çıktıları (örn: FUNCTIONAL dönmesi) test edilip pass alınması sağlanmalı.*)
 *   **Görevler:**
     - [x] Düzene sokulan `ui/results.py` içerisindeki tab'ları, `report.conflicts` ve `report.gaps` verilerini dict içinden okuyup listeleyecek şekilde (for/while vb.) doldur.
     - [x] `ui/components.py` içinde `req_card()` adında bir bileşen fonksiyonu yarat ve gereksinimleri sıradan metin değil bu şık component'lerle ekrana bas.
@@ -221,39 +221,39 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 *   **Özet:** Statik SRS şablonunu, `AnalysisReport` verisini bölüm bölüm dolduran dinamik bir üretici haline getirmek.
 *   **User Story:** Bir Dokümantasyon Uzmanı olarak, sistemin analiz ettiği gereksinimleri ve tespit ettiği çelişkileri otomatik olarak SRS PDF'inin ilgili bölümlerine yerleştirmesini istiyorum, böylece elle kopya-yapıştır işine gerek kalmasın.
 *   **Kabul Kriterleri (AC):**
-    - [ ] `generate_srs(report: AnalysisReport, output_path: Optional[Path] = None) -> Path` imzası kullanılmalı.
-    - [ ] Üretilen PDF, `outputs/generated/srs_{timestamp}.pdf` formatında **`outputs/generated/`** klasörüne yazılmalı.
-    - [ ] PDF'in "Fonksiyonel Gereksinimler" bölümü gerçek `req_type == "FUNCTIONAL"` olan maddeleri tablo halinde içermeli.
-    - [ ] "Kalite Özellikleri" bölümü `NON_FUNCTIONAL` maddeleri içermeli.
-    - [ ] Yeni bölüm "Tespit Edilen Çelişkiler" eklenmeli; `report.conflicts` boş değilse her madde gerekçesiyle yazılmalı.
-    - [ ] Linux ve Windows üzerinde Türkçe karakterler (ş, ğ, İ, ı) bozulmadan render edilmeli.
+    - [x] `generate_srs(report: AnalysisReport, output_path: Optional[Path] = None) -> Path` imzası kullanılmalı.
+    - [x] Üretilen PDF, `outputs/generated/srs_{timestamp}.pdf` formatında **`outputs/generated/`** klasörüne yazılmalı.
+    - [x] PDF'in "Fonksiyonel Gereksinimler" bölümü gerçek `req_type == "FUNCTIONAL"` olan maddeleri tablo halinde içermeli.
+    - [x] "Kalite Özellikleri" bölümü `NON_FUNCTIONAL` maddeleri içermeli.
+    - [x] Yeni bölüm "Tespit Edilen Çelişkiler" eklenmeli; `report.conflicts` boş değilse her madde gerekçesiyle yazılmalı.
+    - [x] Linux ve Windows üzerinde Türkçe karakterler (ş, ğ, İ, ı) bozulmadan render edilmeli.
 *   **Görevler:**
-    - [ ] `outputs/srs_generator.py::generate_srs()` imzasını `AnalysisReport` alacak şekilde güncelle (eski parametresiz çağrıyı geriye uyumlu tut).
-    - [ ] Hardcoded `C:\Windows\Fonts\arial.ttf` yolunu OS-aware bir helper'a çıkar (`_resolve_turkish_font_path()`):
+    - [x] `outputs/srs_generator.py::generate_srs()` imzasını `AnalysisReport` alacak şekilde güncelle (eski parametresiz çağrıyı geriye uyumlu tut).
+    - [x] Hardcoded `C:\Windows\Fonts\arial.ttf` yolunu OS-aware bir helper'a çıkar (`_resolve_turkish_font_path()`):
         - Windows → `arial.ttf`
         - Linux → `/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf`
         - macOS → `/System/Library/Fonts/Supplemental/Arial.ttf`
         - Hiçbiri yoksa Helvetica fallback + log uyarı.
-    - [ ] Her başlık (Giriş, Kapsam, …) için bölüm doldurucu (`_render_functional_section`, `_render_nfr_section`, `_render_conflicts_section`, `_render_actors_section`) helper'ları ekle.
-    - [ ] `outputs/generated/` klasörünü gerekirse `Path.mkdir(parents=True, exist_ok=True)` ile otomatik oluştur.
-    - [ ] `app.py` içine: analiz tamamlandığında `generate_srs(report)` çağrısını arka planda yap, dosya yolunu `st.session_state.srs_pdf_path`'e kaydet.
+    - [x] Her başlık (Giriş, Kapsam, …) için bölüm doldurucu (`_render_functional_section`, `_render_nfr_section`, `_render_conflicts_section`, `_render_actors_section`) helper'ları ekle.
+    - [x] `outputs/generated/` klasörünü gerekirse `Path.mkdir(parents=True, exist_ok=True)` ile otomatik oluştur.
+    - [x] `app.py` içine: analiz tamamlandığında `generate_srs(report)` çağrısını arka planda yap, dosya yolunu `st.session_state.srs_pdf_path`'e kaydet.
 
 ### 🔵 Issue #12: Kritik UI Hata Düzeltmeleri ve Test Modernizasyonu
 *   **Sorumlu:** **Agid Gülsever**
 *   **Özet:** Sonuç panelindeki sessiz veri okuma hatasını gidermek, eski (yanlış) testleri güncellemek ve gerçek davranışları doğrulayan testler yazmak.
 *   **User Story:** Bir Son Kullanıcı olarak, ekrandaki gereksinim kartlarının doğru tür etiketini (FUNCTIONAL/NON_FUNCTIONAL) göstermesini ve `pytest tests/` çıktısının yeşil olmasını istiyorum, böylece sisteme güvenebileyim.
 *   **Kabul Kriterleri (AC):**
-    - [ ] `ui/results.py` içindeki gereksinim kartları artık her zaman "FUNCTIONAL" göstermemeli — gerçek `req_type` değeri yansımalı.
-    - [ ] `pytest tests/ -v` komutu **tüm testler PASS** ile bitmeli (eski yanlış `raises_not_implemented` testleri dahil).
-    - [ ] `tests/test_core.py::TestRequirementClassifier::test_non_functional_classification` gerçek assertion içermeli; "Sistem hızlı olmalı" → `NON_FUNCTIONAL` doğrulaması yapılmalı.
-    - [ ] LLM API key eksikse UI sidebar'da "❌ API Key tanımsız" uyarısı görünmeli.
+    - [x] `ui/results.py` içindeki gereksinim kartları artık her zaman "FUNCTIONAL" göstermemeli — gerçek `req_type` değeri yansımalı.
+    - [x] `pytest tests/ -v` komutu **tüm testler PASS** ile bitmeli (eski yanlış `raises_not_implemented` testleri dahil).
+    - [x] `tests/test_core.py::TestRequirementClassifier::test_non_functional_classification` gerçek assertion içermeli; "Sistem hızlı olmalı" → `NON_FUNCTIONAL` doğrulaması yapılmalı.
+    - [x] LLM API key eksikse UI sidebar'da "❌ API Key tanımsız" uyarısı görünmeli.
 *   **Görevler:**
-    - [ ] `ui/results.py:_safe_get(req_dict, "type", "FUNCTIONAL")` → `_safe_get(req_dict, "req_type", "UNKNOWN")` olarak düzelt.
-    - [ ] `tests/test_core.py::test_classifier_raises_not_implemented` → gerçek davranış testine çevir: `classify(Requirement(text="Sistem hızlı olmalı"))` → `req_type == "NON_FUNCTIONAL"`.
-    - [ ] `tests/test_core.py::test_ner_raises_not_implemented` → benzer şekilde gerçek assertion'a çevir: `recognize(Requirement(text="Kullanıcı şifresini değiştirmeli"))` → `actors` ve `objects` dolu olmalı.
-    - [ ] `TestTextPreprocessor::test_empty_input` ve `test_tokenization` TODO'larını gerçek testlere çevir (boş string crash etmemeli, normal cümle tokenize olmalı).
-    - [ ] `ui/dashboard.py::render_dashboard()` sidebar'da `os.getenv("GEMINI_API_KEY")` kontrolüyle dinamik durum göster (`✅ API Key OK` / `❌ API Key tanımsız`).
-    - [ ] `tests/conftest.py` içine `pytest fixture` ekle: dummy `LLMClient` (mock chat metodu) — diğer üyelerin testlerinde kullanması için.
+    - [x] `ui/results.py:_safe_get(req_dict, "type", "FUNCTIONAL")` → `_safe_get(req_dict, "req_type", "UNKNOWN")` olarak düzelt.
+    - [x] `tests/test_core.py::test_classifier_raises_not_implemented` → gerçek davranış testine çevir: `classify(Requirement(text="Sistem hızlı olmalı"))` → `req_type == "NON_FUNCTIONAL"`.
+    - [x] `tests/test_core.py::test_ner_raises_not_implemented` → benzer şekilde gerçek assertion'a çevir: `recognize(Requirement(text="Kullanıcı şifresini değiştirmeli"))` → `actors` ve `objects` dolu olmalı.
+    - [x] `TestTextPreprocessor::test_empty_input` ve `test_tokenization` TODO'larını gerçek testlere çevir (boş string crash etmemeli, normal cümle tokenize olmalı).
+    - [x] `ui/dashboard.py::render_dashboard()` sidebar'da `os.getenv("GEMINI_API_KEY")` kontrolüyle dinamik durum göster (`✅ API Key OK` / `❌ API Key tanımsız`).
+    - [x] `tests/conftest.py` içine `pytest fixture` ekle: dummy `LLMClient` (mock chat metodu) — diğer üyelerin testlerinde kullanması için.
 
 ---
 
@@ -312,39 +312,39 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 *   **Özet:** Fonksiyonel gereksinimleri Agile User Story formatına ve Gherkin BDD senaryolarına çeviren iki ayrı LLM destekli üreteç.
 *   **User Story:** Bir Çevik Proje Yöneticisi olarak, çıkarılan gereksinimlerin doğrudan sprint backlog'una atılabilecek "As a... I want..." kartlarına ve QA ekibinin kullanabileceği "Given/When/Then" test senaryolarına otomatik dönüşmesini istiyorum.
 *   **Kabul Kriterleri (AC):**
-    - [ ] `StoryGenerator().generate(report)` `list[dict]` döner; her dict `{"role", "goal", "benefit", "acceptance_criteria"}` içerir.
-    - [ ] `BDDGenerator().generate(report)` `list[str]` döner; her string `Feature:`, `Scenario:`, `Given`, `When`, `Then` anahtar kelimelerini içeren geçerli Gherkin formatında olmalı.
-    - [ ] BDD çıktısı `outputs/generated/scenarios.feature` dosyasına yazılmalı; `pytest-bdd` veya `behave` ile parse edilebilir olmalı.
-    - [ ] User Stories aynı zamanda `outputs/generated/user_stories.docx` olarak da export edilmeli.
+    - [x] `StoryGenerator().generate(report)` `list[dict]` döner; her dict `{"role", "goal", "benefit", "acceptance_criteria"}` içerir.
+    - [x] `BDDGenerator().generate(report)` `list[str]` döner; her string `Feature:`, `Scenario:`, `Given`, `When`, `Then` anahtar kelimelerini içeren geçerli Gherkin formatında olmalı.
+    - [x] BDD çıktısı `outputs/generated/scenarios.feature` dosyasına yazılmalı; `pytest-bdd` veya `behave` ile parse edilebilir olmalı.
+    - [x] User Stories aynı zamanda `outputs/generated/user_stories.docx` olarak da export edilmeli.
 *   **Görevler:**
-    - [ ] `modules/story_prompts.py` ve `modules/bdd_prompts.py` oluştur (`conflict_prompts` template'ini takip et).
-    - [ ] `outputs/story_generator.py::StoryGenerator.generate()` — sadece `req_type == "FUNCTIONAL"` olanları işler, LLM ile dönüştürür.
-    - [ ] `outputs/bdd_generator.py::BDDGenerator.generate()` — her FR için minimum 1 happy path + 1 negative scenario üretir.
-    - [ ] `python-docx` kullanarak `_export_to_docx(stories, path)` helper'ı yaz.
-    - [ ] BDD `.feature` dosyası header'ına `# Generated by AutoReq | {timestamp}` ekle.
-    - [ ] `app.py` analiz sonrası bu üreteçleri çağır, dosyaları `outputs/generated/`'a yaz.
-    - [ ] `tests/test_outputs.py::TestStoryGenerator::test_story_format` ve `TestBDDGenerator::test_gherkin_format` gerçek assertion'larla doldur.
+    - [x] `modules/story_prompts.py` ve `modules/bdd_prompts.py` oluştur (`conflict_prompts` template'ini takip et).
+    - [x] `outputs/story_generator.py::StoryGenerator.generate()` — sadece `req_type == "FUNCTIONAL"` olanları işler, LLM ile dönüştürür.
+    - [x] `outputs/bdd_generator.py::BDDGenerator.generate()` — her FR için minimum 1 happy path + 1 negative scenario üretir.
+    - [x] `python-docx` kullanarak `_export_to_docx(stories, path)` helper'ı yaz.
+    - [x] BDD `.feature` dosyası header'ına `# Generated by AutoReq | {timestamp}` ekle.
+    - [x] `app.py` analiz sonrası bu üreteçleri çağır, dosyaları `outputs/generated/`'a yaz.
+    - [x] `tests/test_outputs.py::TestStoryGenerator::test_story_format` ve `TestBDDGenerator::test_gherkin_format` gerçek assertion'larla doldur.
 
 ### 🔵 Issue #16: Çelişki / Eksiklik / İyileştirme Görselleştirme
 *   **Sorumlu:** **Agid Gülsever**
 *   **Özet:** Şu an tüm çelişkilerin/eksiklerin ham `dict` halinde basıldığı sonuç sekmelerini, bilgilendirici kart UI'larına dönüştürmek.
 *   **User Story:** Bir Proje Paydaşı olarak, çelişkileri renkli severity rozetleriyle, eksiklikleri kategorize edilmiş checklist olarak ve iyileştirmeleri "öncesi/sonrası" karşılaştırmalı kart olarak görmek istiyorum, böylece teknik bilgim olmasa bile sonuçları kavrayabileyim.
 *   **Kabul Kriterleri (AC):**
-    - [ ] Çelişkiler sekmesinde her madde `conflict_card()` adlı bir bileşenle render edilmeli (severity rengi: high=kırmızı, medium=sarı, low=yeşil).
-    - [ ] Eksikler sekmesinde maddeler `scenario` alanına göre gruplanmalı (authentication, authorization, data_privacy, …).
-    - [ ] İyileştirme sekmesinde `original` (sol) vs `improved` (sağ) yan yana iki kolon halinde gösterilmeli.
-    - [ ] Conflict kartlarındaki `req_ids` etiketleri tıklanınca o gereksinim kartına scroll edebilmeli (anchor link).
-    - [ ] `tests/test_modules.py` içine mock LLM ile `ConflictDetector` ve `GapAnalyzer` testleri eklenmeli (her biri minimum 1 PASS).
+    - [x] Çelişkiler sekmesinde her madde `conflict_card()` adlı bir bileşenle render edilmeli (severity rengi: high=kırmızı, medium=sarı, low=yeşil).
+    - [x] Eksikler sekmesinde maddeler `scenario` alanına göre gruplanmalı (authentication, authorization, data_privacy, …).
+    - [x] İyileştirme sekmesinde `original` (sol) vs `improved` (sağ) yan yana iki kolon halinde gösterilmeli.
+    - [x] Conflict kartlarındaki `req_ids` etiketleri tıklanınca o gereksinim kartına scroll edebilmeli (anchor link).
+    - [x] `tests/test_modules.py` içine mock LLM ile `ConflictDetector` ve `GapAnalyzer` testleri eklenmeli (her biri minimum 1 PASS).
 *   **Görevler:**
-    - [ ] `ui/components.py` içine yeni bileşenler ekle:
+    - [x] `ui/components.py` içine yeni bileşenler ekle:
         - `conflict_card(conflict: dict)` — severity badge + req_ids + reason expander.
         - `gap_card(gap: dict)` — scenario etiketi + missing_area + suggestion + severity.
         - `improvement_diff_card(improvement: dict)` — 2 kolonlu original/improved.
-    - [ ] `ui/results.py::tab2` ve `tab3`'ü ham dict listeleme yerine bu kartları kullanacak şekilde refactor et.
-    - [ ] Tab2 başına özet metrik göstergeleri ekle: `st.metric("Toplam Çelişki", len(conflicts))`, `st.metric("Toplam Eksiklik", len(gaps))`.
-    - [ ] Gereksinim kartlarına `st.markdown(f"<a id='{req_id}'></a>", unsafe_allow_html=True)` anchor ekle.
-    - [ ] `tests/test_modules.py::TestConflictDetector::test_detects_contradiction` → mock LLM yanıtıyla gerçek çelişki tespiti testi.
-    - [ ] `tests/test_modules.py::TestGapAnalyzer::test_detects_missing_password_reset` → mock LLM testi.
+    - [x] `ui/results.py::tab2` ve `tab3`'ü ham dict listeleme yerine bu kartları kullanacak şekilde refactor et.
+    - [x] Tab2 başına özet metrik göstergeleri ekle: `st.metric("Toplam Çelişki", len(conflicts))`, `st.metric("Toplam Eksiklik", len(gaps))`.
+    - [x] Gereksinim kartlarına `st.markdown(f"<a id='{req_id}'></a>", unsafe_allow_html=True)` anchor ekle.
+    - [x] `tests/test_modules.py::TestConflictDetector::test_detects_contradiction` → mock LLM yanıtıyla gerçek çelişki tespiti testi.
+    - [x] `tests/test_modules.py::TestGapAnalyzer::test_detects_missing_password_reset` → mock LLM testi.
 
 ---
 
@@ -398,24 +398,24 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 *   **Özet:** Önceliklendirme skorlamasıyla Product Backlog üretmek + tüm çıktıları Excel/DOCX/JSON formatlarında dışa aktarmak.
 *   **User Story:** Bir Proje Yöneticisi olarak, sistemden çıkan gereksinimlerin doğrudan Excel'e/DOCX'e aktarılabilmesini ve sprint planlama için kullanılabilecek puanlanmış bir Product Backlog'a dönüşmesini istiyorum, böylece haftalık planlama toplantısında manuel iş kalmasın.
 *   **Kabul Kriterleri (AC):**
-    - [ ] `BacklogGenerator().generate(report)` `list[dict]` döndürmeli; her dict `{"req_id", "title", "priority_score", "story_points", "type", "depends_on"}` içermeli.
-    - [ ] Skorlama formülü: `priority_score = priority_weight × type_weight × conflict_penalty × dependency_factor`.
-    - [ ] Excel export (`.xlsx`) Backlog'u tablo halinde, formül-doğrulama kuralları uygulanmış olarak üretmeli.
-    - [ ] DOCX export User Stories'i resmi şablon formatında (başlık, role, tablo) sunmalı.
-    - [ ] JSON export tüm `AnalysisReport`'u serialize etmeli (Pydantic `.model_dump_json()` ile).
-    - [ ] UI download sekmesinde 4 farklı dosya butonu olmalı: PDF (SRS), XLSX (Backlog), DOCX (Stories), JSON (Full Report).
+    - [x] `BacklogGenerator().generate(report)` `list[dict]` döndürmeli; her dict `{"req_id", "title", "priority_score", "story_points", "type", "depends_on"}` içermeli.
+    - [x] Skorlama formülü: `priority_score = priority_weight × type_weight × conflict_penalty × dependency_factor`.
+    - [x] Excel export (`.xlsx`) Backlog'u tablo halinde, formül-doğrulama kuralları uygulanmış olarak üretmeli.
+    - [x] DOCX export User Stories'i resmi şablon formatında (başlık, role, tablo) sunmalı.
+    - [x] JSON export tüm `AnalysisReport`'u serialize etmeli (Pydantic `.model_dump_json()` ile).
+    - [x] UI download sekmesinde 4 farklı dosya butonu olmalı: PDF (SRS), XLSX (Backlog), DOCX (Stories), JSON (Full Report).
 *   **Görevler:**
-    - [ ] `outputs/backlog_generator.py::BacklogGenerator.generate()` — skorlama mantığı:
+    - [x] `outputs/backlog_generator.py::BacklogGenerator.generate()` — skorlama mantığı:
         - `priority_weight = {HIGH: 3, MEDIUM: 2, LOW: 1}`
         - `type_weight = {FUNCTIONAL: 1.0, NON_FUNCTIONAL: 0.7}`
         - Çelişki listesinde geçen `req_id`'lere `× 1.5` (önce çözülsün diye yukarı çek).
-    - [ ] `outputs/exporters.py` (yeni dosya) içinde:
+    - [x] `outputs/exporters.py` (yeni dosya) içinde:
         - `export_backlog_xlsx(backlog, path)` — `openpyxl` ile.
         - `export_stories_docx(stories, path)` — `python-docx` ile.
         - `export_report_json(report, path)` — Pydantic JSON.
-    - [ ] `app.py`'a analiz sonrası 4 dosyayı paralel üretme adımı ekle.
-    - [ ] `ui/results.py::tab4`'e 4 ayrı `download_button` ekle.
-    - [ ] `tests/test_outputs.py::TestBacklogGenerator::test_priority_scoring` — bilinen senaryoyla skor hesaplaması doğrulansın.
+    - [x] `app.py`'a analiz sonrası 4 dosyayı paralel üretme adımı ekle.
+    - [x] `ui/results.py::tab4`'e 4 ayrı `download_button` ekle.
+    - [x] `tests/test_outputs.py::TestBacklogGenerator::test_priority_scoring` — bilinen senaryoyla skor hesaplaması doğrulansın.
 
 ### 🔵 Issue #20: UI Mimarisi 2.0 — Çoklu Sayfa ve Dosya Yükleme
 *   **Sorumlu:** **Agid Gülsever**
@@ -423,19 +423,19 @@ Bu döküman, projenin 6 haftalık hızlandırılmış geliştirme planını ve 
 *   **User Story:** Bir İş Analisti olarak, müşteriden e-posta ile gelen `.docx` ve `.pdf` toplantı notlarını sürükle-bırak ile yükleyip analiz edebilmek ve sonuçları "Giriş", "Analiz", "Sonuçlar", "Export" sayfaları arasında gezinebilmek istiyorum.
 *   **Kabul Kriterleri (AC):**
     - [ ] `streamlit run app.py` artık 4 ayrı sayfa açmalı: 📥 Girdi / 🔬 Analiz / 📊 Sonuçlar / 📤 Export.
-    - [ ] `.txt`, `.docx`, `.pdf` dosyaları yüklenebilmeli; metin otomatik çıkarılıp text_area'ya doldurulmalı.
+    - [x] `.txt`, `.docx`, `.pdf` dosyaları yüklenebilmeli; metin otomatik çıkarılıp text_area'ya doldurulmalı.
     - [ ] Sidebar'da gerçek zamanlı sayaç olmalı: gereksinim sayısı, çelişki sayısı, eksiklik sayısı.
     - [ ] Session state ile bir analiz, sayfalar arası gezildiğinde kaybolmamalı.
-    - [ ] `pyproject.toml` veya `requirements.txt`'e `python-docx` ve `pypdf` (zaten varsa atla) eklenmeli.
+    - [x] `pyproject.toml` veya `requirements.txt`'e `python-docx` ve `pypdf` (zaten varsa atla) eklenmeli.
 *   **Görevler:**
     - [ ] `app.py` → ana entry: `st.navigation` ile 4 sayfa tanımlayan ince orchestrator'a indirgen.
     - [ ] `ui/pages/01_input.py`, `02_analysis.py`, `03_results.py`, `04_export.py` (veya `pages/` klasörü) oluştur.
-    - [ ] `ui/file_loader.py` — `extract_text_from_upload(uploaded_file) -> str`:
+    - [x] `ui/file_loader.py` — `extract_text_from_upload(uploaded_file) -> str`:
         - `.txt` → direkt decode
         - `.docx` → `python-docx`
         - `.pdf` → `pypdf` veya `pdfplumber`
         - Diğer → `ValueError`.
-    - [ ] `ui/dashboard.py`'da `st.file_uploader(accept=[".txt", ".docx", ".pdf"])` widget'ı.
+    - [x] `ui/dashboard.py`'da `st.file_uploader(accept=[".txt", ".docx", ".pdf"])` widget'ı.
     - [ ] Sidebar'a `st.metric` ile canlı sayaçlar (`req_count`, `conflict_count`, `gap_count`, `cost_usd`).
     - [ ] `st.session_state` schema'sını standartlaştır ve `ui/state.py`'a çıkar.
     - [ ] Drag & drop UX testi: 3 farklı format dosya ile manuel doğrulama checklist'i.

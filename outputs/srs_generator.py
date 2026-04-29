@@ -229,9 +229,9 @@ class SRSGenerator(FPDF):
 
     def set_metadata(
         self,
-        title: str = "Software Requirements Specification",
+        title: str = "Yazılım Gereksinim Spesifikasyonu",
         author: str = "AutoReq",
-        subject: str = "SRS - ISO/IEC/IEEE 29148:2018",
+        subject: str = "Yazılım Gereksinim Spesifikasyonu - ISO/IEC/IEEE 29148:2018",
         creator: str = "AutoReq PDF Generator",
         creation_date: Optional[str] = None,
     ) -> None:
@@ -261,35 +261,22 @@ class SRSGenerator(FPDF):
             _log.debug("set_creation_date desteklenmiyor; atlanıyor.")
 
     def add_section_title(self, title: str) -> None:
-        """Bölüm başlığı satırı ekler.
-
-        Args:
-            title: Bölüm başlığı metni.
-        """
+        """Bölüm başlığı satırı ekler."""
         self._set_font_bold(14)
-        self.cell(0, 10, txt=title, ln=True)
+        self.cell(0, 10, text=title, ln=True)
         self.ln(2)
 
     def add_body_text(self, text: str) -> None:
-        """Normal gövde metni ekler.
-
-        Args:
-            text: Eklenecek metin.
-        """
+        """Normal gövde metni ekler."""
         self._set_font_normal(11)
-        self.multi_cell(0, 8, txt=text)
+        self.multi_cell(0, 8, text=text)
         self.ln(4)
 
     def add_bullet_item(self, text: str, indent: int = 10) -> None:
-        """Madde işaretli liste öğesi ekler.
-
-        Args:
-            text: Madde metni.
-            indent: Girintisi (mm).
-        """
+        """Madde işaretli liste öğesi ekler."""
         self._set_font_normal(11)
-        self.set_x(self.get_x() + indent)
-        self.multi_cell(0, 7, txt=f"• {text}")
+        self.set_x(self.l_margin + indent)
+        self.multi_cell(0, 7, text=f"• {text}")
 
     def add_table_row(self, cells: List[str], widths: Optional[List[int]] = None) -> None:
         """Basit tablo satırı ekler.
@@ -303,7 +290,7 @@ class SRSGenerator(FPDF):
             widths = [w] * len(cells)
         self._set_font_normal(10)
         for cell_text, width in zip(cells, widths):
-            self.cell(width, 8, txt=str(cell_text)[:60], border=1)
+            self.cell(width, 8, text=str(cell_text)[:60], border=1)
         self.ln()
 
 
@@ -319,7 +306,7 @@ def _render_intro_section(pdf: SRSGenerator, project_name: str = "AutoReq Projes
         pdf: SRS PDF nesnesi.
         project_name: Proje adı.
     """
-    pdf.add_section_title("1. Giriş (Introduction)")
+    pdf.add_section_title("1. Giriş")
     pdf.add_body_text(
         f"Bu belge, '{project_name}' yazılım projesine ait Yazılım Gereksinim "
         "Spesifikasyonunu (SRS) içermektedir. ISO/IEC/IEEE 29148:2018 standardına "
@@ -337,7 +324,7 @@ def _render_scope_section(pdf: SRSGenerator, total_req: int) -> None:
         pdf: SRS PDF nesnesi.
         total_req: Toplam gereksinim sayısı.
     """
-    pdf.add_section_title("2. Kapsam (Scope)")
+    pdf.add_section_title("2. Kapsam")
     pdf.add_body_text(
         f"Bu SRS belgesi {total_req} gereksinim cümlesini kapsamaktadır. "
         "Gereksinimler AutoReq NLP + LLM analiz pipeline'ı tarafından işlenmiştir."
@@ -523,11 +510,11 @@ def _render_conflicts_section(pdf: SRSGenerator, report: "AnalysisReport") -> No
         pdf.add_bullet_item(
             f"Çelişki #{idx} ({severity}) — Gereksinimler: {ids_str}"
         )
-        if reason: safe_reason = str(reason).replace("\n", " ").strip()
-    pdf.set_x(pdf.l_margin)
-    pdf.add_body_text(f"Gerekçe: {safe_reason[:300]}")
+        if reason: 
+            safe_reason = str(reason).replace("\n", " ").strip()
+            pdf.set_x(pdf.l_margin)
+            pdf.add_body_text(f"Gerekçe: {safe_reason[:300]}")
     
-
     pdf.ln(4)
 
 
@@ -616,8 +603,8 @@ def generate_srs(
         # Geriye dönük uyumluluk: statik demo
         _log.info("Statik demo SRS üretiliyor (report=None).")
         static_titles = [
-            "1. Giriş (Introduction)",
-            "2. Kapsam (Scope)",
+            "1. Giriş",
+            "2. Kapsam",
             "3. Genel Açıklama",
             "4. Fonksiyonel Gereksinimler",
             "5. Kullanıcı Özellikleri",
