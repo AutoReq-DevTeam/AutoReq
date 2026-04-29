@@ -12,6 +12,8 @@ from pathlib import Path
 
 import streamlit as st
 
+from ui.file_loader import extract_text_from_upload
+
 
 _SAMPLES_DIR = Path(__file__).parent.parent / "data" / "samples"
 
@@ -34,10 +36,7 @@ def _render_sample_loader() -> None:
     if not sample_files:
         return
 
-    options = {
-        _SAMPLE_LABELS.get(f.name, f"📄 {f.stem}"): f
-        for f in sample_files
-    }
+    options = {_SAMPLE_LABELS.get(f.name, f"📄 {f.stem}"): f for f in sample_files}
     label_list = ["— Örnek veri seç —"] + list(options.keys())
 
     selected_label = st.selectbox(
@@ -78,6 +77,7 @@ def render_dashboard():
 
     if "total_tokens_used" not in st.session_state:
         st.session_state.total_tokens_used = 0
+
     if "total_cost_usd" not in st.session_state:
         st.session_state.total_cost_usd = 0.0
 
@@ -86,7 +86,6 @@ def render_dashboard():
     st.sidebar.markdown("**Arayüz:** Hazır")
     st.sidebar.markdown("**Testler:** Çalışıyor")
 
-    # API Key durumu göstergesi
     if os.getenv("GEMINI_API_KEY"):
         st.sidebar.markdown("✅ **API Key:** OK")
     else:
@@ -114,6 +113,19 @@ def render_dashboard():
 
     with col2:
         analyze_btn = st.button("🚀 Analiz Et", type="primary", use_container_width=True)
+
+    uploaded_file = st.file_uploader(
+        "📂 Dosya yükle (.txt, .docx, .pdf)",
+        type=["txt", "docx", "pdf"],
+    )
+
+    if uploaded_file is not None:
+        try:
+            extracted_text = extract_text_from_upload(uploaded_file)
+            st.session_state.user_input = extracted_text
+            st.toast("Dosya yüklendi ve metin çıkarıldı ✅")
+        except ValueError as e:
+            st.error(str(e))
 
     user_text = st.text_area(
         label="Gereksinim metnini gir:",
