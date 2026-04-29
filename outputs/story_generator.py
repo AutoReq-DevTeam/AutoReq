@@ -4,7 +4,8 @@ Sorumlu: Halise İncir
 
 Açıklama:
 Analiz edilen fonksiyonel gereksinimleri çevik (Agile) geliştirme süreçlerine
-uygun "User Story" formatına dönüştürür.
+uygun "User Story" formatına dönüştürür. İsteğe bağlı olarak user_stories.docx
+dosyasına da export edilebilir.
 
 Çıktı formatı:
     [
@@ -22,10 +23,12 @@ Notlar:
 - Sadece req_type == "FUNCTIONAL" olan gereksinimler işlenir (token tasarrufu).
 - LLM çağrısı başarısız olursa ilgili gereksinim için fallback dict döner;
   pipeline çökmez (graceful degradation).
+- python-docx eksikse _export_to_docx() ImportError fırlatır (raporda uyarı verilir).
 """
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import List, Optional
 
 from loguru import logger
@@ -37,6 +40,9 @@ from modules.story_prompts import (
     build_story_generation_system_prompt,
     build_story_generation_user_prompt,
 )
+
+# Varsayılan çıktı dizini
+_GENERATED_DIR = Path(__file__).parent / "generated"
 
 _log = logger.bind(module="story_generator")
 
@@ -211,3 +217,86 @@ class StoryGenerator:
 
         _log.info("User story üretimi tamamlandı | stories={}", len(stories))
         return stories
+
+    def _export_to_docx(self, stories: List[dict], output_path: Path) -> Path:
+        """User Story listesini DOCX formatında dışa aktarır.
+
+        Her story için 'As a [role], I want [goal] so that [benefit].' formatında
+        başlık ve acceptance criteria tablosu içeren bir Word belgesi oluşturur.
+
+        Args:
+            stories: generate() metodundan dönen user story sözlük listesi.
+            output_path: Yazılacak .docx dosyasının tam yolu.
+
+        Returns:
+            Path: Yazılan dosyanın mutlak yolu.
+
+        Raises:
+            ImportError: python-docx paketi kurulu değilse.
+        """
+        try:
+            from docx import Document  # type: ignore
+            from docx.shared import Pt  # type: ignore
+        except ImportError as exc:
+            raise ImportError(
+                "python-docx paketi gerekli: pip install python-docx"
+            ) from exc
+
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        doc = Document()
+        doc.add_heading("AutoReq — User Stories", 0)
+        doc.add_paragraph(
+            f"Toplam {len(stories)} user story oluşturuldu. "
+            "Yalnızca FUNCTIONAL gereksinimler dahil edilmiştir."
+        )
+        doc.add_paragraph("")
+
+        for story in stories:
+            req_id = story.get("req_id", "REQ_??")
+            role = story.get("role", "kullanıcı")
+            goal = story.get("goal", "(hedef belirtilmedi)")
+            benefit = story.get("benefit", "(fayda belirtilmedi)")
+            acceptance_criteria: List[str] = story.get("acceptance_criteria") or []
+
+            # Story başlığı
+            heading = doc.add_heading(level=2)
+            heading.add_run(f"[{req_id}] ").bold = True
+            heading.add_run(f"As a {role}, I want {goal} so that {benefit}.")
+
+            # Acceptance Criteria
+            if acceptance_criteria:
+                doc.add_paragraph("Acceptance Criteria:", style="Intense Quote")
+                for criterion in acceptance_criteria:
+                    doc.add_paragraph(criterion, style="List Bullet")
+
+            doc.add_paragraph("")
+
+        doc.save(str(output_path))
+        _log.info("User Stories DOCX dosyası yazıldı | path={} stories={}", output_path, len(stories))
+        return output_path
+
+    def generate_and_export(
+        self,
+        report: AnalysisReport,
+        output_path: Optional[Path] = None,
+    ) -> tuple[List[dict], Path]:
+        """Gereksinimleri user story'lere dönüştürür ve DOCX'e dışa aktarır.
+
+        generate() ve _export_to_docx() metodlarını birleştiren kolaylaştırıcı metod.
+        Çıktı path'i belirtilmezse outputs/generated/user_stories.docx kullanılır.
+
+        Args:
+            report: NLP ve LLM analizleri tamamlanmış rapor nesnesi.
+            output_path: Kaydedilecek .docx dosya yolu. None ise varsayılan kullanılır.
+
+        Returns:
+            tuple[list[dict], Path]: (user_story_listesi, docx_dosya_yolu) çifti.
+        """
+        if output_path is None:
+            _GENERATED_DIR.mkdir(parents=True, exist_ok=True)
+            output_path = _GENERATED_DIR / "user_stories.docx"
+
+        stories = self.generate(report)
+        docx_path = self._export_to_docx(stories, output_path)
+        return stories, docx_path
