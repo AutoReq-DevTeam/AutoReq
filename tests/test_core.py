@@ -39,41 +39,44 @@ class TestEntityRecognizer:
         pass
 
 
+class DummyRequirement:
+    def __init__(self, text):
+        self.text = text
+        self.req_type = None
+        self.actors = []
+        self.objects = []
+
+
 def test_basic():
     assert True
-    from core.classifier import RequirementClassifier
 
 
-def test_classifier_raises_not_implemented():
+def test_classifier_marks_functional_requirement():
     classifier = RequirementClassifier()
+    req = DummyRequirement("Admin rapor oluşturur.")
 
-    class DummyRequirement:
-        def __init__(self, text):
-            self.text = text
+    result = classifier.classify(req)
 
-    req = DummyRequirement("Kullanıcı giriş yapabilmeli.")
-
-    try:
-        classifier.classify(req)
-    except NotImplementedError:
-        assert True
-    else:
-        assert False
-        from core.ner import EntityRecognizer
+    assert result is not None
+    assert result.req_type == "FUNCTIONAL"
 
 
-def test_ner_raises_not_implemented():
+def test_classifier_marks_non_functional_requirement():
+    classifier = RequirementClassifier()
+    req = DummyRequirement("Sistem hızlı çalışmalı ve yüksek performans sağlamalıdır.")
+
+    result = classifier.classify(req)
+
+    assert result is not None
+    assert result.req_type == "NON_FUNCTIONAL"
+
+
+def test_ner_returns_actor_list():
     ner = EntityRecognizer()
+    req = DummyRequirement("Kullanıcı şifresini sıfırlayabilmelidir.")
 
-    class DummyRequirement:
-        def __init__(self, text):
-            self.text = text
+    result = ner.recognize(req)
 
-    req = DummyRequirement("Kullanıcı profilini güncelleyebilir.")
-
-    try:
-        ner.recognize(req)
-    except NotImplementedError:
-        assert True
-    else:
-        assert False
+    assert result is not None
+    assert isinstance(result.actors, list)
+    assert "kullanıcı" in result.actors
