@@ -1,0 +1,2 @@
+Veritabanı yedeği günlük alınmalıdır.
+Haftalık yedek maliyeti düşük olduğu için haftalık yeterlidir.

@@ -1,0 +1,2 @@
+Yönetici tüm siparişleri görebilmelidir.
+Satıcı sadece kendi siparişlerini görebilmelidir; başkasının verisine erişemez.

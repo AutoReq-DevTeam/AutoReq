@@ -1,0 +1,2 @@
+Stok 0 altına düşmemelidir.
+Ön sipariş ile stok negatife inebilmelidir.

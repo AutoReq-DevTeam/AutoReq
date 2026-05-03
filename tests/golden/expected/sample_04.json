@@ -1,0 +1,13 @@
+{
+  "conflicts": [
+    {
+      "req_ids": [
+        "REQ_001",
+        "REQ_002"
+      ],
+      "conflict_type": "performance",
+      "reason": "5 sn ile 30 sn gecikme ifadeleri çelişiyor."
+    }
+  ],
+  "gaps": []
+}

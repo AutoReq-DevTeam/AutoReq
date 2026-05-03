@@ -1,0 +1,2 @@
+Parola en az 6 karakter olmalıdır.
+Parola en az 12 karakter ve karmaşıklık kurallarına uymalıdır.

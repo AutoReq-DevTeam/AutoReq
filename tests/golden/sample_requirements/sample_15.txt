@@ -1,0 +1,2 @@
+Tüm istekler ve yanıtlar ayrıntılı loglanmalıdır.
+Kredi kartı numarası loglara yazılmamalıdır.

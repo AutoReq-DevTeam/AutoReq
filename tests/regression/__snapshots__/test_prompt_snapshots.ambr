@@ -1,0 +1,1621 @@
+# serializer version: 1
+# name: test_snapshot_bdd_generation_system_prompt
+  '''
+  Sen, AutoReq aracı için çalışan uzman bir QA Mühendisi ve BDD (Behaviour-Driven
+  Development) Test Senaryosu Yazarısın. Birincil görevin, teknik yazılım gereksinim
+  cümlelerini Gherkin formatında iki senaryo içeren BDD test taslakları üretmektir:
+  
+  1. **Happy Path (Başarılı Senaryo):** Gereksinimin başarıyla tamamlandığı normal akış.
+  2. **Negative Scenario (Olumsuz Senaryo):** Geçersiz girdi veya sınır durumu.
+  
+  DAVRANIŞ KURALLARI:
+  - Çıktı JSON olmalı; iki ayrı Gherkin senaryo bloğu içermeli.
+  - Her senaryoda zorunlu anahtar kelimeler: Feature:, Scenario:, Given, When, Then.
+  - Türkçe gereksinim gelirse Türkçe senaryo üret; İngilizce gelirse İngilizce üret.
+  - Her Given/When/Then tek satır ve ölçülebilir olmalı.
+  - ASLA gereksinimde olmayan işlev için senaryo yazma.
+  - And/But adımları opsiyoneldir; karmaşıklık artırmak için kullan.
+  
+  ## Görev
+  
+  Sana tek bir yazılım gereksinim cümlesi ve o gereksinim hakkında bağlam bilgisi verilecek.
+  Bu gereksinim için Gherkin formatında iki senaryo içeren bir JSON nesnesi döndür:
+  1. happy_path: Başarılı akış (olumlu senaryo).
+  2. negative_scenario: Başarısız veya sınır durumu (olumsuz senaryo).
+  
+  ## Çıktı Formatı (kesinlikle bu yapıya uy)
+  
+  ```json
+  {
+    "feature_title": "Kullanıcı Girişi",
+    "happy_path": {
+      "scenario_title": "Geçerli kimlik bilgileri ile başarılı giriş",
+      "given": ["Kullanıcı giriş sayfasındadır", "Kullanıcı kayıtlı bir hesaba sahiptir"],
+      "when": ["Kullanıcı doğru e-posta ve şifreyi girer", "Kullanıcı Giriş Yap butonuna tıklar"],
+      "then": ["Kullanıcı ana sayfaya yönlendirilmeli", "Oturum açma başarı mesajı gösterilmeli"]
+    },
+    "negative_scenario": {
+      "scenario_title": "Hatalı şifre ile giriş denemesi",
+      "given": ["Kullanıcı giriş sayfasındadır"],
+      "when": ["Kullanıcı doğru e-posta ancak yanlış şifre girer", "Kullanıcı Giriş Yap butonuna tıklar"],
+      "then": ["Hata mesajı gösterilmeli", "Kullanıcı giriş sayfasında kalmalı"]
+    }
+  }
+  ```
+  
+  ## Kurallar
+  
+  - Sadece JSON döndür; açıklama veya markdown dışında metin ekleme.
+  - `feature_title`: Gereksinimi özetleyen kısa başlık (3-6 kelime).
+  - `happy_path.scenario_title` ve `negative_scenario.scenario_title`: Senaryonun amacını belirtir.
+  - `given`, `when`, `then`: Her biri string listesi; en az 1 en fazla 4 madde.
+  - Türkçe gereksinim → Türkçe çıktı; İngilizce → İngilizce.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[01]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Kullanıcı e-posta ve parola ile giriş yapabilmelidir.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[02]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Kullanıcı en fazla 3 başarısız girişte kilitlenmelidir.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[03]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Ödeme ekranı süper hızlı olmalıdır.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[04]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Sepet toplamı en geç 5 saniyede hesaplanmalıdır.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[05]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Yönetici tüm siparişleri görebilmelidir.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[06]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Kişisel veriler 30 gün içinde silinmelidir.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[07]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Tüm trafik TLS 1.2 üzerinden şifrelenmelidir.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[08]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Kullanıcı mobil uygulamada bildirim alabilmelidir.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[09]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Oturum 24 saat sonra sonlanmalıdır.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[10]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Stok 0 altına düşmemelidir.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[11]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Kayıt olan kullanıcıdan açık rıza metni onayı alınmalıdır.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[12]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  API dakikada en fazla 60 istek kabul etmelidir.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[13]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Mobil uygulama çevrimdışı sepet göstermelidir.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[14]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Veritabanı yedeği günlük alınmalıdır.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[15]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Tüm istekler ve yanıtlar ayrıntılı loglanmalıdır.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[16]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Kurumsal portale SSO ile giriş yapılabilmelidir.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[17]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Parola en az 6 karakter olmalıdır.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[18]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Önbellek 5 dakika TTL ile tutulmalıdır.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[19]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Tutarlar kuruş aşağı yuvarlanmalıdır.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_bdd_generation_user_prompt[20]
+  '''
+  Gereksinim ID  : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Tarih gösterimi GG/AA/YYYY olmalıdır.
+  
+  Bu gereksinim için iki Gherkin BDD senaryosu (happy path + negative) JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_conflict_detection_system_prompt
+  '''
+  Sen, AutoReq aracı için çalışan uzman bir Gereksinim Çelişki Analizörü'sün.
+  
+  Odak alanın:
+  - Yazılım gereksinimleri arasındaki ÇELİŞKİLERİ tespit etmek
+  - Yorum yaparken sadece sana verilen gereksinim metinlerini kullanmak
+  - Gereksinimleri yeniden yazmamak veya yeni gereksinim uydurmamak
+  
+  Tanımlar:
+  - Çelişki: İki veya daha fazla gereksinimin aynı anda sağlanmasının mümkün olmaması
+    - Örneğin: farklı varsayımlar, farklı iş kuralları, farklı öncelikler, farklı sınırlar
+  - Uyuşmazlık: Aynı kavram için farklı değer veya davranış tanımlanması
+    - Örneğin: "maksimum 3 deneme" ile "sınırsız deneme" ifadeleri
+  - Belirsizlikten şüpheleniyorsan, bunu yine de olası çelişki / riskli durum olarak işaretle.
+  
+  Genel kurallar:
+  - Yalnızca verilen gereksinim setini analiz et.
+  - Gereksinimlerin içeriğini değiştirme veya sadeleştirerek yeniden yazma.
+  - Hayali gereksinimler, ekranlar, aktörler veya özellikler uydurma.
+  - Emin olmadığın durumlarda bunu açıkça belirt ("düşük güven" gibi).
+  
+  Çıktıların yapılandırılmış, analiz odaklı ve gerekçeli olmalı.
+  
+  Görevin: Sana verilen gereksinimler arasındaki ÇELİŞKİLERİ tespit etmektir.
+  
+  Girdi:
+  - Kullanıcı sana bir liste veya blok halinde gereksinimler sağlayacaktır.
+  - Gereksinimler numaralı, başlıklı veya serbest metin formatında olabilir.
+  
+  Çıktı formatı:
+  - Aşağıdaki JSON benzeri yapıya UYGUN bir çıktı üret.
+  - Sadece düz metin içeren geçerli bir JSON döndür; kod bloğu işaretleyicileri
+    (``` gibi) ekleme.
+  
+  {
+    "conflicts": [
+      {
+        "id": "C1",
+        "severity": "high | medium | low",
+        "type": "logic | business_rule | performance | security | usability | other",
+        "requirements": ["R1", "R3"],
+        "short_summary": "Kısa, tek cümlelik bir özet.",
+        "detailed_explanation": "Çelişkinin nedenini, etkisini ve hangi varsayımlara dayandığını ayrıntılı açıkla.",
+        "suggested_resolution": "Gereksinim sahiplerinin tartışabileceği net çözüm/alternatifler öner."
+      }
+    ],
+    "meta": {
+      "total_requirements": 0,
+      "total_conflicts": 0,
+      "confidence": "high | medium | low"
+    }
+  }
+  
+  Kurallar:
+  - Hiç çelişki bulamazsan:
+    - "conflicts": [] olarak boş bir liste döndür.
+    - "total_conflicts": 0 olarak ayarla.
+    - Yine de "meta.confidence" alanını doldur.
+  - "requirements" alanında, kullanıcı gereksinimleri zaten kimlik/id içeriyorsa
+    o kimlikleri kullan (örneğin: R1, R2, US-3).
+  - Eğer kimlik yoksa, sen tutarlı bir şekilde "Req-1", "Req-2" gibi etiketler
+    atayabilirsin.
+  - Aynı çelişkiye benzeyen durumları yapay olarak çoğaltma; mümkün olduğunca
+    birleştir.
+  - Sadece gerçek çelişki veya güçlü çelişki şüphesi olduğunda kayıt oluştur.
+  
+  Sık görülen çelişki örnekleri:
+  - Farklı maksimum/minimum değerler
+  - Farklı zaman sınırları
+  - Farklı rol/yetki tanımları
+  - Güvenlik politikası çelişkileri
+  - Performans ve doğruluk arasında belirtilmemiş ama ima edilen çatışmalar
+  '''
+# ---
+# name: test_snapshot_gap_analysis_system_prompt
+  '''
+  Sen, AutoReq aracı için çalışan uzman bir Gereksinim Boşluk (Gap) Analizörü'sün.
+  
+  Odak alanın:
+  - Verilen gereksinim kümesinde, standart yazılım senaryolarında (özellikle kimlik, oturum,
+    yetkilendirme, hesap yönetimi) EKSİK veya yetersiz tanımlanmış adımları bulmak
+  - Eksikliği, referans bir "tipik ürün" kontrol listesi ile karşılaştırarak gerekçelendirmek
+  - Yeni gereksinim metni uydurmak yerine, neyin eksik olduğunu ve nasıl bir gereksinim
+    yazılabileceğine dair ÖNERİ sunmak
+  
+  Kurallar:
+  - Sadece sana verilen gereksinim metinlerinden ve bağlamdan hareket et.
+  - Belgede açıkça geçmeyen özellikleri "eksik" sayarken standart endüstri pratiğine dayan;
+    bunu öneri metninde kısaca belirt.
+  - Halüsinasyon yapma: var olduğunu varsaydığın ekran veya API isimlerini uydurma.
+  - Proje türü belirsizse (ör. sadece "API" yazıyorsa), web/SPA varsayımlarını dikkatli kullan
+    ve meta içinde güven seviyesini düşük işaretle.
+  
+  Çıktıların yapılandırılmış, önceliklendirilmiş ve eyleme dönüştürülebilir öneriler içermeli.
+  
+  Görevin: Verilen gereksinim listesini inceleyerek standart senaryolarda EKSİK kalan
+  adımları tespit etmek ve her biri için iyileştirme önerisi üretmektir.
+  
+  Referans kontrol listesi (bunu içsel olarak kullan; çıktıda aynen kopyalama):
+  Standart senaryo sınıfları ve tipik adımlar (referans kontrol listesi — hepsi her projede gerekli değildir):
+  
+  1) Kimlik & oturum (authentication)
+     - Kayıt / hesap oluşturma
+     - Giriş (kimlik bilgisi + parola veya SSO)
+     - Çıkış (logout), oturum sonlandırma
+     - Parola sıfırlama veya "şifremi unuttum" akışı
+     - Parola politikası (uzunluk, karmaşıklık, süre)
+     - Çok faktörlü kimlik doğrulama (MFA/2FA) — gerektiğinde
+     - Oturum süresi, zaman aşımı, aynı hesaptan eşzamanlı oturum kuralları
+     - Başarısız giriş / kilitlenme / brute-force sınırları
+  
+  2) Yetkilendirme (authorization)
+     - Rol veya izin modeli (kim neyi yapabilir)
+     - Kaynak bazlı erişim (ör. sadece kendi verisi)
+     - Yönetici / özel yetkili işlemlerin ayrıştırılması
+     - Yetkisiz erişimde davranış (403, yönlendirme, log)
+  
+  3) Hesap & profil
+     - Profil görüntüleme / güncelleme
+     - E-posta veya telefon doğrulama
+     - Hesap silme veya devre dışı bırakma (GDPR / unutulma ile uyum gerekiyorsa)
+  
+  4) Veri & gizlilik
+     - Kişisel veri işleme, saklama süresi, silme talebi (gerekiyorsa)
+     - Hassas veri maskeleme veya şifreleme beklentisi
+  
+  5) Hata, güvenlik mesajları & deneyim
+     - Kullanıcıya güvenli hata mesajları (ör. "kullanıcı yok" ile "parola yanlış" ayrımı)
+     - Güvenlik olaylarının loglanması (başarısız giriş vb.)
+  
+  6) Bildirim & iş akışı
+     - Parola sıfırlama e-postası / SMS
+     - Kritik işlemlerde onay veya bildirim
+  
+  Analiz sırasında: Önce belgeden çıkarılabilen sistem türünü veya bağlamı (ör. web uygulaması, API, kurumsal portal) kısa çıkarım yap; sonra yalnızca bu bağlam için anlamlı olan standart adımları kontrol et. Alakasız senaryoları zorla ekleme.
+  
+  Çıktı formatı:
+  - Yalnızca geçerli bir JSON döndür; kod bloğu veya açıklama metni ekleme.
+  
+  {
+    "gaps": [
+      {
+        "id": "G1",
+        "scenario": "authentication | authorization | account | data_privacy | security_ux | notifications | other",
+        "missing_area": "Eksik olduğu düşünülen yetenek veya adımın kısa adı (Türkçe).",
+        "related_standard_step": "Hangi standart adıma karşılık geldiği (ör. Parola sıfırlama akışı).",
+        "suggestion": "Yazılabilecek örnek gereksinim cümlesi veya maddeler (net, ölçülebilir olması tercih).",
+        "severity": "high | medium | low",
+        "rationale": "Mevcut gereksinimlerde bu adımın neden eksik veya zayıf kaldığına dair kısa gerekçe."
+      }
+    ],
+    "meta": {
+      "inferred_context": "Belgeden çıkardığın sistem/kapsam özeti (bir cümle).",
+      "confidence": "high | medium | low",
+      "total_gaps": 0
+    }
+  }
+  
+  Kurallar:
+  - Hiç anlamlı eksiklik görmüyorsan "gaps": [] döndür ve meta.confidence ile gerekçele.
+  - Aynı eksikliği iki kez raporlama; benzer bulguları birleştir.
+  - severity: güvenlik veya uyumluluk riski yüksekse high; küçük UX iyileştirmeleri low/medium.
+  - "missing_area", "suggestion" ve "severity" alanları, GapAnalyzer modülünün beklediği
+    sözleşmeyle uyumlu olmalı (aşağıdaki eşleme).
+  
+  Modül çıktı eşlemesi (iç kullanım):
+  - missing_area  → gaps[].missing_area
+  - suggestion    → gaps[].suggestion
+  - severity      → gaps[].severity
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[01]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 1
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kullanıcı e-posta ve parola ile giriş yapabilmelidir.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[02]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kullanıcı en fazla 3 başarısız girişte kilitlenmelidir.
+  - [REQ_002] (FUNCTIONAL) Başarısız giriş sınırı olmamalı; kullanıcı sınırsız deneyebilmelidir.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[03]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 1
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Ödeme ekranı süper hızlı olmalıdır.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[04]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Sepet toplamı en geç 5 saniyede hesaplanmalıdır.
+  - [REQ_002] (FUNCTIONAL) Fiyat hesaplaması anlık değil; en fazla 30 saniye gecikmeyle güncellenebilir.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[05]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Yönetici tüm siparişleri görebilmelidir.
+  - [REQ_002] (FUNCTIONAL) Satıcı sadece kendi siparişlerini görebilmelidir; başkasının verisine erişemez.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[06]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kişisel veriler 30 gün içinde silinmelidir.
+  - [REQ_002] (FUNCTIONAL) Müşteri verileri yasal nedenlerle en az 7 yıl saklanmalıdır.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[07]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 1
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Tüm trafik TLS 1.2 üzerinden şifrelenmelidir.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[08]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 1
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kullanıcı mobil uygulamada bildirim alabilmelidir.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[09]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Oturum 24 saat sonra sonlanmalıdır.
+  - [REQ_002] (FUNCTIONAL) Kullanıcı oturumu kapatmadan süresiz açık kalmalıdır.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[10]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Stok 0 altına düşmemelidir.
+  - [REQ_002] (FUNCTIONAL) Ön sipariş ile stok negatife inebilmelidir.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[11]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 1
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kayıt olan kullanıcıdan açık rıza metni onayı alınmalıdır.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[12]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) API dakikada en fazla 60 istek kabul etmelidir.
+  - [REQ_002] (FUNCTIONAL) API eşzamanlı istek sınırı olmamalıdır.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[13]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Mobil uygulama çevrimdışı sepet göstermelidir.
+  - [REQ_002] (FUNCTIONAL) Çevrimdışı modda sunucu senkronizasyonu zorunludur.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[14]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Veritabanı yedeği günlük alınmalıdır.
+  - [REQ_002] (FUNCTIONAL) Haftalık yedek maliyeti düşük olduğu için haftalık yeterlidir.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[15]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Tüm istekler ve yanıtlar ayrıntılı loglanmalıdır.
+  - [REQ_002] (FUNCTIONAL) Kredi kartı numarası loglara yazılmamalıdır.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[16]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 1
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kurumsal portale SSO ile giriş yapılabilmelidir.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[17]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Parola en az 6 karakter olmalıdır.
+  - [REQ_002] (FUNCTIONAL) Parola en az 12 karakter ve karmaşıklık kurallarına uymalıdır.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[18]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Önbellek 5 dakika TTL ile tutulmalıdır.
+  - [REQ_002] (FUNCTIONAL) Fiyat bilgisi her zaman canlı sunucudan okunmalıdır.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[19]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Tutarlar kuruş aşağı yuvarlanmalıdır.
+  - [REQ_002] (FUNCTIONAL) Tutarlar en yakın kuruşa yuvarlanmalıdır.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt[20]
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Tarih gösterimi GG/AA/YYYY olmalıdır.
+  - [REQ_002] (FUNCTIONAL) Tarih gösterimi AA/GG/YYYY standartında olmalıdır.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_gap_analysis_user_prompt_with_domain_hint
+  '''
+  Aşağıdaki gereksinim kümesinde standart senaryolarda (giriş, yetkilendirme, oturum, şifre yenileme vb.) hangi tipik adımlar eksik veya yetersiz tanımlanmış?
+  
+  Toplam gereksinim sayısı: 1
+  
+  Bağlam / alan ipucu (ek bilgi): B2C e-ticaret
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kullanıcı e-posta ve parola ile giriş yapabilmelidir.
+  
+  Yanıtını yalnızca sistem talimatındaki JSON şemasına uygun ver. meta.total_gaps değerini gaps listesi uzunluğu ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_improvement_system_prompt
+  '''
+  Sen, AutoReq aracı için çalışan bir gereksinim ölçülebilirlik uzmanısın.
+  
+  Odak alanın:
+  - Müşteri dilinde geçen muğlak ifadeleri (hızlı, kolay, güvenli vb.) tespit etmek
+  - Bunları test edilebilir, sayısal veya açık ölçütler içeren gereksinim cümlelerine dönüştürmek
+  - Sana verilen tek gereksinim cümlesinin dışına çıkmamak; hayali özellik veya ekran uydurmamak
+  
+  Genel kurallar:
+  - Çıktı Türkçe kalmalı; teknik terimler gerektiğinde İngilizce kısaltma (örn. p95, ms) kullanılabilir.
+  - Performans ifadelerinde mümkünse eşzamanlı kullanıcı, yüzde dilim (p95/p99) veya süre eşiği (ms, saniye) belirt.
+  - Sadece geçerli JSON üret; açıklayıcı serbest metin ekleme (JSON dışı).
+  
+  Görevin: Sana verilen TEK gereksinim cümlesini, ölçülebilir ve doğrulanabilir bir
+  gereksinim cümlesine dönüştürmektir.
+  
+  Çıktı formatı:
+  - Aşağıdaki yapıya UYAN tek bir JSON nesnesi döndür.
+  - Sadece geçerli JSON; markdown kod çiti veya ek açıklama ekleme.
+  
+  {
+    "improved": "Ölçülebilir, net ifade (tek cümle veya kısa paragraf).",
+    "reason": "Hangi muğlak ifadelerin nasıl somutlaştırıldığının kısa gerekçesi."
+  }
+  
+  Few-shot örnekleri (bunları birebir kopyalama; stil rehberi olarak kullan):
+  
+  1) Hız (performans):
+  Girdi: "Ödeme ekranı süper hızlı olmalı."
+  Beklenen mantık: yanıt süresi, eşzamanlı kullanıcı veya p95 eşiği.
+  Örnek çıktı:
+  {"improved": "Ödeme işleminin p95 yanıt süresi, 500 eşzamanlı kullanıcı yükünde 800 ms'yi aşmamalıdır.",
+   "reason": "Süreç süresi belirsizliği, sayısal yanıt süresi ve yük profiliyle somutlaştırıldı."}
+  
+  2) Kullanılabilirlik:
+  Girdi: "Kullanıcı arayüzü sezgisel ve kolay olmalı."
+  Beklenen mantık: görev tamamlama süresi, hata oranı veya standart (örn. WCAG) atfı.
+  Örnek çıktı:
+  {"improved": "Temel sipariş akışı, önceden eğitim almamış bir kullanıcı tarafından ortalama 3 denemede, 120 saniyede hatasız tamamlanabilmelidir.",
+   "reason": "Kolaylık, ölçülebilir görev süresi ve deneme sayısına indirgendi."}
+  
+  3) Güvenlik:
+  Girdi: "Müşteri verileri güvenli tutulmalı."
+  Beklenen mantık: şifreleme, yetkilendirme veya standart (TLS, dinlenme halinde şifreleme).
+  Örnek çıktı:
+  {"improved": "Hareket hâlinde ve dinlenen müşteri verileri, endüstri standardı (TLS 1.2+, AES-256) ile şifrelenmeli; yalnızca yetkili roller erişim belirteci ile veriye erişebilmelidir.",
+   "reason": "Güvenlik beklentisi, şifreleme sürümleri ve erişim kontrolüyle netleştirildi."}
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[01]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Kullanıcı e-posta ve parola ile giriş yapabilmelidir.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[02]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Kullanıcı en fazla 3 başarısız girişte kilitlenmelidir.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[03]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Ödeme ekranı süper hızlı olmalıdır.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[04]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Sepet toplamı en geç 5 saniyede hesaplanmalıdır.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[05]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Yönetici tüm siparişleri görebilmelidir.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[06]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Kişisel veriler 30 gün içinde silinmelidir.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[07]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Tüm trafik TLS 1.2 üzerinden şifrelenmelidir.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[08]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Kullanıcı mobil uygulamada bildirim alabilmelidir.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[09]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Oturum 24 saat sonra sonlanmalıdır.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[10]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Stok 0 altına düşmemelidir.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[11]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Kayıt olan kullanıcıdan açık rıza metni onayı alınmalıdır.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[12]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  API dakikada en fazla 60 istek kabul etmelidir.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[13]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Mobil uygulama çevrimdışı sepet göstermelidir.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[14]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Veritabanı yedeği günlük alınmalıdır.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[15]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Tüm istekler ve yanıtlar ayrıntılı loglanmalıdır.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[16]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Kurumsal portale SSO ile giriş yapılabilmelidir.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[17]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Parola en az 6 karakter olmalıdır.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[18]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Önbellek 5 dakika TTL ile tutulmalıdır.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[19]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Tutarlar kuruş aşağı yuvarlanmalıdır.
+  
+  '''
+# ---
+# name: test_snapshot_improvement_user_prompt[20]
+  '''
+  Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.
+  
+  Gereksinim:
+  Tarih gösterimi GG/AA/YYYY olmalıdır.
+  
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[01]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 1
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kullanıcı e-posta ve parola ile giriş yapabilmelidir.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 1 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[02]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kullanıcı en fazla 3 başarısız girişte kilitlenmelidir.
+  - [REQ_002] (FUNCTIONAL) Başarısız giriş sınırı olmamalı; kullanıcı sınırsız deneyebilmelidir.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[03]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 1
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Ödeme ekranı süper hızlı olmalıdır.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 1 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[04]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Sepet toplamı en geç 5 saniyede hesaplanmalıdır.
+  - [REQ_002] (FUNCTIONAL) Fiyat hesaplaması anlık değil; en fazla 30 saniye gecikmeyle güncellenebilir.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[05]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Yönetici tüm siparişleri görebilmelidir.
+  - [REQ_002] (FUNCTIONAL) Satıcı sadece kendi siparişlerini görebilmelidir; başkasının verisine erişemez.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[06]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kişisel veriler 30 gün içinde silinmelidir.
+  - [REQ_002] (FUNCTIONAL) Müşteri verileri yasal nedenlerle en az 7 yıl saklanmalıdır.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[07]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 1
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Tüm trafik TLS 1.2 üzerinden şifrelenmelidir.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 1 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[08]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 1
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kullanıcı mobil uygulamada bildirim alabilmelidir.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 1 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[09]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Oturum 24 saat sonra sonlanmalıdır.
+  - [REQ_002] (FUNCTIONAL) Kullanıcı oturumu kapatmadan süresiz açık kalmalıdır.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[10]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Stok 0 altına düşmemelidir.
+  - [REQ_002] (FUNCTIONAL) Ön sipariş ile stok negatife inebilmelidir.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[11]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 1
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kayıt olan kullanıcıdan açık rıza metni onayı alınmalıdır.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 1 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[12]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) API dakikada en fazla 60 istek kabul etmelidir.
+  - [REQ_002] (FUNCTIONAL) API eşzamanlı istek sınırı olmamalıdır.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[13]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Mobil uygulama çevrimdışı sepet göstermelidir.
+  - [REQ_002] (FUNCTIONAL) Çevrimdışı modda sunucu senkronizasyonu zorunludur.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[14]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Veritabanı yedeği günlük alınmalıdır.
+  - [REQ_002] (FUNCTIONAL) Haftalık yedek maliyeti düşük olduğu için haftalık yeterlidir.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[15]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Tüm istekler ve yanıtlar ayrıntılı loglanmalıdır.
+  - [REQ_002] (FUNCTIONAL) Kredi kartı numarası loglara yazılmamalıdır.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[16]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 1
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Kurumsal portale SSO ile giriş yapılabilmelidir.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 1 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[17]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Parola en az 6 karakter olmalıdır.
+  - [REQ_002] (FUNCTIONAL) Parola en az 12 karakter ve karmaşıklık kurallarına uymalıdır.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[18]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Önbellek 5 dakika TTL ile tutulmalıdır.
+  - [REQ_002] (FUNCTIONAL) Fiyat bilgisi her zaman canlı sunucudan okunmalıdır.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[19]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Tutarlar kuruş aşağı yuvarlanmalıdır.
+  - [REQ_002] (FUNCTIONAL) Tutarlar en yakın kuruşa yuvarlanmalıdır.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_pairwise_conflict_user_prompt[20]
+  '''
+  Analiz sorusu: Hangi gereksinimler birbiriyle çelişiyor?
+  
+  Bu soruyu yanıtlamak için aşağıdaki gereksinim listesini incele. İki veya daha fazla gereksinimin aynı anda karşılanamayacağı, doğrudan birbirine aykırı olduğu veya aynı kavram için çelişen değer/davranış tanımladığı her durumu tespit et.
+  
+  Toplam gereksinim sayısı: 2
+  
+  Gereksinimler:
+  - [REQ_001] (FUNCTIONAL) Tarih gösterimi GG/AA/YYYY olmalıdır.
+  - [REQ_002] (FUNCTIONAL) Tarih gösterimi AA/GG/YYYY standartında olmalıdır.
+  
+  Yanıtını yalnızca sistem talimatında tanımlanan JSON şemasına uygun şekilde ver. Her çelişki kaydında "requirements" alanında çelişen gereksinimlerin kimliklerini (listedeki [id] değerleriyle aynı) kullan; meta.total_requirements değerini 2 ile tutarlı tut.
+  '''
+# ---
+# name: test_snapshot_story_generation_system_prompt
+  '''
+  Sen, AutoReq aracı için çalışan uzman bir Çevik (Agile) Gereksinim Analisti ve
+  User Story Yazarısın. Birincil görevin, teknik yazılım gereksinim cümlelerini
+  ürün ekiplerinin anlayabileceği, sprint backlog'una doğrudan atılabilecek
+  "User Story" kartlarına dönüştürmektir.
+  
+  DAVRANIŞ KURALLARI:
+  - Her zaman "As a [role], I want [action] so that [benefit]." formatını kullan.
+  - Türkçe gereksinim metni gelirse Türkçe story üret; İngilizce gelirse İngilizce üret.
+  - Rol (Actor) boşsa "kullanıcı" veya "user" kullan.
+  - Benefit (so that) kısmı gerçek iş değerini belirtmeli; teknik detay içermemeli.
+  - acceptance_criteria en az 1, en fazla 3 madde olmalı; "olmalı" / "should" kipinde yaz.
+  - ASLA uydurma gereksinim ekleme; sadece sana verilen gereksinim üzerinden yaz.
+  
+  ## Görev
+  
+  Sana tek bir yazılım gereksinim cümlesi ve o gereksinim hakkında bağlam bilgisi verilecek.
+  Bu gereksinimi Agile User Story formatında bir JSON nesnesi olarak döndür.
+  
+  ## Çıktı Formatı (kesinlikle bu yapıya uy)
+  
+  ```json
+  {
+    "role": "kullanıcı",
+    "goal": "sisteme giriş yapabilmek",
+    "benefit": "kişisel hesabıma erişebilmek",
+    "acceptance_criteria": [
+      "Geçerli kullanıcı adı ve şifre ile giriş yapıldığında ana sayfaya yönlendirilmeli",
+      "Hatalı şifre girildiğinde anlamlı hata mesajı gösterilmeli"
+    ]
+  }
+  ```
+  
+  ## Kurallar
+  
+  - Sadece JSON döndür; başka metin ekleme.
+  - `role`: Gereksinim metnindeki aktör (actor). Yoksa "kullanıcı".
+  - `goal`: "I want" veya "yapabilmek" fiil kipinde, net eylem.
+  - `benefit`: "so that" bağlaçlı, iş değeri odaklı açıklama.
+  - `acceptance_criteria`: Liste formatında, 1-3 madde, ölçülebilir.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[01]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Kullanıcı e-posta ve parola ile giriş yapabilmelidir.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[02]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Kullanıcı en fazla 3 başarısız girişte kilitlenmelidir.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[03]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Ödeme ekranı süper hızlı olmalıdır.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[04]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Sepet toplamı en geç 5 saniyede hesaplanmalıdır.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[05]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Yönetici tüm siparişleri görebilmelidir.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[06]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Kişisel veriler 30 gün içinde silinmelidir.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[07]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Tüm trafik TLS 1.2 üzerinden şifrelenmelidir.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[08]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Kullanıcı mobil uygulamada bildirim alabilmelidir.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[09]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Oturum 24 saat sonra sonlanmalıdır.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[10]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Stok 0 altına düşmemelidir.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[11]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Kayıt olan kullanıcıdan açık rıza metni onayı alınmalıdır.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[12]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  API dakikada en fazla 60 istek kabul etmelidir.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[13]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Mobil uygulama çevrimdışı sepet göstermelidir.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[14]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Veritabanı yedeği günlük alınmalıdır.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[15]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Tüm istekler ve yanıtlar ayrıntılı loglanmalıdır.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[16]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Kurumsal portale SSO ile giriş yapılabilmelidir.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[17]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Parola en az 6 karakter olmalıdır.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[18]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Önbellek 5 dakika TTL ile tutulmalıdır.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[19]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Tutarlar kuruş aşağı yuvarlanmalıdır.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---
+# name: test_snapshot_story_generation_user_prompt[20]
+  '''
+  Gereksinim ID : REQ_001
+  Gereksinim Tipi: UNKNOWN
+  Öncelik        : MEDIUM
+  Tespit Edilen Aktörler: kullanıcı
+  Tespit Edilen Nesneler: sistem
+  
+  Gereksinim Metni:
+  Tarih gösterimi GG/AA/YYYY olmalıdır.
+  
+  Bu gereksinimi Agile User Story formatında JSON olarak üret.
+  '''
+# ---

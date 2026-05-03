@@ -1,0 +1,11 @@
+{
+  "conflicts": [],
+  "gaps": [
+    {
+      "missing_area": "Bildirim izinleri",
+      "suggestion": "İşletim sistemi bildirim izni ve kullanıcı tercihleri akışı tanımlanmalıdır.",
+      "severity": "medium",
+      "scenario": "notifications"
+    }
+  ]
+}

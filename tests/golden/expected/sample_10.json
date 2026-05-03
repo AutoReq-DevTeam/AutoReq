@@ -1,0 +1,13 @@
+{
+  "conflicts": [
+    {
+      "req_ids": [
+        "REQ_001",
+        "REQ_002"
+      ],
+      "conflict_type": "business_rule",
+      "reason": "Negatif stok ile sıfır altı yasağı çelişir."
+    }
+  ],
+  "gaps": []
+}

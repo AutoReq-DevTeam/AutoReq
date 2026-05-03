@@ -1,0 +1,13 @@
+{
+  "conflicts": [
+    {
+      "req_ids": [
+        "REQ_001",
+        "REQ_002"
+      ],
+      "conflict_type": "other",
+      "reason": "Günlük ve haftalık yedekleme çelişir."
+    }
+  ],
+  "gaps": []
+}

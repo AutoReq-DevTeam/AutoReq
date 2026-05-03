@@ -1,0 +1,11 @@
+{
+  "conflicts": [],
+  "gaps": [
+    {
+      "missing_area": "Parola sıfırlama",
+      "suggestion": "Şifremi unuttum akışı ve parola yenileme e-postası tanımlanmalıdır.",
+      "severity": "high",
+      "scenario": "authentication"
+    }
+  ]
+}

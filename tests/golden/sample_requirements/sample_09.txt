@@ -1,0 +1,2 @@
+Oturum 24 saat sonra sonlanmalıdır.
+Kullanıcı oturumu kapatmadan süresiz açık kalmalıdır.

@@ -1,0 +1,2 @@
+API dakikada en fazla 60 istek kabul etmelidir.
+API eşzamanlı istek sınırı olmamalıdır.

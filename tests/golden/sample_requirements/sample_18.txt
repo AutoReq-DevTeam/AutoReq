@@ -1,0 +1,2 @@
+Önbellek 5 dakika TTL ile tutulmalıdır.
+Fiyat bilgisi her zaman canlı sunucudan okunmalıdır.

@@ -1,0 +1,2 @@
+Tutarlar kuruş aşağı yuvarlanmalıdır.
+Tutarlar en yakın kuruşa yuvarlanmalıdır.

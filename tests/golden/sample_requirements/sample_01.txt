@@ -1,0 +1,1 @@
+Kullanıcı e-posta ve parola ile giriş yapabilmelidir.

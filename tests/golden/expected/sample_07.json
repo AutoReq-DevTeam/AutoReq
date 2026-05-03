@@ -1,0 +1,11 @@
+{
+  "conflicts": [],
+  "gaps": [
+    {
+      "missing_area": "Sertifika yenileme ve HSTS",
+      "suggestion": "TLS dışında sertifika yönetimi ve HSTS politikası eklenmelidir.",
+      "severity": "low",
+      "scenario": "data_privacy"
+    }
+  ]
+}

@@ -40,3 +40,4 @@ pydantic>=2.6.0       # Veri doğrulama
 # --- Test ---
 pytest>=8.0.0
 pytest-cov>=4.1.0
+syrupy>=4.6.0  # Issue #22: prompt regression snapshot tests

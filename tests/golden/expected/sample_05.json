@@ -1,0 +1,11 @@
+{
+  "conflicts": [],
+  "gaps": [
+    {
+      "missing_area": "Rol modeli netliği",
+      "suggestion": "Yönetici ve satıcı rolleri için veri görünürlüğü matrisi açıkça yazılmalıdır.",
+      "severity": "medium",
+      "scenario": "authorization"
+    }
+  ]
+}
