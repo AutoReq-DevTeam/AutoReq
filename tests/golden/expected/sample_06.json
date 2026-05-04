@@ -1,0 +1,13 @@
+{
+  "conflicts": [
+    {
+      "req_ids": [
+        "REQ_001",
+        "REQ_002"
+      ],
+      "conflict_type": "business_rule",
+      "reason": "30 gün silme ile 7 yıl saklama çelişiyor."
+    }
+  ],
+  "gaps": []
+}

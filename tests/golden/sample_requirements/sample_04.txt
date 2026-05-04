@@ -1,0 +1,2 @@
+Sepet toplamı en geç 5 saniyede hesaplanmalıdır.
+Fiyat hesaplaması anlık değil; en fazla 30 saniye gecikmeyle güncellenebilir.

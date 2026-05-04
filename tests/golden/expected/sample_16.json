@@ -1,0 +1,11 @@
+{
+  "conflicts": [],
+  "gaps": [
+    {
+      "missing_area": "MFA / Out-of-band",
+      "suggestion": "SSO sonrası hassas işlemlerde ek doğrulama gereksinimi tanımlanmalıdır.",
+      "severity": "medium",
+      "scenario": "authentication"
+    }
+  ]
+}

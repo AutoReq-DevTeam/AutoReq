@@ -1,0 +1,1 @@
+Kurumsal portale SSO ile giriş yapılabilmelidir.

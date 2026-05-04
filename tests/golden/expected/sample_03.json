@@ -1,0 +1,11 @@
+{
+  "conflicts": [],
+  "gaps": [
+    {
+      "missing_area": "Ölçülebilir performans eşiği",
+      "suggestion": "p95 yanıt süresi ve eşzamanlı kullanıcı sayısı sayısal olarak belirtilmelidir.",
+      "severity": "medium",
+      "scenario": "other"
+    }
+  ]
+}

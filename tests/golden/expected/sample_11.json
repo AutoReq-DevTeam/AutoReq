@@ -1,0 +1,11 @@
+{
+  "conflicts": [],
+  "gaps": [
+    {
+      "missing_area": "Veri işleme amaçları",
+      "suggestion": "Açık rıza metninde hangi kişisel verilerin hangi amaçla işleneceği listelenmelidir.",
+      "severity": "high",
+      "scenario": "data_privacy"
+    }
+  ]
+}

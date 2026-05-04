@@ -1,0 +1,1 @@
+Kayıt olan kullanıcıdan açık rıza metni onayı alınmalıdır.

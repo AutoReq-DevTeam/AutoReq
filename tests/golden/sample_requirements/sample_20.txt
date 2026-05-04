@@ -1,0 +1,2 @@
+Tarih gösterimi GG/AA/YYYY olmalıdır.
+Tarih gösterimi AA/GG/YYYY standartında olmalıdır.

@@ -1,0 +1,2 @@
+Mobil uygulama çevrimdışı sepet göstermelidir.
+Çevrimdışı modda sunucu senkronizasyonu zorunludur.

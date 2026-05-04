@@ -1,0 +1,2 @@
+Kişisel veriler 30 gün içinde silinmelidir.
+Müşteri verileri yasal nedenlerle en az 7 yıl saklanmalıdır.

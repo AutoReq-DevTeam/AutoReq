@@ -1,0 +1,13 @@
+{
+  "conflicts": [
+    {
+      "req_ids": [
+        "REQ_001",
+        "REQ_002"
+      ],
+      "conflict_type": "usability",
+      "reason": "Çevrimdışı ile zorunlu senkron çelişir."
+    }
+  ],
+  "gaps": []
+}

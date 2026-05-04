@@ -1,0 +1,2 @@
+Kullanıcı en fazla 3 başarısız girişte kilitlenmelidir.
+Başarısız giriş sınırı olmamalı; kullanıcı sınırsız deneyebilmelidir.

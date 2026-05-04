@@ -41,5 +41,6 @@ pydantic>=2.6.0       # Veri doğrulama
 pytest>=8.0.0
 pytest-cov>=4.1.0
 pypdf>=4.0.0
+syrupy>=4.6.0  # Issue #22: prompt regression snapshot tests
 
 openai>=1.0.0
