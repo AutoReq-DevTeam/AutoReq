@@ -23,6 +23,7 @@ Notlar:
 
 from __future__ import annotations
 
+import concurrent.futures
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
@@ -35,6 +36,8 @@ from modules.llm_response_utils import extract_json_object
 from modules.bdd_prompts import (
     build_bdd_generation_system_prompt,
     build_bdd_generation_user_prompt,
+    build_bdd_generation_batch_system_prompt,
+    build_bdd_generation_batch_user_prompt,
 )
 
 _log = logger.bind(module="bdd_generator")
@@ -157,11 +160,20 @@ def _normalize_llm_payload(payload: dict, req_id: str) -> List[str]:
 # ---------------------------------------------------------------------------
 
 
+_BDD_CHUNK_SIZE = 10
+_BDD_BATCH_MAX_TOKENS = 4096
+
+
+def _chunk_list(lst: List, size: int) -> List[List]:
+    return [lst[i:i + size] for i in range(0, len(lst), size)]
+
+
 class BDDGenerator:
     """Fonksiyonel gereksinimlerden Gherkin formatında BDD senaryoları üretir.
 
     LLM (Gemini) kullanarak her FUNCTIONAL gereksinim için en az 1 happy path
     ve 1 negative senaryo içeren Gherkin metin blokları üretir.
+    Gereksinimler chunk'lara bölünerek paralel LLM çağrılarıyla işlenir.
 
     Args:
         llm_client: Dışarıdan enjekte edilebilir LLM istemcisi (test/DI için).
@@ -172,16 +184,8 @@ class BDDGenerator:
         self._llm_client = llm_client
 
     def _get_client(self) -> LLMClient:
-        """Lazy-init: istemciyi ilk ihtiyaç anında oluşturur.
-
-        Returns:
-            LLMClient: Yapılandırılmış LLM istemcisi.
-
-        Raises:
-            LLMClientError: API key tanımlı değilse.
-        """
         if self._llm_client is None:
-            self._llm_client = LLMClient()
+            self._llm_client = LLMClient(max_output_tokens=_BDD_BATCH_MAX_TOKENS)
         return self._llm_client
 
     def _generate_single_bdd(self, req: Requirement) -> List[str]:
@@ -227,11 +231,72 @@ class BDDGenerator:
 
         return _normalize_llm_payload(payload, req.id)
 
+    def _process_chunk(self, chunk: List[Requirement]) -> List[str]:
+        """Tek bir chunk için LLM çağrısı yapar ve Gherkin blokları döner."""
+        system_prompt = build_bdd_generation_batch_system_prompt()
+        user_prompt = build_bdd_generation_batch_user_prompt(chunk)
+        client = self._get_client()
+
+        response = client.chat(
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            metadata={"module": "bdd_generator", "action": "batch_generate_bdd"},
+        )
+
+        raw = extract_json_object(response.content)
+        items = raw if isinstance(raw, list) else (list(raw.values())[0] if isinstance(raw, dict) and raw else [])
+
+        req_index = {r.id: r for r in chunk}
+        scenarios: List[str] = []
+        returned_ids: set = set()
+
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            req_id = item.get("req_id", "")
+            returned_ids.add(req_id)
+            scenarios.extend(_normalize_llm_payload(item, req_id))
+
+        for req in chunk:
+            if req.id not in returned_ids:
+                _log.warning("Chunk yanıtında req_id eksik, fallback | req_id={}", req.id)
+                scenarios.extend(_make_fallback_gherkin(req_index[req.id]))
+
+        return scenarios
+
+    def _generate_batch_bdd(self, reqs: List[Requirement]) -> List[str]:
+        """Gereksinimleri chunk'lara bölerek paralel LLM çağrılarıyla Gherkin bloklarına dönüştürür.
+
+        Args:
+            reqs: BDD senaryosuna dönüştürülecek Requirement listesi.
+
+        Returns:
+            list[str]: Gherkin formatında senaryo blokları (giriş sırasıyla).
+        """
+        chunks = _chunk_list(reqs, _BDD_CHUNK_SIZE)
+
+        if len(chunks) == 1:
+            return self._process_chunk(chunks[0])
+
+        _log.info("BDD üretimi {} chunk'a bölündü, paralel işleniyor", len(chunks))
+        with concurrent.futures.ThreadPoolExecutor(max_workers=len(chunks)) as executor:
+            futures = [executor.submit(self._process_chunk, chunk) for chunk in chunks]
+            results: List[str] = []
+            for future in futures:
+                try:
+                    results.extend(future.result())
+                except (LLMClientError, ValueError) as exc:
+                    chunk_idx = futures.index(future)
+                    _log.warning("BDD chunk {} başarısız, fallback | hata={}", chunk_idx, exc)
+                    for req in chunks[chunk_idx]:
+                        results.extend(_make_fallback_gherkin(req))
+        return results
+
     def generate(self, report: AnalysisReport) -> List[str]:
         """AnalysisReport içindeki FUNCTIONAL gereksinimleri Gherkin BDD senaryolarına dönüştürür.
 
-        Her gereksinim için LLM'e ayrı çağrı yapılır. LLM hatası durumunda
-        o gereksinim için fallback Gherkin metni eklenir; pipeline çökmez.
+        Tüm gereksinimler tek bir toplu LLM çağrısıyla işlenir.
+        LLM hatası durumunda tüm gereksinimler için fallback Gherkin metni döner.
 
         Args:
             report: NLP ve LLM analizleri tamamlanmış rapor nesnesi.
@@ -255,23 +320,19 @@ class BDDGenerator:
             return []
 
         _log.info(
-            "BDD üretimi başlatıldı | functional_count={}",
+            "BDD toplu üretimi başlatıldı | functional_count={}",
             len(functional_reqs),
         )
 
-        scenarios: List[str] = []
-
-        for req in functional_reqs:
-            try:
-                blocks = self._generate_single_bdd(req)
-                scenarios.extend(blocks)
-                _log.debug("BDD senaryoları üretildi | req_id={} blocks={}", req.id, len(blocks))
-            except (LLMClientError, ValueError) as exc:
-                _log.warning(
-                    "BDD senaryosu üretilemedi, fallback kullanılıyor | req_id={} hata={}",
-                    req.id,
-                    exc,
-                )
+        try:
+            scenarios = self._generate_batch_bdd(functional_reqs)
+        except (LLMClientError, ValueError) as exc:
+            _log.warning(
+                "Toplu BDD üretimi başarısız, tüm req'ler için fallback | hata={}",
+                exc,
+            )
+            scenarios = []
+            for req in functional_reqs:
                 scenarios.extend(_make_fallback_gherkin(req))
 
         _log.info("BDD üretimi tamamlandı | toplam_blok={}", len(scenarios))

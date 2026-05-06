@@ -48,6 +48,8 @@ _FONT_CANDIDATES: List[Path] = [
     # macOS (standard + supplemental)
     Path("/System/Library/Fonts/Supplemental/Arial.ttf"),
     Path("/Library/Fonts/Arial.ttf"),
+    # Arch Linux (uppercase TTF/)
+    Path("/usr/share/fonts/TTF/DejaVuSans.ttf"),
     # Linux (Debian/Ubuntu)
     Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
     Path("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf"),
@@ -58,8 +60,12 @@ _FONT_CANDIDATES: List[Path] = [
 _FONT_BOLD_CANDIDATES: List[Path] = [
     Path(r"C:\Windows\Fonts\arialbd.ttf"),
     Path("/System/Library/Fonts/Supplemental/Arial Bold.ttf"),
+    # Arch Linux (uppercase TTF/)
+    Path("/usr/share/fonts/TTF/DejaVuSans-Bold.ttf"),
+    # Debian/Ubuntu
     Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
     Path("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"),
+    # Fedora/RHEL
     Path("/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf"),
 ]
 
@@ -154,9 +160,9 @@ class SRSGenerator(FPDF):
         """
         if self._font_regular and self._font_regular.exists():
             try:
-                self.add_font(self._font_name, "", str(self._font_regular), uni=True)
+                self.add_font(self._font_name, "", str(self._font_regular))
                 if self._font_bold and self._font_bold.exists():
-                    self.add_font(self._font_name, "B", str(self._font_bold), uni=True)
+                    self.add_font(self._font_name, "B", str(self._font_bold))
                 self._has_custom_font = True
             except Exception as exc:  # pragma: no cover
                 _log.warning("Font yüklenemedi, Helvetica kullanılacak | hata={}", exc)
@@ -195,8 +201,9 @@ class SRSGenerator(FPDF):
             self.ln(10)
 
         self._set_font_bold(15)
-        self.cell(0, 10, "Yazılım Gereksinim Spesifikasyonu (SRS)", border=False, ln=1, align="C")
+        self.cell(0, 10, "Yaz\u0131l\u0131m Gereksinim Spesifikasyonu (SRS)", border=False, new_x="LMARGIN", new_y="NEXT", align="C")
         self.ln(5)
+
 
         # DRAFT filigranı (Issue #23)
         if self._draft_watermark:
@@ -263,7 +270,7 @@ class SRSGenerator(FPDF):
     def add_section_title(self, title: str) -> None:
         """Bölüm başlığı satırı ekler."""
         self._set_font_bold(14)
-        self.cell(0, 10, text=title, ln=True)
+        self.cell(0, 10, text=title, new_x="LMARGIN", new_y="NEXT")
         self.ln(2)
 
     def add_body_text(self, text: str) -> None:

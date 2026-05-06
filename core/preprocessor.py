@@ -17,6 +17,9 @@ from .nlp_engine import get_shared_stanza_pipeline
 
 _log = logger.bind(module="preprocessor")
 
+# Maksimum girdi uzunluğu (karakter sayısı); aşılırsa uyarı verilip kırpılır
+_MAX_TEXT_LENGTH: int = 100_000
+
 
 class TextPreprocessor:
     """Ham metni ayrıştırır ve Requirement listesine dönüştürür."""
@@ -44,13 +47,18 @@ class TextPreprocessor:
         _log.info("TextPreprocessor hazır.")
 
     def process(self, raw_text: str) -> ParsedDocument:
-        """
+        """Ham metni ayrıştırır ve Requirement listesine dönüştürür.
+
         Parametreler:
             raw_text (str): Müşteriden gelen ham metin.
 
         Döndürür:
             ParsedDocument: Ayrıştırılmış gereksinim listesi.
         """
+        if not isinstance(raw_text, str):
+            _log.warning("process() str dışında girdi aldı ({}); boş doküman döndürülüyor.", type(raw_text))
+            return ParsedDocument(raw_text="")
+
         # re.sub: birden fazla boşluğu tek boşluğa indirir
         # strip: baştaki ve sondaki boşlukları siler
         clean_text = re.sub(r"\s+", " ", raw_text).strip()
@@ -58,6 +66,15 @@ class TextPreprocessor:
         # Eğer metin boşsa sistemi yormamak için boş bir ParsedDocument döndür
         if not clean_text:
             return ParsedDocument(raw_text=raw_text)
+
+        # Aşırı uzun girdiler Stanza'yı yavaşlatır; uyarı ver ve kırp
+        if len(clean_text) > _MAX_TEXT_LENGTH:
+            _log.warning(
+                "Girdi çok uzun ({} karakter); ilk {} karaktere kırpılıyor.",
+                len(clean_text),
+                _MAX_TEXT_LENGTH,
+            )
+            clean_text = clean_text[:_MAX_TEXT_LENGTH]
 
         # Metni stanzaya veriyoruz
         doc = self.nlp(clean_text)

@@ -1,0 +1,15 @@
+Uygulama, Android 10 ve üzeri ile iOS 15 ve üzeri sürümlerde çalışmalıdır.
+Uygulama açılış süresi soğuk başlatmada 3 saniyeyi geçmemelidir.
+Sayfa geçişleri 500 milisaniyenin altında tamamlanmalıdır.
+Uygulama, 10.000 eş zamanlı kullanıcıyı desteklemelidir.
+Çevrimdışı modda son 7 günlük veri önbellekten erişilebilir olmalıdır.
+Uygulama batarya tüketimi günde 2 saat aktif kullanımda %5'i geçmemelidir.
+Tüm ağ iletişimi TLS 1.3 protokolüyle şifrelenmelidir.
+Kullanıcı oturumu 30 dakika hareketsizlikte otomatik sonlandırılmalıdır.
+Biyometrik doğrulama (parmak izi, yüz tanıma) desteklenmelidir.
+Uygulama %99,9 SLA hedefini karşılamalıdır.
+Crash oranı aylık aktif kullanıcı başına %0,1'in altında tutulmalıdır.
+Erişilebilirlik standartları (WCAG 2.1 AA) uyumlu olunmalıdır.
+Kişisel veriler KVKK ve GDPR gerekliliklerine uygun şekilde işlenmelidir.
+Uygulama boyutu 50 MB'ı geçmemelidir.
+Push bildirim iletim süresi 5 saniyeyi geçmemelidir.

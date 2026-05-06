@@ -16,9 +16,12 @@ from .models import Requirement
 class RequirementClassifier:
     """Gereksinimleri F / NFR olarak sınıflandırır."""
 
-    def __init__(self):
-        # Kural tabanlı sınıflandırma için Non-Functional Keyword (NFR) kelime havuzu
-        self.nfr_keywords = [
+    def __init__(self) -> None:
+        """NFR anahtar kelime kümesiyle sınıflandırıcıyı başlatır."""
+        # Kural tabanlı sınıflandırma için Non-Functional Keyword (NFR) kelime havuzu.
+        # frozenset kullanılır — her classify() çağrısında O(1) üyelik kontrolü sağlar
+        # (list ile aynı eleman sayısında O(N) olurdu).
+        self.nfr_keywords: frozenset = frozenset([
             "hızlı",
             "saniye",
             "performans",
@@ -45,27 +48,30 @@ class RequirementClassifier:
             "mili saniye",
             "kullanılabilirlik",
             "güvenlik",
-        ]
+        ])
 
     def classify(self, requirement: Requirement) -> Requirement:
+        """Gereksinimi FUNCTIONAL veya NON_FUNCTIONAL olarak etiketler.
+
+        Gereksinim metni boşsa req_type değiştirilmeden döndürülür.
+
+        Parametreler:
+            requirement: Sınıflandırılacak Requirement nesnesi.
+
+        Döndürür:
+            Requirement: req_type alanı güncellenmiş nesne (in-place).
         """
-        Gelen metni alır, eğer metin içinde güvenlik, hız veya arayüzle alakalı
-        özel kalite kelimeleri geçiyorsa onu NFR (Fonksiyonel Olmayan) yapar.
-        """
-        # Python'da string eşleştirmesi büyük/küçük harf duyarlı (Case-Sensitive) olduğu için
-        # önce gereksinim metnini tamamen küçük harfe (.lower()) çeviriyoruz.
-        # Böylece "Hızlı" ile "hızlı" karmaşasından kurtuluyoruz.
-        text_to_check = requirement.text.lower()
+        text = requirement.text.strip()
+        if not text:
+            # Boş metin — sınıflandırma yapılamaz, mevcut değeri koru
+            return requirement
 
-        # 'any()' fonksiyonu bir Python generator (üreteç) ile çalışır.
-        # Cümlenin içinde self.nfr_keywords listesinden HERHANGİ BİRİ eşleşirse True döner.
-        # Bu yaklaşım arka planda for döngüsüyle tek tek bakmaktan daha performanslıdır.
-        is_nfr = any(keyword in text_to_check for keyword in self.nfr_keywords)
+        # Python'da string eşleştirmesi büyük/küçük harf duyarlı olduğu için
+        # önce metni küçük harfe çeviriyoruz.
+        text_lower = text.lower()
 
-        if is_nfr:
-            requirement.req_type = "NON_FUNCTIONAL"
-        else:
-            # Standart bir yazılım davranışı belirtiyorsa FUNCTIONAL kabul ediyoruz
-            requirement.req_type = "FUNCTIONAL"
+        # frozenset O(1) üyelik kontrolü sağlar.
+        is_nfr = any(keyword in text_lower for keyword in self.nfr_keywords)
 
+        requirement.req_type = "NON_FUNCTIONAL" if is_nfr else "FUNCTIONAL"
         return requirement

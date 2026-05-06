@@ -36,6 +36,16 @@ class LLMResponse:
 
 
 def _estimate_cost_usd(provider: str, input_tokens: int, output_tokens: int) -> float:
+    """Token sayılarına göre tahmini USD maliyet hesaplar.
+
+    Args:
+        provider: LLM sağlayıcısı (``"gemini"`` veya ``"deepseek"``).
+        input_tokens: Giriş token sayısı.
+        output_tokens: Çıkış token sayısı.
+
+    Returns:
+        float: Tahmini maliyet (USD).
+    """
     if provider == "deepseek":
         in_rate = 0.14
         out_rate = 0.28
@@ -46,6 +56,14 @@ def _estimate_cost_usd(provider: str, input_tokens: int, output_tokens: int) -> 
 
 
 def _extract_usage_counts(response: Any) -> tuple[int, int]:
+    """Gemini API yanıtından girdi ve çıktı token sayılarını çıkarır.
+
+    Args:
+        response: Gemini API yanıt nesnesi.
+
+    Returns:
+        tuple[int, int]: (input_tokens, output_tokens) çifti.
+    """
     um = getattr(response, "usage_metadata", None)
     if um is None:
         return 0, 0
@@ -55,6 +73,16 @@ def _extract_usage_counts(response: Any) -> tuple[int, int]:
 
 
 def _build_usage_metadata(provider: str, input_tokens: int, output_tokens: int) -> Dict[str, Any]:
+    """Kullanım metadatası sözlüğü oluşturur.
+
+    Args:
+        provider: LLM sağlayıcısı adı.
+        input_tokens: Girdi token sayısı.
+        output_tokens: Çıktı token sayısı.
+
+    Returns:
+        Dict[str, Any]: input_tokens, output_tokens, estimated_cost_usd içeren sözlük.
+    """
     cost = _estimate_cost_usd(provider, input_tokens, output_tokens)
     return {
         "input_tokens": input_tokens,
@@ -64,6 +92,14 @@ def _build_usage_metadata(provider: str, input_tokens: int, output_tokens: int) 
 
 
 def _is_retryable_gemini_error(exc: BaseException) -> bool:
+    """HTTP 429 / 5xx gibi geçici Gemini hatalarını tanır.
+
+    Args:
+        exc: Yakalanan istisna.
+
+    Returns:
+        bool: True ise yeniden deneme yapılabilir.
+    """
     msg = str(exc).lower()
     for fragment in ("429", "500", "502", "503", "504", "resource exhausted", "rate", "unavailable"):
         if fragment in msg:
@@ -72,26 +108,50 @@ def _is_retryable_gemini_error(exc: BaseException) -> bool:
 
 
 _usage_lock = threading.Lock()
+_pending_tokens: int = 0
+_pending_cost: float = 0.0
 
 
 def _accumulate_streamlit_session_usage(usage_metadata: Dict[str, Any]) -> None:
+    """Token ve maliyet verilerini thread-safe sayaca ekler.
+
+    Worker thread'lerden güvenle çağrılabilir. Streamlit session_state'e
+    doğrudan yazmaz; flush_usage_to_session() ana thread'den çağrılmalıdır.
+
+    Args:
+        usage_metadata: input_tokens, output_tokens, estimated_cost_usd içeren sözlük.
+    """
+    global _pending_tokens, _pending_cost
+    inp = int(usage_metadata.get("input_tokens", 0) or 0)
+    out = int(usage_metadata.get("output_tokens", 0) or 0)
+    cost = float(usage_metadata.get("estimated_cost_usd", 0.0) or 0.0)
+    with _usage_lock:
+        _pending_tokens += inp + out
+        _pending_cost += cost
+
+
+def flush_usage_to_session() -> None:
+    """Biriken token/maliyet değerlerini Streamlit session_state'e aktarır.
+
+    Ana thread'den (pipeline tamamlandıktan sonra) çağrılmalıdır.
+    """
+    global _pending_tokens, _pending_cost
     try:
         import streamlit as st  # type: ignore[import-untyped]
     except ImportError:
         return
     try:
-        if not hasattr(st, "session_state"):
-            return
-        inp = int(usage_metadata.get("input_tokens", 0) or 0)
-        out = int(usage_metadata.get("output_tokens", 0) or 0)
-        cost = float(usage_metadata.get("estimated_cost_usd", 0.0) or 0.0)
         with _usage_lock:
-            if "total_tokens_used" not in st.session_state:
-                st.session_state.total_tokens_used = 0
-            if "total_cost_usd" not in st.session_state:
-                st.session_state.total_cost_usd = 0.0
-            st.session_state.total_tokens_used += inp + out
-            st.session_state.total_cost_usd += cost
+            tokens = _pending_tokens
+            cost = _pending_cost
+            _pending_tokens = 0
+            _pending_cost = 0.0
+        if "total_tokens_used" not in st.session_state:
+            st.session_state.total_tokens_used = 0
+        if "total_cost_usd" not in st.session_state:
+            st.session_state.total_cost_usd = 0.0
+        st.session_state.total_tokens_used += tokens
+        st.session_state.total_cost_usd += cost
     except Exception:
         return
 
@@ -145,11 +205,12 @@ class LLMClient:
 
         elif self.provider == "gemini":
             try:
-                import google.generativeai as genai  # type: ignore[import-not-found]
-            except Exception as exc:
-                raise LLMClientError("Gemini için 'google-generativeai' paketi kurulu olmalı.") from exc
-            genai.configure(api_key=self.api_key)
-            self._model = genai.GenerativeModel(self.model_name)
+                from google import genai as _google_genai  # type: ignore[import-not-found]
+            except ImportError as exc:
+                raise LLMClientError(
+                    "Gemini için 'google-genai' paketi kurulu olmalı: pip install google-genai"
+                ) from exc
+            self._genai_client = _google_genai.Client(api_key=self.api_key)
         else:
             raise ValueError(f"Desteklenmeyen provider: {self.provider}")
 
@@ -247,13 +308,33 @@ class LLMClient:
         metadata: Optional[Dict[str, Any]],
         key: str,
     ) -> LLMResponse:
-        messages = []
-        if system_prompt:
-            messages.append({"role": "user", "parts": system_prompt})
+        try:
+            from google.genai import types as _genai_types  # type: ignore[import-not-found]
+        except ImportError as exc:
+            raise LLMClientError("Gemini için 'google-genai' paketi gerekli.") from exc
+
+        contents = []
         for msg in history or []:
             if msg.get("content"):
-                messages.append({"role": msg.get("role", "user"), "parts": msg["content"]})
-        messages.append({"role": "user", "parts": user_prompt})
+                role = "user" if msg.get("role") == "user" else "model"
+                contents.append(
+                    _genai_types.Content(
+                        role=role,
+                        parts=[_genai_types.Part(text=msg["content"])],
+                    )
+                )
+        contents.append(
+            _genai_types.Content(
+                role="user",
+                parts=[_genai_types.Part(text=user_prompt)],
+            )
+        )
+
+        config = _genai_types.GenerateContentConfig(
+            system_instruction=system_prompt or None,
+            max_output_tokens=self.max_output_tokens,
+            temperature=self.temperature,
+        )
 
         backoff_seconds = [1, 2, 4]
         last_exc: Optional[BaseException] = None
@@ -263,27 +344,19 @@ class LLMClient:
                 if attempt > 0:
                     time.sleep(backoff_seconds[attempt - 1])
 
-                chat_session = self._model.start_chat(history=messages[:-1])
-                response = chat_session.send_message(
-                    messages[-1]["parts"],
-                    generation_config={
-                        "max_output_tokens": self.max_output_tokens,
-                        "temperature": self.temperature,
-                    },
+                response = self._genai_client.models.generate_content(
+                    model=self.model_name,
+                    contents=contents,
+                    config=config,
                 )
-                
-                text = getattr(response, "text", None)
-                if text is None and hasattr(response, "candidates"):
-                    try:
-                        text = response.candidates[0].content.parts[0].text
-                    except Exception:
-                        text = ""
+
+                text = getattr(response, "text", None) or ""
                 if not text:
                     raise LLMClientError("Boş yanıt döndü.")
 
                 inp, out = _extract_usage_counts(response)
                 usage_meta = _build_usage_metadata("gemini", inp, out)
-                
+
                 raw = {
                     "provider": "gemini",
                     "response": response,
@@ -295,6 +368,8 @@ class LLMClient:
                 _accumulate_streamlit_session_usage(usage_meta)
                 return llm_response
 
+            except LLMClientError:
+                raise
             except Exception as exc:
                 last_exc = exc
                 if not _is_retryable_gemini_error(exc) or attempt >= len(backoff_seconds):

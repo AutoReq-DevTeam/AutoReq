@@ -10,7 +10,9 @@ def init_state():
         "req_count": 0,
         "conflict_count": 0,
         "gap_count": 0,
-        "cost_usd": 0.0,
+        "total_tokens_used": 0,
+        "total_cost_usd": 0.0,
+        "demo_mode": False,
     }
 
     for key, value in defaults.items():

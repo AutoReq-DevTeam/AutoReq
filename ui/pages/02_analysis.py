@@ -2,7 +2,14 @@ import streamlit as st
 from core.pipeline import process_text
 from ui.state import update_counts
 
+st.markdown('<div class="ar-title-bar"></div>', unsafe_allow_html=True)
 st.title("Analiz")
+st.markdown(
+    '<p style="font-family:\'Inter\',sans-serif;font-size:0.875rem;color:#666666;'
+    'margin-top:-0.75rem;margin-bottom:1.5rem;">Girilen metin yapay zeka ile analiz '
+    'edilerek gereksinimler, çelişkiler ve eksiklikler tespit edilir.</p>',
+    unsafe_allow_html=True,
+)
 
 if "user_input" not in st.session_state or not st.session_state.user_input.strip():
     st.warning("Henüz metin girmediniz. Lütfen Girdi sayfasına dönün.")

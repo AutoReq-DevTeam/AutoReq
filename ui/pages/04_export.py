@@ -2,8 +2,13 @@ import streamlit as st
 from pathlib import Path
 from ui.components import download_button
 
+st.markdown('<div class="ar-title-bar"></div>', unsafe_allow_html=True)
 st.title("Dışa Aktarım")
-st.subheader("İndirilebilir Çıktılar")
+st.markdown(
+    '<p style="font-family:\'Inter\',sans-serif;font-size:0.875rem;color:#666666;'
+    'margin-top:-0.75rem;margin-bottom:1.5rem;">Oluşturulan çıktıları indirin.</p>',
+    unsafe_allow_html=True,
+)
 
 generated_dir = Path("outputs") / "generated"
 

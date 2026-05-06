@@ -1,7 +1,8 @@
 import streamlit as st
 from ui.results import render_results
 
-st.title("Sonuçlar")
+st.markdown('<div class="ar-title-bar"></div>', unsafe_allow_html=True)
+st.title("Analiz Sonuçları")
 
 if st.session_state.get("analysis_report") is None:
     st.warning("Henüz bir analiz yapılmadı. Lütfen Analiz sayfasına gidin.")

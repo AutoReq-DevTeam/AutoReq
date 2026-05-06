@@ -14,14 +14,16 @@ Temel hedefler:
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from loguru import logger
 
+if TYPE_CHECKING:
+    from loguru import Logger as _LoguruLogger
+
 
 def get_module_logger(module_name: str) -> Any:
-    """
-    Verilen modül adı için isimlendirilmiş bir logger döndürür.
+    """Verilen modül adı için isimlendirilmiş bir logger döndürür.
 
     Not:
         loguru.logger zaten global bir logger nesnesi olduğu için, burada
@@ -35,6 +37,7 @@ def get_module_logger(module_name: str) -> Any:
     # Şimdilik doğrudan global logger'ı dönüyoruz.
     # İleride format / seviye / sink yapılandırmaları burada merkezileştirilebilir.
     return logger.bind(module=module_name)
+
 
 
 def log_with_context(

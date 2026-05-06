@@ -1,0 +1,13 @@
+Kullanıcı sepetine ürün ekleyebilmeli ve ödeme adımına geçebilmelidir.
+Ödeme sayfasında kullanıcı oturumu zorunlu olmamalı; misafir kullanıcı da ödeme yapabilmelidir.
+Ödeme sayfasına erişim yalnızca kayıtlı ve giriş yapmış kullanıcılara açık olmalıdır.
+Sistem, stokta olmayan ürünleri sepete eklenmesine izin vermemelidir.
+Sistem, stokta olmayan ürünler sepete eklenebilmeli; ancak ödeme sırasında uyarı gösterilmelidir.
+Kullanıcı, siparişini tamamlamadan önce adres bilgisini girmek zorunda olmamalıdır.
+Her sipariş için geçerli bir teslimat adresi zorunlu tutulmalıdır.
+İndirim kuponu yalnızca bir kez kullanılabilmelidir.
+Aynı kupon kodu birden fazla siparişe uygulanabilmelidir.
+Kredi kartı bilgileri sunucuda saklanmamalı; yalnızca tokenize hali tutulmalıdır.
+Hızlı ödeme için kart bilgileri kullanıcı onayıyla kaydedilebilmelidir.
+Sistem, sipariş tamamlandıktan sonra stok miktarını otomatik güncellenmelidir.
+Stok güncellemesi yalnızca kargo firmasi teslimatı onayladıktan sonra yapılmalıdır.

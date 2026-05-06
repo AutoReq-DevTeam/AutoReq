@@ -83,3 +83,56 @@ def build_improvement_user_prompt(requirement_text: str) -> str:
     """
     text = (requirement_text or "").strip()
     return f"Aşağıdaki gereksinim cümlesini ölçülebilir hale getir.\n\nGereksinim:\n{text}\n"
+
+
+IMPROVEMENT_BATCH_SYSTEM_PROMPT = """
+Görevin: Sana verilen birden fazla gereksinim cümlesini, her birini ölçülebilir ve
+doğrulanabilir hale getirerek JSON dizisi olarak döndürmektir.
+
+Çıktı formatı:
+- Aşağıdaki yapıya UYAN bir JSON dizisi döndür.
+- Sadece geçerli JSON; markdown kod çiti veya ek açıklama ekleme.
+
+[
+  {
+    "req_id": "REQ_001",
+    "improved": "Ölçülebilir, net ifade (tek cümle veya kısa paragraf).",
+    "reason": "Hangi muğlak ifadelerin nasıl somutlaştırıldığının kısa gerekçesi."
+  }
+]
+
+Kurallar:
+- Her gereksinim için listede tam olarak bir öğe olmalı; req_id girişle eşleşmeli.
+- Çıktı Türkçe kalmalı; teknik terimler gerektiğinde İngilizce kısaltma (p95, ms) kullanılabilir.
+- Performans ifadelerinde mümkünse eşzamanlı kullanıcı, yüzde dilim veya süre eşiği belirt.
+""".strip()
+
+
+def build_improvement_batch_system_prompt() -> str:
+    """
+    Toplu iyileştirme için persona ve görev promptunu birleştirir.
+
+    Döndürür:
+        str: LLM system_prompt parametresi için tam metin.
+    """
+    return f"{CORE_IMPROVER_PERSONA}\n\n{IMPROVEMENT_BATCH_SYSTEM_PROMPT}"
+
+
+def build_improvement_batch_user_prompt(requirements: list) -> str:
+    """
+    Birden fazla gereksinim cümlesini toplu user prompt metnine sarar.
+
+    Parametreler:
+        requirements: (req_id, text) çiftlerinden oluşan liste.
+
+    Döndürür:
+        str: LLM user_prompt metni.
+    """
+    lines = []
+    for req_id, text in requirements:
+        lines.append(f"[{req_id}] {(text or '').strip()}")
+    items_block = "\n".join(lines)
+    return (
+        f"Aşağıdaki {len(requirements)} gereksinim cümlesini ölçülebilir hale getir.\n\n"
+        f"{items_block}"
+    )

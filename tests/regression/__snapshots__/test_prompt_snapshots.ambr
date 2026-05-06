@@ -1304,8 +1304,8 @@
   "User Story" kartlarına dönüştürmektir.
   
   DAVRANIŞ KURALLARI:
-  - Her zaman "As a [role], I want [action] so that [benefit]." formatını kullan.
-  - Türkçe gereksinim metni gelirse Türkçe story üret; İngilizce gelirse İngilizce üret.
+  - Her zaman "Bir [rol] olarak, [fayda] sağlamak amacıyla [hedef] yapabilmek istiyorum." yaklaşımına uygun, DİLİ TAMAMEN TÜRKÇE olan User Story üret. İngilizce terimler kullanma ("As a", "I want", "so that" KESİNLİKLE YASAKTIR).
+  - Çıktılar %100 Türkçe olmalı.
   - Rol (Actor) boşsa "kullanıcı" veya "user" kullan.
   - Benefit (so that) kısmı gerçek iş değerini belirtmeli; teknik detay içermemeli.
   - acceptance_criteria en az 1, en fazla 3 madde olmalı; "olmalı" / "should" kipinde yaz.
@@ -1333,10 +1333,10 @@
   ## Kurallar
   
   - Sadece JSON döndür; başka metin ekleme.
-  - `role`: Gereksinim metnindeki aktör (actor). Yoksa "kullanıcı".
-  - `goal`: "I want" veya "yapabilmek" fiil kipinde, net eylem.
-  - `benefit`: "so that" bağlaçlı, iş değeri odaklı açıklama.
-  - `acceptance_criteria`: Liste formatında, 1-3 madde, ölçülebilir.
+  - `role`: Gereksinim metnindeki aktör (actor). Yoksa "kullanıcı" yaz. (İngilizce kullanma)
+  - `goal`: Kullanıcının sistemden beklentisi veya yapmak istediği eylem. Örn: "sisteme giriş yapabilmek"
+  - `benefit`: Bu eylemin kullanıcıya sağlayacağı iş değeri. Örn: "kişisel hesabıma güvenle erişebilmek"
+  - `acceptance_criteria`: Kabul kriterleri. Liste formatında, 1-3 madde, ölçülebilir. Türkçe yazılacak.
   '''
 # ---
 # name: test_snapshot_story_generation_user_prompt[01]

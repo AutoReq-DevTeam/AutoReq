@@ -28,6 +28,7 @@ Notlar:
 
 from __future__ import annotations
 
+import concurrent.futures
 from pathlib import Path
 from typing import List, Optional
 
@@ -39,6 +40,8 @@ from modules.llm_response_utils import extract_json_object
 from modules.story_prompts import (
     build_story_generation_system_prompt,
     build_story_generation_user_prompt,
+    build_story_generation_batch_system_prompt,
+    build_story_generation_batch_user_prompt,
 )
 
 # Varsayılan çıktı dizini
@@ -100,11 +103,20 @@ def _normalize_story(req_id: str, raw: dict) -> dict:
     }
 
 
+_STORY_CHUNK_SIZE = 15
+_STORY_BATCH_MAX_TOKENS = 3072
+
+
+def _chunk_list(lst: List, size: int) -> List[List]:
+    return [lst[i:i + size] for i in range(0, len(lst), size)]
+
+
 class StoryGenerator:
     """Fonksiyonel gereksinimlerden Agile User Story'leri üretir.
 
     LLM (Gemini) kullanarak "As a [role], I want [action] so that [benefit]"
     formatında user story'ler üretir. Sadece FUNCTIONAL gereksinimleri işler.
+    Gereksinimler chunk'lara bölünerek paralel LLM çağrılarıyla işlenir.
 
     Args:
         llm_client: Dışarıdan enjekte edilebilir LLM istemcisi (test/DI için).
@@ -115,16 +127,8 @@ class StoryGenerator:
         self._llm_client = llm_client
 
     def _get_client(self) -> LLMClient:
-        """Lazy-init: istemciyi ilk ihtiyaç anında oluşturur.
-
-        Returns:
-            LLMClient: Yapılandırılmış LLM istemcisi.
-
-        Raises:
-            LLMClientError: API key tanımlı değilse.
-        """
         if self._llm_client is None:
-            self._llm_client = LLMClient()
+            self._llm_client = LLMClient(max_output_tokens=_STORY_BATCH_MAX_TOKENS)
         return self._llm_client
 
     def _generate_single_story(self, req: Requirement) -> dict:
@@ -167,11 +171,71 @@ class StoryGenerator:
 
         return _normalize_story(req.id, raw)
 
+    def _process_chunk(self, chunk: List[Requirement]) -> List[dict]:
+        """Tek bir chunk için LLM çağrısı yapar ve normalize edilmiş story listesi döner."""
+        system_prompt = build_story_generation_batch_system_prompt()
+        user_prompt = build_story_generation_batch_user_prompt(chunk)
+        client = self._get_client()
+
+        response = client.chat(
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            metadata={"module": "story_generator", "action": "batch_generate_user_stories"},
+        )
+
+        raw = extract_json_object(response.content)
+        items = raw if isinstance(raw, list) else (list(raw.values())[0] if isinstance(raw, dict) and raw else [])
+
+        req_index = {r.id: r for r in chunk}
+        stories: List[dict] = []
+        returned_ids: set = set()
+
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            req_id = item.get("req_id", "")
+            returned_ids.add(req_id)
+            stories.append(_normalize_story(req_id, item))
+
+        for req in chunk:
+            if req.id not in returned_ids:
+                _log.warning("Chunk yanıtında req_id eksik, fallback | req_id={}", req.id)
+                stories.append(_make_fallback_story(req_index[req.id]))
+
+        return stories
+
+    def _generate_batch_stories(self, reqs: List[Requirement]) -> List[dict]:
+        """Gereksinimleri chunk'lara bölerek paralel LLM çağrılarıyla story'lere dönüştürür.
+
+        Args:
+            reqs: Dönüştürülecek Requirement listesi.
+
+        Returns:
+            list[dict]: Normalize edilmiş user story listesi (giriş sırasıyla).
+        """
+        chunks = _chunk_list(reqs, _STORY_CHUNK_SIZE)
+
+        if len(chunks) == 1:
+            return self._process_chunk(chunks[0])
+
+        _log.info("Story üretimi {} chunk'a bölündü, paralel işleniyor", len(chunks))
+        with concurrent.futures.ThreadPoolExecutor(max_workers=len(chunks)) as executor:
+            futures = [executor.submit(self._process_chunk, chunk) for chunk in chunks]
+            results: List[dict] = []
+            for future in futures:
+                try:
+                    results.extend(future.result())
+                except (LLMClientError, ValueError) as exc:
+                    chunk_idx = futures.index(future)
+                    _log.warning("Chunk {} başarısız, fallback | hata={}", chunk_idx, exc)
+                    results.extend(_make_fallback_story(req) for req in chunks[chunk_idx])
+        return results
+
     def generate(self, report: AnalysisReport) -> List[dict]:
         """AnalysisReport içindeki FUNCTIONAL gereksinimleri User Story'lere dönüştürür.
 
-        Her gereksinim için LLM'e ayrı çağrı yapılır. LLM hatası durumunda
-        o gereksinim için fallback dict eklenir; pipeline çökmez.
+        Tüm gereksinimler tek bir toplu LLM çağrısıyla işlenir.
+        LLM hatası durumunda tüm gereksinimler için fallback dict'ler döner.
 
         Args:
             report: NLP ve LLM analizleri tamamlanmış rapor nesnesi.
@@ -196,24 +260,18 @@ class StoryGenerator:
             return []
 
         _log.info(
-            "User story üretimi başlatıldı | functional_count={}",
+            "User story toplu üretimi başlatıldı | functional_count={}",
             len(functional_reqs),
         )
 
-        stories: List[dict] = []
-
-        for req in functional_reqs:
-            try:
-                story = self._generate_single_story(req)
-                stories.append(story)
-                _log.debug("User story üretildi | req_id={}", req.id)
-            except (LLMClientError, ValueError) as exc:
-                _log.warning(
-                    "User story üretilemedi, fallback kullanılıyor | req_id={} hata={}",
-                    req.id,
-                    exc,
-                )
-                stories.append(_make_fallback_story(req))
+        try:
+            stories = self._generate_batch_stories(functional_reqs)
+        except (LLMClientError, ValueError) as exc:
+            _log.warning(
+                "Toplu user story üretimi başarısız, tüm req'ler için fallback | hata={}",
+                exc,
+            )
+            stories = [_make_fallback_story(req) for req in functional_reqs]
 
         _log.info("User story üretimi tamamlandı | stories={}", len(stories))
         return stories

@@ -59,7 +59,7 @@ def _render_sample_loader() -> None:
             st.warning(f"'{sample_path.name}' dosyası okunamadı.")
 
 
-def render_dashboard():
+def render_dashboard() -> tuple[str, bool]:
     """Ana giriş ekranını render eder.
 
     Döndürür:
@@ -67,27 +67,15 @@ def render_dashboard():
     """
     st.title("🚀 AutoReq")
     st.subheader("Otomatik Yazılım Gereksinim Analizörü")
-    st.info("Proje geliştirme aşamasındadır. Modüller entegre edildikçe bu ekran güncellenecektir.")
-
-    if "user_input" not in st.session_state:
-        st.session_state.user_input = ""
-
-    if "analysis_report" not in st.session_state:
-        st.session_state.analysis_report = None
-
-    if "total_tokens_used" not in st.session_state:
-        st.session_state.total_tokens_used = 0
-
-    if "total_cost_usd" not in st.session_state:
-        st.session_state.total_cost_usd = 0.0
 
     st.sidebar.title("📊 Proje Durumu")
     st.sidebar.success("Sistem aktif")
     st.sidebar.markdown("**Arayüz:** Hazır")
     st.sidebar.markdown("**Testler:** Çalışıyor")
 
-    if os.getenv("GEMINI_API_KEY"):
-        st.sidebar.markdown("✅ **API Key:** OK")
+    if os.getenv("GEMINI_API_KEY") or os.getenv("DEEPSEEK_API_KEY"):
+        provider = "Gemini" if os.getenv("GEMINI_API_KEY") else "DeepSeek"
+        st.sidebar.markdown(f"✅ **API Key:** OK ({provider})")
     else:
         st.sidebar.warning("❌ API Key tanımsız — LLM analizi devre dışı")
 

@@ -65,7 +65,7 @@ class ConflictDetector:
 
     def _get_client(self) -> LLMClient:
         if self._llm_client is None:
-            self._llm_client = LLMClient()
+            self._llm_client = LLMClient(max_output_tokens=8192)
         return self._llm_client
 
     def _run_pairwise_llm_analysis(self, doc: ParsedDocument) -> PairwiseConflictAnalysis:

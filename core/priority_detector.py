@@ -69,13 +69,18 @@ class PriorityDetector:
         Döndürür:
             Requirement: priority alanı dolu (HIGH/MEDIUM/LOW) gereksinim.
         """
-        text_lower = _normalize(req.text)
+        text_lower = _normalize(req.text.strip())
+
+        if not text_lower:
+            req.priority = "MEDIUM"
+            _log.debug("Bo\u015f metin \u2014 MEDIUM \u00f6ncelik atand\u0131 | req_id={}", req.id)
+            return req
 
         for keyword in self.HIGH_KEYWORDS:
             if keyword in text_lower:
                 req.priority = "HIGH"
                 _log.debug(
-                    "HIGH öncelik atandı | req_id={} keyword={}",
+                    "HIGH \u00f6ncelik atand\u0131 | req_id={} keyword={}",
                     req.id,
                     keyword,
                 )
@@ -85,12 +90,13 @@ class PriorityDetector:
             if keyword in text_lower:
                 req.priority = "LOW"
                 _log.debug(
-                    "LOW öncelik atandı | req_id={} keyword={}",
+                    "LOW \u00f6ncelik atand\u0131 | req_id={} keyword={}",
                     req.id,
                     keyword,
                 )
                 return req
 
         req.priority = "MEDIUM"
-        _log.debug("MEDIUM öncelik atandı | req_id={}", req.id)
+        _log.debug("MEDIUM \u00f6ncelik atand\u0131 | req_id={}", req.id)
         return req
+

@@ -102,9 +102,79 @@ def build_story_generation_user_prompt(requirement: Requirement) -> str:
     )
 
 
+STORY_BATCH_SYSTEM_PROMPT: str = """
+## Görev
+
+Sana birden fazla yazılım gereksinimi verilecek. Her biri için Agile User Story formatında bir JSON nesnesi üret ve tüm sonuçları tek bir JSON dizisi olarak döndür.
+
+## Çıktı Formatı (kesinlikle bu yapıya uy)
+
+```json
+[
+  {
+    "req_id": "REQ_001",
+    "role": "kullanıcı",
+    "goal": "sisteme giriş yapabilmek",
+    "benefit": "kişisel hesabıma erişebilmek",
+    "acceptance_criteria": [
+      "Geçerli kullanıcı adı ve şifre ile giriş yapıldığında ana sayfaya yönlendirilmeli",
+      "Hatalı şifre girildiğinde anlamlı hata mesajı gösterilmeli"
+    ]
+  }
+]
+```
+
+## Kurallar
+
+- Sadece JSON dizisi döndür; başka metin ekleme.
+- Her gereksinim için listede tam olarak bir öğe olmalı; `req_id` alanı girişle eşleşmeli.
+- `role`: Gereksinim metnindeki aktör. Yoksa "kullanıcı" yaz. (İngilizce kullanma)
+- `goal`: Kullanıcının sistemden beklentisi veya yapmak istediği eylem.
+- `benefit`: Bu eylemin kullanıcıya sağlayacağı iş değeri; teknik detay içermemeli.
+- `acceptance_criteria`: 1-3 madde, ölçülebilir, Türkçe, "olmalı" kipinde.
+- Çıktılar %100 Türkçe olmalı. "As a", "I want", "so that" KESİNLİKLE YASAKTIR.
+""".strip()
+
+
+def build_story_generation_batch_system_prompt() -> str:
+    """Toplu story üretimi için persona + görev promptunu birleştirir.
+
+    Returns:
+        str: LLMClient.chat() için system_prompt parametresi.
+    """
+    return f"{CORE_STORY_GENERATOR_PERSONA}\n\n{STORY_BATCH_SYSTEM_PROMPT}"
+
+
+def build_story_generation_batch_user_prompt(requirements: "list[Requirement]") -> str:
+    """Birden fazla gereksinim için toplu user prompt üretir.
+
+    Args:
+        requirements: Dönüştürülecek Requirement nesneleri listesi.
+
+    Returns:
+        str: LLMClient.chat() için user_prompt parametresi.
+    """
+    lines = []
+    for r in requirements:
+        actors_str = ", ".join(r.actors) if r.actors else "belirtilmemiş"
+        priority_str = r.priority or "MEDIUM"
+        lines.append(
+            f"[{r.id}] Tip: {r.req_type} | Öncelik: {priority_str} | Aktörler: {actors_str}\n"
+            f"Metin: {r.text.strip()}"
+        )
+    items_block = "\n\n".join(lines)
+    return (
+        f"Aşağıdaki {len(requirements)} gereksinim için JSON dizisi üret.\n\n"
+        f"{items_block}"
+    )
+
+
 __all__ = [
     "CORE_STORY_GENERATOR_PERSONA",
     "STORY_DETECTION_SYSTEM_PROMPT",
+    "STORY_BATCH_SYSTEM_PROMPT",
     "build_story_generation_system_prompt",
     "build_story_generation_user_prompt",
+    "build_story_generation_batch_system_prompt",
+    "build_story_generation_batch_user_prompt",
 ]

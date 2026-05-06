@@ -1,0 +1,12 @@
+Sistem hızlı olmalıdır.
+Öğrenciler sistemi kolayca kullanabilmelidir.
+Platform güvenli olmalıdır.
+İçerikler kaliteli sunulmalıdır.
+Sistem her zaman erişilebilir olmalıdır.
+Bildirimler zamanında gönderilmelidir.
+Öğretmen raporları düzenli paylaşabilmelidir.
+Sistem yüksek trafiği kaldırabilmelidir.
+Arayüz kullanıcı dostu tasarlanmalıdır.
+Veri güvenli saklanmalıdır.
+Sistem ölçeklenebilir olmalıdır.
+Uygulama farklı cihazlarda düzgün çalışmalıdır.

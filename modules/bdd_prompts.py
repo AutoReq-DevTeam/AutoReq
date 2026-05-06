@@ -113,9 +113,84 @@ def build_bdd_generation_user_prompt(requirement: Requirement) -> str:
     )
 
 
+BDD_BATCH_SYSTEM_PROMPT: str = """
+## Görev
+
+Sana birden fazla yazılım gereksinimi verilecek. Her biri için Gherkin formatında
+iki senaryo üret ve tüm sonuçları tek bir JSON dizisi olarak döndür.
+
+## Çıktı Formatı (kesinlikle bu yapıya uy)
+
+```json
+[
+  {
+    "req_id": "REQ_001",
+    "feature_title": "Kullanıcı Girişi",
+    "happy_path": {
+      "scenario_title": "Geçerli kimlik bilgileri ile başarılı giriş",
+      "given": ["Kullanıcı giriş sayfasındadır"],
+      "when": ["Kullanıcı doğru e-posta ve şifreyi girer"],
+      "then": ["Kullanıcı ana sayfaya yönlendirilmeli"]
+    },
+    "negative_scenario": {
+      "scenario_title": "Hatalı şifre ile giriş denemesi",
+      "given": ["Kullanıcı giriş sayfasındadır"],
+      "when": ["Kullanıcı yanlış şifre girer"],
+      "then": ["Hata mesajı gösterilmeli"]
+    }
+  }
+]
+```
+
+## Kurallar
+
+- Sadece JSON dizisi döndür; başka metin ekleme.
+- Her gereksinim için listede tam olarak bir öğe olmalı; `req_id` alanı girişle eşleşmeli.
+- `given`, `when`, `then`: Her biri string listesi; en az 1, en fazla 4 madde.
+- Türkçe gereksinim → Türkçe çıktı.
+- ASLA gereksinimde olmayan işlev için senaryo yazma.
+""".strip()
+
+
+def build_bdd_generation_batch_system_prompt() -> str:
+    """Toplu BDD üretimi için persona + görev promptunu birleştirir.
+
+    Returns:
+        str: LLMClient.chat() için system_prompt parametresi.
+    """
+    return f"{CORE_BDD_GENERATOR_PERSONA}\n\n{BDD_BATCH_SYSTEM_PROMPT}"
+
+
+def build_bdd_generation_batch_user_prompt(requirements: "list[Requirement]") -> str:
+    """Birden fazla gereksinim için toplu BDD user prompt üretir.
+
+    Args:
+        requirements: Gherkin senaryosuna dönüştürülecek Requirement listesi.
+
+    Returns:
+        str: LLMClient.chat() için user_prompt parametresi.
+    """
+    lines = []
+    for r in requirements:
+        actors_str = ", ".join(r.actors) if r.actors else "belirtilmemiş"
+        priority_str = r.priority or "MEDIUM"
+        lines.append(
+            f"[{r.id}] Tip: {r.req_type} | Öncelik: {priority_str} | Aktörler: {actors_str}\n"
+            f"Metin: {r.text.strip()}"
+        )
+    items_block = "\n\n".join(lines)
+    return (
+        f"Aşağıdaki {len(requirements)} gereksinim için JSON dizisi üret.\n\n"
+        f"{items_block}"
+    )
+
+
 __all__ = [
     "CORE_BDD_GENERATOR_PERSONA",
     "BDD_GENERATION_SYSTEM_PROMPT",
+    "BDD_BATCH_SYSTEM_PROMPT",
     "build_bdd_generation_system_prompt",
     "build_bdd_generation_user_prompt",
+    "build_bdd_generation_batch_system_prompt",
+    "build_bdd_generation_batch_user_prompt",
 ]

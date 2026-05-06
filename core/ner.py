@@ -49,16 +49,20 @@ class EntityRecognizer:
         self.object_lemmas = {"şifre", "form", "e-posta", "eposta", "sepet", "hesap", "rapor", "buton", "sayfa", "ekran", "veri", "veritabanı", "dosya", "belge", "mesaj", "bildirim", "fatura", "şifremi unuttum", "link"}
 
     def recognize(self, requirement: Requirement) -> Requirement:
-        """
-        Gereksinim içindeki tüm kelimelerin köklerine (lemma) bakar ve 
-        "kullanıcı", "şifre" gibi bizim sistemimizde kritik olan aktör/nesneleri ayıklar.
+        """Gereksinim içindeki aktör ve nesneleri tanır, requirement.actors/objects'i doldurur.
+
+        Stanza lemma sözlükleri üzerinden eşleştirme yapar; Stanza yüklenemezse
+        düz substring fallback kullanılır. Metin boşsa erken döner.
 
         Parametreler:
             requirement: Analiz edilecek gereksinim nesnesi.
 
         Döndürür:
-            Requirement: actors ve objects alanları doldurulmuş gereksinim.
+            Requirement: actors ve objects alanları doldurulmuş (veya boş kalmış) gereksinim.
         """
+        if not requirement.text.strip():
+            return requirement
+
         # Burada list [] yerine set () kullandık. Çünkü eğer müşteri 
         # "Kullanıcı şifresini girer ve kullanıcı onaylar" derse, listeye iki tane
         # 'kullanıcı' eklenirdi. Set veri yapısı matematikteki kümeler gibidir, 

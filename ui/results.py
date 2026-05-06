@@ -1,13 +1,6 @@
 """
 ui/results.py — Analiz Sonuç Paneli
-Sorumlu: Agid Gülsever
-
-Açıklama:
-Tamamlanan analiz sonuçlarını görselleştirir. Gereksinim listesi, çelişki raporları
-ve teknik çıktıları sekmeli bir yapıda kullanıcıya sunar.
 """
-
-from pathlib import Path
 
 import streamlit as st
 
@@ -19,43 +12,32 @@ from ui.components import (
 )
 
 
-def _safe_get(dictionary, key, default="-"):
-    if isinstance(dictionary, dict):
-        return dictionary.get(key, default)
-    return default
+def _section(label: str, margin_top: str = "0.5rem"):
+    st.markdown(
+        f'<p class="ar-section-label" style="margin-top:{margin_top};">{label}</p>',
+        unsafe_allow_html=True,
+    )
 
 
 def render_results(report):
-    """
-    Analiz raporunu sekmeli panelde görüntüler.
-
-    Parametreler:
-        report: AnalysisReport nesnesi
-    """
     requirements = report.parsed_doc.requirements
     conflicts = getattr(report, "conflicts", [])
     gaps = getattr(report, "gaps", [])
     improvements = getattr(report, "improvements", [])
 
-    st.header("Analiz Sonuçları")
-
     tab1, tab2, tab3 = st.tabs(
-        [
-            "Gereksinimler",
-            "Çelişkiler & Eksiklikler",
-            "İyileştirme Önerileri",
-        ]
+        ["Gereksinimler", "Çelişkiler & Eksiklikler", "İyileştirme Önerileri"]
     )
 
     with tab1:
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.subheader("Ayrıştırılan Gereksinimler")
+            _section("Ayrıştırılan Gereksinimler")
         with col2:
             filter_type = st.selectbox(
-                "Filtrele", 
+                "Filtrele",
                 ["Tümü", "Fonksiyonel", "Fonksiyonel Olmayan"],
-                label_visibility="collapsed"
+                label_visibility="collapsed",
             )
 
         if requirements:
@@ -63,7 +45,7 @@ def render_results(report):
                 req_text = getattr(req, "text", str(req))
                 req_type = getattr(req, "req_type", "UNKNOWN")
                 req_id = getattr(req, "id", f"REQ-{i}")
-                
+
                 if filter_type == "Fonksiyonel" and req_type != "FUNCTIONAL":
                     continue
                 if filter_type == "Fonksiyonel Olmayan" and req_type != "NON_FUNCTIONAL":
@@ -75,16 +57,36 @@ def render_results(report):
             st.warning("Henüz ayrıştırılmış gereksinim bulunamadı.")
 
     with tab2:
-        metric_col1, metric_col2 = st.columns(2)
+        # Özet metrikler
+        m1, m2 = st.columns(2)
+        with m1:
+            st.markdown(
+                f"""
+<div style="background:#111111;border:1px solid #1e1e1e;border-radius:6px;
+            padding:1rem 1.25rem;margin-bottom:1rem;">
+    <div style="font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;
+                text-transform:uppercase;letter-spacing:0.1em;color:#555555;
+                margin-bottom:0.4rem;">Toplam Çelişki</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;
+                color:#ff5252;line-height:1;">{len(conflicts)}</div>
+</div>""",
+                unsafe_allow_html=True,
+            )
+        with m2:
+            st.markdown(
+                f"""
+<div style="background:#111111;border:1px solid #1e1e1e;border-radius:6px;
+            padding:1rem 1.25rem;margin-bottom:1rem;">
+    <div style="font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;
+                text-transform:uppercase;letter-spacing:0.1em;color:#555555;
+                margin-bottom:0.4rem;">Toplam Eksiklik</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;
+                color:#f5a623;line-height:1;">{len(gaps)}</div>
+</div>""",
+                unsafe_allow_html=True,
+            )
 
-        with metric_col1:
-            st.metric("Toplam Çelişki", len(conflicts))
-
-        with metric_col2:
-            st.metric("Toplam Eksiklik", len(gaps))
-
-        st.subheader("Çelişkiler")
-
+        _section("Çelişkiler")
         if conflicts:
             for conflict in conflicts:
                 if isinstance(conflict, dict):
@@ -94,21 +96,19 @@ def render_results(report):
         else:
             st.info("Çelişki bulunamadı.")
 
-        st.subheader("Eksiklikler")
-
+        _section("Eksiklikler", margin_top="1.25rem")
         if gaps:
-            grouped_gaps = {}
-
+            grouped_gaps: dict = {}
             for gap in gaps:
-                if isinstance(gap, dict):
-                    scenario = gap.get("scenario", "unknown")
-                    grouped_gaps.setdefault(scenario, []).append(gap)
-                else:
-                    grouped_gaps.setdefault("unknown", []).append(gap)
+                scenario = gap.get("scenario", "unknown") if isinstance(gap, dict) else "unknown"
+                grouped_gaps.setdefault(scenario, []).append(gap)
 
             for scenario, scenario_gaps in grouped_gaps.items():
-                st.markdown(f"### {scenario}")
-
+                st.markdown(
+                    f'<p style="font-family:\'Inter\',sans-serif;font-size:0.8rem;'
+                    f'font-weight:500;color:#888888;margin:0.75rem 0 0.4rem;">{scenario}</p>',
+                    unsafe_allow_html=True,
+                )
                 for gap in scenario_gaps:
                     if isinstance(gap, dict):
                         gap_card(gap)
@@ -118,8 +118,7 @@ def render_results(report):
             st.info("Eksiklik bulunamadı.")
 
     with tab3:
-        st.subheader("İyileştirme Önerileri")
-
+        _section("İyileştirme Önerileri")
         if improvements:
             for improvement in improvements:
                 if isinstance(improvement, dict):
@@ -128,4 +127,3 @@ def render_results(report):
                     st.write(improvement)
         else:
             st.info("Henüz iyileştirme önerisi bulunmuyor.")
-

@@ -1,0 +1,13 @@
+Çalışan kendi izin taleplerini sisteme girebilmelidir.
+Yönetici, ekibindeki çalışanların izin taleplerini onaylayabilmeli veya reddedebilmelidir.
+İK uzmanı, tüm departmanlardaki izin süreçlerini raporlayabilmelidir.
+Sistem yöneticisi kullanıcı yetki matrisini güncelleyebilmelidir.
+Çalışan bordro bilgilerini görüntüleyebilmeli; yalnızca kendi bilgilerine erişebilmelidir.
+İK uzmanı, çalışan özlük dosyasına belge ekleyebilmelidir.
+Yönetici, ekibinin performans değerlendirme formlarını doldurabilmelidir.
+Çalışan, kendi performans değerlendirme sonuçlarını görüntüleyebilmelidir.
+Sistem yöneticisi denetim loglarını inceleyebilmelidir.
+Finans müdürü, departman bazlı bütçe raporlarını Excel olarak dışa aktarabilmelidir.
+İK uzmanı, işe alım süreçlerini sistemde takip edebilmelidir.
+Aday, iş başvurusunu portal üzerinden gerçekleştirebilmelidir.
+Yönetici, departmanına yeni çalışan ataması yapabilmelidir.

@@ -1,0 +1,10 @@
+Müşteri mobil uygulama üzerinden hesap bakiyesini görüntüleyebilmelidir.
+Müşteri EFT ve havale işlemi gerçekleştirebilmelidir.
+Müşteri kredi kartı ekstresi PDF olarak indirilebilmelidir.
+Müşteri döviz alım satım işlemi yapabilmelidir.
+Yatırım fonu alım satımı mobil uygulama üzerinden gerçekleştirilebilmelidir.
+Müşteri şube randevusu oluşturabilmelidir.
+Müşteri destek hattını uygulama içinden arayabilmelidir.
+Hesap hareketleri son 1 yıla ait olacak şekilde listelenebilmelidir.
+Müşteri IBAN ile para transferi yapabilmelidir.
+Bildirim tercihleri uygulama içinden yönetilebilmelidir.
