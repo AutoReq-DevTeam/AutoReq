@@ -128,7 +128,8 @@ class StoryGenerator:
 
     def _get_client(self) -> LLMClient:
         if self._llm_client is None:
-            self._llm_client = LLMClient(max_output_tokens=_STORY_BATCH_MAX_TOKENS)
+            # Hikaye üretimi için f/p açısından en hızlı model olan Gemini 2.5 Flash kullanıyoruz
+            self._llm_client = LLMClient(model_name="google/gemini-2.5-flash", max_output_tokens=_STORY_BATCH_MAX_TOKENS)
         return self._llm_client
 
     def _generate_single_story(self, req: Requirement) -> dict:

@@ -100,7 +100,8 @@ class RequirementImprover:
 
     def _get_client(self) -> LLMClient:
         if self._llm_client is None:
-            self._llm_client = LLMClient()
+            # Hız ve düşük maliyet için Gemini 2.5 Flash kullanıyoruz
+            self._llm_client = LLMClient(model_name="google/gemini-2.5-flash")
         return self._llm_client
 
     def _process_chunk(self, chunk: list[Requirement]) -> dict[str, dict[str, str]]:

@@ -49,6 +49,8 @@ def _estimate_cost_usd(provider: str, input_tokens: int, output_tokens: int) -> 
     if provider == "deepseek":
         in_rate = 0.14
         out_rate = 0.28
+    elif provider == "openrouter":
+        return 0.0  # OpenRouter fiyatı modele göre değişkendir.
     else:
         in_rate = float(os.getenv("GEMINI_PRICE_INPUT_PER_MTOK", str(_DEFAULT_INPUT_PER_MTOK)))
         out_rate = float(os.getenv("GEMINI_PRICE_OUTPUT_PER_MTOK", str(_DEFAULT_OUTPUT_PER_MTOK)))
@@ -174,12 +176,17 @@ class LLMClient:
     ) -> None:
         self.provider = provider.lower()
         if self.provider == "auto":
-            if os.getenv("DEEPSEEK_API_KEY"):
+            if os.getenv("OPENROUTER_API_KEY"):
+                self.provider = "openrouter"
+            elif os.getenv("DEEPSEEK_API_KEY"):
                 self.provider = "deepseek"
             else:
                 self.provider = "gemini"
 
-        if self.provider == "deepseek":
+        if self.provider == "openrouter":
+            self.model_name = model_name or os.getenv("OPENROUTER_MODEL_NAME", "deepseek/deepseek-chat")
+            self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
+        elif self.provider == "deepseek":
             self.model_name = model_name or os.getenv("DEEPSEEK_MODEL_NAME", "deepseek-chat")
             self.api_key = api_key or os.getenv("DEEPSEEK_API_KEY")
         else:
@@ -196,7 +203,14 @@ class LLMClient:
         if not self.api_key:
             raise LLMClientError(f"{self.provider.upper()}_API_KEY tanımlı değil.")
 
-        if self.provider == "deepseek":
+        if self.provider == "openrouter":
+            try:
+                import openai
+            except ImportError as exc:
+                raise LLMClientError("OpenRouter için 'openai' paketi kurulu olmalı: pip install openai") from exc
+            self._openai_client = openai.OpenAI(api_key=self.api_key, base_url="https://openrouter.ai/api/v1")
+
+        elif self.provider == "deepseek":
             try:
                 import openai
             except ImportError as exc:
@@ -250,7 +264,7 @@ class LLMClient:
                 logger.debug("Önbellek isabeti | meta={}", metadata or {})
                 return hit
 
-        if self.provider == "deepseek":
+        if self.provider in ("deepseek", "openrouter"):
             return self._chat_deepseek(system_prompt, user_prompt, history=history, metadata=metadata, key=key)
         else:
             return self._chat_gemini(system_prompt, user_prompt, history=history, metadata=metadata, key=key)
@@ -284,10 +298,10 @@ class LLMClient:
             text = response.choices[0].message.content or ""
             inp = response.usage.prompt_tokens if response.usage else 0
             out = response.usage.completion_tokens if response.usage else 0
-            usage_meta = _build_usage_metadata("deepseek", inp, out)
+            usage_meta = _build_usage_metadata(self.provider, inp, out)
             
             raw = {
-                "provider": "deepseek",
+                "provider": self.provider,
                 "response": response.model_dump(),
                 "usage_metadata": usage_meta,
                 "usage": usage_meta,
@@ -297,7 +311,8 @@ class LLMClient:
             _accumulate_streamlit_session_usage(usage_meta)
             return llm_response
         except Exception as exc:
-            raise LLMClientError(f"DeepSeek çağrısı başarısız: {exc}") from exc
+            provider_name = "OpenRouter" if self.provider == "openrouter" else "DeepSeek"
+            raise LLMClientError(f"{provider_name} çağrısı başarısız: {exc}") from exc
 
     def _chat_gemini(
         self,

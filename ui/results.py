@@ -9,6 +9,7 @@ from ui.components import (
     gap_card,
     improvement_diff_card,
     req_card,
+    empty_state,
 )
 
 
@@ -24,6 +25,12 @@ def render_results(report):
     conflicts = getattr(report, "conflicts", [])
     gaps = getattr(report, "gaps", [])
     improvements = getattr(report, "improvements", [])
+
+    # Build lookup dict for conflict side-by-side view
+    req_lookup = {
+        getattr(req, "id", f"REQ-{i}"): getattr(req, "text", str(req))
+        for i, req in enumerate(requirements, start=1)
+    }
 
     tab1, tab2, tab3 = st.tabs(
         ["Gereksinimler", "Çelişkiler & Eksiklikler", "İyileştirme Önerileri"]
@@ -54,34 +61,41 @@ def render_results(report):
                 st.markdown(f"<a id='{req_id}'></a>", unsafe_allow_html=True)
                 req_card(req_id=req_id, text=req_text, req_type=req_type)
         else:
-            st.warning("Henüz ayrıştırılmış gereksinim bulunamadı.")
+            empty_state(
+                icon="📋",
+                heading="Gereksinim bulunamadı",
+                body="Metinden gereksinim çıkarılamadı. Lütfen daha açık gereksinim cümleleri içeren bir metin deneyin.",
+            )
 
     with tab2:
-        # Özet metrikler
         m1, m2 = st.columns(2)
         with m1:
             st.markdown(
                 f"""
-<div style="background:#111111;border:1px solid #1e1e1e;border-radius:6px;
-            padding:1rem 1.25rem;margin-bottom:1rem;">
+<div style="background:var(--bg-card);border:1px solid var(--border-subtle);
+            border-left:3px solid var(--color-danger);border-radius:6px;
+            padding:1rem 1.25rem;margin-bottom:1rem;
+            box-shadow:0 0 24px var(--color-danger-bg);">
     <div style="font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;
-                text-transform:uppercase;letter-spacing:0.1em;color:#555555;
+                text-transform:uppercase;letter-spacing:0.1em;color:var(--text-tertiary);
                 margin-bottom:0.4rem;">Toplam Çelişki</div>
     <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;
-                color:#ff5252;line-height:1;">{len(conflicts)}</div>
+                color:var(--color-danger);line-height:1;">{len(conflicts)}</div>
 </div>""",
                 unsafe_allow_html=True,
             )
         with m2:
             st.markdown(
                 f"""
-<div style="background:#111111;border:1px solid #1e1e1e;border-radius:6px;
-            padding:1rem 1.25rem;margin-bottom:1rem;">
+<div style="background:var(--bg-card);border:1px solid var(--border-subtle);
+            border-left:3px solid var(--color-warning);border-radius:6px;
+            padding:1rem 1.25rem;margin-bottom:1rem;
+            box-shadow:0 0 24px var(--color-warning-bg);">
     <div style="font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;
-                text-transform:uppercase;letter-spacing:0.1em;color:#555555;
+                text-transform:uppercase;letter-spacing:0.1em;color:var(--text-tertiary);
                 margin-bottom:0.4rem;">Toplam Eksiklik</div>
     <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;
-                color:#f5a623;line-height:1;">{len(gaps)}</div>
+                color:var(--color-warning);line-height:1;">{len(gaps)}</div>
 </div>""",
                 unsafe_allow_html=True,
             )
@@ -90,7 +104,7 @@ def render_results(report):
         if conflicts:
             for conflict in conflicts:
                 if isinstance(conflict, dict):
-                    conflict_card(conflict)
+                    conflict_card(conflict, req_lookup=req_lookup)
                 else:
                     st.write(conflict)
         else:
@@ -106,7 +120,8 @@ def render_results(report):
             for scenario, scenario_gaps in grouped_gaps.items():
                 st.markdown(
                     f'<p style="font-family:\'Inter\',sans-serif;font-size:0.8rem;'
-                    f'font-weight:500;color:#888888;margin:0.75rem 0 0.4rem;">{scenario}</p>',
+                    f'font-weight:500;color:var(--text-secondary);margin:0.75rem 0 0.4rem;">'
+                    f'{scenario}</p>',
                     unsafe_allow_html=True,
                 )
                 for gap in scenario_gaps:
@@ -126,4 +141,8 @@ def render_results(report):
                 else:
                     st.write(improvement)
         else:
-            st.info("Henüz iyileştirme önerisi bulunmuyor.")
+            empty_state(
+                icon="✨",
+                heading="İyileştirme önerisi yok",
+                body="Tüm gereksinimler yeterince açık ve eksiksiz görünüyor, ya da LLM bağlantısı etkin değil.",
+            )

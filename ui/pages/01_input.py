@@ -1,6 +1,7 @@
 import streamlit as st
 from pathlib import Path
 from ui.file_loader import extract_text_from_upload
+from ui.components import page_header, empty_state
 
 _DATA_ROOT = Path(__file__).parent.parent.parent / "data"
 _SAMPLES_DIR = _DATA_ROOT / "samples"
@@ -21,7 +22,6 @@ _DEMO_LABELS: dict[str, str] = {
     "05_mobil_app_nfr_agirlikli.txt": "Demo: Mobil App (NFR Ağırlıklı)",
 }
 
-
 _TR_REQ_MARKERS: frozenset = frozenset({
     "meli", "malı", "bilmeli", "gerekli", "gereksinim",
     "zorunlu", "yapılmalı", "edilmeli", "sağlamalı",
@@ -37,7 +37,6 @@ _ALL_REQ_MARKERS = _TR_REQ_MARKERS | _EN_REQ_MARKERS
 
 
 def _is_requirements_text(text: str) -> bool:
-    """Metnin bir yazılım gereksinim belgesi olup olmadığını buluşsal olarak kontrol eder."""
     stripped = text.strip()
     if len(stripped) < 20:
         return False
@@ -54,18 +53,16 @@ def _set_input(text: str) -> None:
 
 demo_mode = st.session_state.get("demo_mode", False)
 
-st.markdown('<div class="ar-title-bar"></div>', unsafe_allow_html=True)
-st.title("Gereksinim Girişi")
-st.markdown(
-    '<p style="font-family:\'Inter\',sans-serif;font-size:0.875rem;color:#666666;'
-    'margin-top:-0.75rem;margin-bottom:1.5rem;">Analiz edilecek gereksinim metnini '
-    'girin veya hazır bir örnek yükleyin.</p>',
-    unsafe_allow_html=True,
+page_header(
+    title="Gereksinim Girişi",
+    subtitle="Analiz edilecek gereksinim metnini girin veya hazır bir örnek yükleyin.",
+    step=1,
 )
+
 if demo_mode:
     st.info("Demo Modu aktif — demo senaryoları listeye eklendi.")
 
-# Örnek Veri Yükle — yalnızca Demo Modu açıkken gösterilir
+# Sample loader — only in demo mode
 if demo_mode:
     options: dict[str, Path] = {}
     if _SAMPLES_DIR.exists():
@@ -94,12 +91,12 @@ if demo_mode:
                 content = sample_path.read_text(encoding="utf-8")
                 if st.button(f"'{selected_label}' dosyasını yükle", key="load_sample_btn"):
                     _set_input(content)
-                    st.toast(f"{selected_label} yüklendi.")
+                    st.toast(f"✓ {selected_label} yüklendi.")
                     st.rerun()
             except OSError:
                 st.warning(f"'{sample_path.name}' dosyası okunamadı.")
 
-if st.button("İleri: Analiz", type="primary", use_container_width=True):
+if st.button("İleri: Analiz →", type="primary", use_container_width=True):
     raw = st.session_state.user_input.strip()
     if not raw:
         st.error("Lütfen metin gir!")
@@ -120,12 +117,14 @@ if uploaded_file is not None:
     try:
         extracted_text = extract_text_from_upload(uploaded_file)
         _set_input(extracted_text)
-        st.toast("Dosya yüklendi ve metin çıkarıldı.")
+        st.toast("✓ Dosya yüklendi ve metin çıkarıldı.")
     except ValueError as e:
         st.error(str(e))
 
+
 def _sync_input():
     st.session_state.user_input = st.session_state._input_widget
+
 
 text_val = st.text_area(
     label="Gereksinim metnini gir:",
@@ -133,8 +132,17 @@ text_val = st.text_area(
     height=220,
     key="_input_widget",
     value=st.session_state.get("user_input", ""),
-    on_change=_sync_input
+    on_change=_sync_input,
 )
 
 if text_val != st.session_state.get("user_input", ""):
     st.session_state.user_input = text_val
+
+# Empty state hint when text area is empty
+if not st.session_state.get("user_input", "").strip():
+    empty_state(
+        icon="📋",
+        heading="Henüz metin girilmedi",
+        body="Gereksinim metninizi yukarıdaki alana yazın veya bir dosya yükleyin. "
+             "Sistem gereksinimleri analiz ederek çelişkileri ve eksiklikleri tespit eder.",
+    )

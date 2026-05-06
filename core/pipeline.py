@@ -70,12 +70,16 @@ def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
             fut_conflicts = ex.submit(_run_conflicts)
             fut_gaps = ex.submit(_run_gaps)
 
+            if "pipeline_warnings" not in st.session_state:
+                st.session_state["pipeline_warnings"] = []
+
             try:
                 conflicts = fut_conflicts.result()
                 _log.info("Çelişki analizi tamamlandı | conflicts={}", len(conflicts))
             except (LLMClientError, ValueError) as exc:
                 _log.warning("Çelişki analizi başarısız — boş liste ile devam ediliyor | hata={}", exc)
                 st.warning(f"⚠️ Çelişki analizi tamamlanamadı: {exc}")
+                st.session_state["pipeline_warnings"].append(f"Çelişki Analizi: {exc}")
                 conflicts = []
 
             try:
@@ -84,6 +88,7 @@ def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
             except (LLMClientError, ValueError) as exc:
                 _log.warning("Eksiklik analizi başarısız — boş liste ile devam ediliyor | hata={}", exc)
                 st.warning(f"⚠️ Eksiklik analizi tamamlanamadı: {exc}")
+                st.session_state["pipeline_warnings"].append(f"Eksiklik Analizi: {exc}")
                 gaps = []
     else:
         _log.info("API key tanımlı değil — çelişki ve eksiklik analizi atlanıyor.")
@@ -140,6 +145,9 @@ def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
                 _log.info("Gereksinim iyileştirme tamamlandı | improvements={}", len(report.improvements))
             except (LLMClientError, ValueError) as exc:
                 _log.warning("Gereksinim iyileştirme başarısız | hata={}", exc)
+                if "pipeline_warnings" not in st.session_state:
+                    st.session_state["pipeline_warnings"] = []
+                st.session_state["pipeline_warnings"].append(f"Gereksinim İyileştirme: {exc}")
 
         futures = [
             executor.submit(gen_srs),

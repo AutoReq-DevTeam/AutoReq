@@ -124,7 +124,8 @@ class GapAnalyzer:
     def _get_client(self) -> LLMClient:
         """Lazy LLM istemcisi döndürür."""
         if self._llm_client is None:
-            self._llm_client = LLMClient(max_output_tokens=8192)
+            # Hız ve düşük maliyet için Gemini 2.5 Flash kullanıyoruz
+            self._llm_client = LLMClient(model_name="google/gemini-2.5-flash", max_output_tokens=8192)
         return self._llm_client
 
     def analyze(self, doc: ParsedDocument, *, domain_hint: Optional[str] = None) -> list[dict]:
