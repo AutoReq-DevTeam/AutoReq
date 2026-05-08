@@ -1,0 +1,7 @@
+{
+    "avg_nlp_only_per_sentence_seconds": 0.7409,
+    "avg_hybrid_per_sentence_seconds": 4.3842,
+    "std_dev_nlp_only": 0.2367,
+    "std_dev_hybrid": 3.8558,
+    "outliers_removed": 1
+}
