@@ -147,6 +147,11 @@ class EntityRecognizer:
         for actor in self.actor_lemmas:
             if len(actor) >= 4 and text_word.startswith(actor) and len(text_word) > len(actor):
                 return actor
+        # Ters prefix: Stanza MWT bölümü (örn. "Yönet"→"yönetici", "Sorum"→"sorumlu")
+        if len(lemma) >= 4:
+            for actor in self.actor_lemmas:
+                if actor.startswith(lemma) and len(actor) > len(lemma):
+                    return actor
         return None
 
     def _extract_by_dependency(self, sentence) -> set[str]:
@@ -276,12 +281,15 @@ class EntityRecognizer:
             second_has_suf = self._has_morph_suffix(second_noun)
 
             # NOUN_base + NOUN_suffix → bileşik (örn. "Laboratuvar teknisyeni")
+            # Ama ikinci isim doğrudan nesne/tümleç ise bileşik aktör sayılmaz.
+            second_deprel = getattr(second_noun, "deprel", None)
             if (
                 first_is_base
                 and second_has_suf
                 and len(first_lemma) >= 3
                 and len(second_lemma) >= 3
                 and second_lemma not in self.object_lemmas
+                and second_deprel not in ("obj", "iobj", "obl")
             ):
                 return f"{first_lemma} {second_lemma}"
             # İkisi de base form ya da başka durum → tek actor (ilk NOUN)

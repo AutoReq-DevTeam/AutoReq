@@ -1,88 +1,161 @@
 """
 core/classifier.py — Gereksinim Sınıflandırıcı
-Sorumlu: Üye 1 (NLP & Preprocessing)
 
-Açıklama:
-Bu modül, metindeki gereksinimlerin "Fonksiyonel" mi yoksa "Fonksiyonel Olmayan (NFR)"
-mi olduğunu belirler. Projenin MVP aşaması gereği Makine Öğrenmesi (Scikit-Learn) yerine
-"Heuristic (Sezgisel / Kural Tabanlı)" bir mimari kullanılmıştır. Elimizde modeli eğitecek
-orijinal (NFR/FR) Türkçe veri seti bulunmadığından, basit ve hızlı olan kural tabanlı
-kelime eşleştirme en optimize yoldur (KISS prensibi).
+Hibrit 3 katmanlı mimari:
+  Katman 1 — FR sinyal tespiti: Türkçe eylem fiili var + NFR keyword yok → FUNCTIONAL
+  Katman 2 — NFR keyword + sayısal regex → NON_FUNCTIONAL
+  Katman 3 — LLM few-shot: sadece ikisi de karar veremediğinde (belirsiz vakalar)
 """
 
 import re
 
 from .models import Requirement
 
+# Türkçe gereksinim cümlelerinde kullanıcı eylemi bildiren fiil sonekleri.
+# Bu sonekler fonksiyonel gereksinimin açık sinyalidir.
+_FR_VERB_RE = re.compile(
+    r"\b\w+(?:abilmeli|ebilmeli|abilmelidir|ebilmelidir"
+    r"|abilir|ebilir|yapmalı|etmeli|görmeli|almalı|vermeli"
+    r"|oluşturmalı|silmeli|güncellemeli|görüntülemeli)\b",
+    re.IGNORECASE,
+)
+
+_CLASSIFICATION_SYSTEM_PROMPT = """\
+Sen bir yazılım gereksinim analisti uzmansın.
+Verilen Türkçe gereksinim cümlesini FUNCTIONAL veya NON_FUNCTIONAL olarak sınıflandır.
+
+FUNCTIONAL  : Sistemin yapması gereken eylemler, kullanıcı işlemleri, iş özellikleri.
+NON_FUNCTIONAL: Performans, güvenlik, güvenilirlik, uyumluluk, ölçeklenebilirlik, erişilebilirlik.
+
+Örnekler:
+- "Kullanıcı sisteme giriş yapabilmeli." → FUNCTIONAL
+- "Admin kullanıcı silebilmeli." → FUNCTIONAL
+- "Kullanıcı arayüzden rapor indirebilmeli." → FUNCTIONAL
+- "Sistem 3 saniyede yanıt vermeli." → NON_FUNCTIONAL
+- "Veriler şifrelenmiş olarak saklanmalıdır." → NON_FUNCTIONAL
+- "Sistem %99.9 uptime sağlamalı." → NON_FUNCTIONAL
+- "Uygulama tüm modern tarayıcılarda hatasız çalışmalıdır." → NON_FUNCTIONAL
+
+Yalnızca "FUNCTIONAL" veya "NON_FUNCTIONAL" döndür. Başka hiçbir şey yazma.\
+"""
+
 
 class RequirementClassifier:
-    """Gereksinimleri F / NFR olarak sınıflandırır."""
+    """Gereksinimleri F / NFR olarak sınıflandırır (hibrit 3 katman)."""
 
     def __init__(self) -> None:
-        """NFR anahtar kelime kümesiyle sınıflandırıcıyı başlatır."""
-        # Kural tabanlı sınıflandırma için Non-Functional Keyword (NFR) kelime havuzu.
-        # frozenset kullanılır — her classify() çağrısında O(1) üyelik kontrolü sağlar
-        # (list ile aynı eleman sayısında O(N) olurdu).
+        # Katman 2: NFR anahtar kelime kümesi.
+        # "arayüz" ve "standart" çıkarıldı — FR cümlelerinde false positive üretiyordu.
         self.nfr_keywords: frozenset = frozenset([
             # Performans
             "hızlı", "saniye", "performans", "gecikme", "milisaniye", "mili saniye",
             "eş zamanlı", "eşzamanlı", "yanıt süresi", "throughput",
-            # Güvenlik
-            "güvenli", "kripto", "ssl", "korunmalı", "güvenlik", "mahremiyet",
-            # Yetkilendirme & ölçeklenebilirlik
-            "yetki", "ölçek", "kapasite",
+            # Güvenlik (örtülü formlar eklendi)
+            "güvenli", "güvenlik", "kripto", "ssl", "korunmalı", "mahremiyet",
+            "şifrelen", "şifreli", "şifreleme", "yetkisiz erişim",
+            # Ölçeklenebilirlik & kapasite
+            "ölçek", "kapasite",
             # Erişilebilirlik & süreklilik
             "kesintisiz", "ulaşılabilir", "uptime", "erişilebilir", "yedek",
-            # Kullanılabilirlik
-            "kullanıcı dostu", "arayüz", "responsive", "kullanılabilirlik",
-            # Uyumluluk
-            "uyumluluk", "standart",
+            "hatasız çalış", "çökmemeli", "çökmeli",
+            # Kullanılabilirlik (sadece spesifik olanlar)
+            "kullanılabilirlik", "responsive",
             # Güvenilirlik
-            "crash", "hata oranı",
-            # Kısıtlama ifadeleri — ölçülebilir eşiklerin NFR sinyali
-            "kaldırabilmeli", "desteklemelidir", "uyumlu olmalı", "uyumlu olmali",
+            "crash", "hata oranı", "yedeklenmiş",
+            # Kısıtlama ifadeleri
+            "kaldırabilmeli", "desteklemelidir",
             "geçmemelidir", "geçmemeli", "aşmamalı", "aşmamali",
             "en fazla", "en az", "minimum", "maksimum", "en çok", "en geç",
             "karşılamalıdır", "sağlamalıdır",
-            "altında", "üzerinde",
         ])
 
-        # Sayısal eşik pattern'ları: "%0.1 crash oranı", "10.000 kullanıcı" gibi
-        # somut kriter içeren cümleleri yakalamak için regex kullanılır.
+        # Katman 2: Sayısal eşik pattern'ları
         self.nfr_numeric_patterns: list = [
-            re.compile(r'%\s*\d'),                                                   # %0.1, %99
-            re.compile(r'\d\s*%'),                                                   # 99.9%
-            re.compile(r'\d[\d,\.]*\s*(ms\b|sn\b|milisaniye|mili\s*saniye)'),       # zaman eşiği (ms/sn)
-            re.compile(r'\d[\d,\.]*\s*(eş\s*zamanlı|eşzamanlı|concurrent)'),        # eş zamanlı kullanıcı
-            re.compile(r'\d{1,3}\.\d{3}\s*(kullanıcı|istek|işlem|bağlantı|kayıt)'), # 10.000 kullanıcı
+            re.compile(r'%\s*\d'),
+            re.compile(r'\d\s*%'),
+            re.compile(r'\d[\d,\.]*\s*(ms\b|sn\b|milisaniye|mili\s*saniye)'),
+            re.compile(r'\d[\d,\.]*\s*(eş\s*zamanlı|eşzamanlı|concurrent)'),
+            re.compile(r'\d{1,3}\.\d{3}\s*(?:\w+\s+)?(kullanıcı|istek|işlem|bağlantı|kayıt|talep|taleb|sipariş|mesaj)'),
         ]
 
+        # FR cümlelerinde nesne olarak da geçebilen ambiguous keyword'ler.
+        # Örn: "güvenlik loglarını görüntüleyebilmeli" → nesne konumunda, FR.
+        # Bu keyword'ler yalnızca FR fiili yoksa K2'yi tetikler.
+        self._ambiguous_nfr_keywords: frozenset = frozenset({
+            "güvenlik", "yedek", "erişilebilir", "yük",
+        })
+
+        # "güvenli" → "güvenlik" substring çakışmasını önler (güvenlik ambiguous sette).
+        self._guvenli_re = re.compile(r'güvenli(?!k)')
+
+        self._llm = None  # lazy init
+
+    def _has_strong_nfr_kw(self, text_lower: str) -> bool:
+        """Güçlü NFR keyword eşleşmesi — güvenli/güvenlik substring çakışması giderilmiş."""
+        for kw in (self.nfr_keywords - self._ambiguous_nfr_keywords):
+            if kw == "güvenli":
+                if self._guvenli_re.search(text_lower):
+                    return True
+            elif kw in text_lower:
+                return True
+        return False
+
+    def _get_llm(self):
+        """LLM client'ı ilk kullanımda başlatır."""
+        if self._llm is None:
+            try:
+                from modules.llm_client import LLMClient
+                self._llm = LLMClient()
+            except Exception:
+                self._llm = False  # başlatılamadı, tekrar deneme
+        return self._llm if self._llm else None
+
+    def _classify_with_llm(self, text: str) -> str | None:
+        """Katman 3: LLM few-shot sınıflandırma. Başarısız olursa None döner."""
+        llm = self._get_llm()
+        if not llm:
+            return None
+        try:
+            response = llm.chat(
+                system_prompt=_CLASSIFICATION_SYSTEM_PROMPT,
+                user_prompt=f'Gereksinim: "{text}"',
+            )
+            text_out = (response.content if hasattr(response, "content") else str(response)).strip().upper()
+            if "NON_FUNCTIONAL" in text_out:
+                return "NON_FUNCTIONAL"
+            if "FUNCTIONAL" in text_out:
+                return "FUNCTIONAL"
+        except Exception:
+            pass
+        return None
+
     def classify(self, requirement: Requirement) -> Requirement:
-        """Gereksinimi FUNCTIONAL veya NON_FUNCTIONAL olarak etiketler.
-
-        Gereksinim metni boşsa req_type değiştirilmeden döndürülür.
-
-        Parametreler:
-            requirement: Sınıflandırılacak Requirement nesnesi.
-
-        Döndürür:
-            Requirement: req_type alanı güncellenmiş nesne (in-place).
-        """
+        """Gereksinimi FUNCTIONAL veya NON_FUNCTIONAL olarak etiketler."""
         text = requirement.text.strip()
         if not text:
-            # Boş metin — sınıflandırma yapılamaz, mevcut değeri koru
             return requirement
 
-        # Python'da string eşleştirmesi büyük/küçük harf duyarlı olduğu için
-        # önce metni küçük harfe çeviriyoruz.
         text_lower = text.lower()
 
-        # frozenset O(1) üyelik kontrolü sağlar.
-        is_nfr = any(keyword in text_lower for keyword in self.nfr_keywords)
+        has_nfr_num = any(p.search(text_lower) for p in self.nfr_numeric_patterns)
+        has_strong_nfr_kw = self._has_strong_nfr_kw(text_lower)
+        has_nfr_kw = has_strong_nfr_kw or any(
+            kw in text_lower for kw in self._ambiguous_nfr_keywords
+        )
 
-        # Keyword eşleşmesi yoksa sayısal threshold pattern'larını dene.
-        if not is_nfr:
-            is_nfr = any(pattern.search(text_lower) for pattern in self.nfr_numeric_patterns)
+        # Katman 1: Açık FR eylemi var + güçlü NFR sinyali yok → FUNCTIONAL
+        # Ambiguous keyword'ler (güvenlik, yedek) tek başlarına K1'i bloklamaz;
+        # nesne konumunda geçebilirler ("güvenlik loglarını görüntüleyebilmeli").
+        if _FR_VERB_RE.search(text_lower) and not has_strong_nfr_kw and not has_nfr_num:
+            requirement.req_type = "FUNCTIONAL"
+            return requirement
 
-        requirement.req_type = "NON_FUNCTIONAL" if is_nfr else "FUNCTIONAL"
+        # Katman 2: NFR keyword veya sayısal eşik → NON_FUNCTIONAL
+        if has_nfr_kw or has_nfr_num:
+            requirement.req_type = "NON_FUNCTIONAL"
+            return requirement
+
+        # Katman 3: Belirsiz — LLM'e sor
+        llm_result = self._classify_with_llm(text)
+        requirement.req_type = llm_result if llm_result else "FUNCTIONAL"
         return requirement
