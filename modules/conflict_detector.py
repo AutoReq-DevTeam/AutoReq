@@ -20,10 +20,65 @@ from .conflict_prompts import (
     build_pairwise_conflict_user_prompt,
 )
 from .llm_client import LLMClient, LLMClientError
-from .llm_response_utils import extract_json_object
+from .llm_response_utils import (
+    extract_json_object,
+    filter_valid_requirement_ids,
+    sort_by_confidence,
+)
 from .logging_utils import get_module_logger
 
 _log = get_module_logger("conflict_detector")
+
+CONFIDENCE_THRESHOLD = 0.6
+
+
+def _deduplicate_conflicts(rows: list[dict]) -> list[dict]:
+    """Aynı gereksinim çiftini kapsayan çakışmaları tekilleştirir.
+
+    Aynı frozenset(req_ids) birden fazla kayıtta görünüyorsa yalnızca
+    en yüksek confidence'lı olanı tutar.
+    """
+    seen: dict[frozenset, dict] = {}
+    no_ids: list[dict] = []
+
+    for row in rows:
+        ids = row.get("req_ids")
+        if not ids:
+            no_ids.append(row)
+            continue
+        key = frozenset(str(i) for i in ids)
+        if key not in seen:
+            seen[key] = row
+        else:
+            existing_conf = float(seen[key]["confidence"]) if "confidence" in seen[key] else 1.0
+            new_conf = float(row["confidence"]) if "confidence" in row else 1.0
+            if new_conf > existing_conf:
+                seen[key] = row
+
+    return list(seen.values()) + no_ids
+
+
+def _post_process_conflicts(
+    rows: list[dict],
+    valid_ids: set[str],
+    threshold: float = CONFIDENCE_THRESHOLD,
+) -> list[dict]:
+    """Conflict listesine filtre + dedup + sıralama uygular.
+
+    Adımlar (sırayla):
+    1. Geçersiz requirement ID'leri içeren satırları at (hallucination önlemi)
+    2. confidence < threshold olan satırları at
+    3. Aynı req_ids kümesine sahip duplikatları tekilleştir
+    4. confidence'a göre azalan sırada sırala
+    """
+    rows = filter_valid_requirement_ids(rows, valid_ids, id_keys=("req_ids",))
+    rows = [
+        r for r in rows
+        if (float(r["confidence"]) if "confidence" in r else 1.0) >= threshold
+    ]
+    rows = _deduplicate_conflicts(rows)
+    rows = sort_by_confidence(rows)
+    return rows
 
 
 def _format_requirements_block(doc: ParsedDocument) -> str:
@@ -105,6 +160,18 @@ class ConflictDetector:
             raise LLMClientError(f"Çelişki analizi çıktısı işlenemedi: {exc}") from exc
 
         rows = conflicts_payload_to_report_dicts(payload)
+
+        # Post-processing: ID validasyonu + confidence filtresi + dedup + sıralama
+        valid_ids = {req.id for req in doc.requirements}
+        raw_count = len(rows)
+        rows = _post_process_conflicts(rows, valid_ids)
+        if raw_count != len(rows):
+            _log.debug(
+                "Post-processing sonrası conflict sayısı düşürüldü | önce={} sonra={}",
+                raw_count,
+                len(rows),
+            )
+
         meta_raw = payload.get("meta")
         meta: dict[str, Any] = dict(meta_raw) if isinstance(meta_raw, dict) else {}
         # Tutarlılık: belgedeki gerçek gereksinim sayısı
@@ -112,7 +179,7 @@ class ConflictDetector:
         if meta.get("total_requirements") != n:
             meta["total_requirements_reported_by_llm"] = meta.get("total_requirements")
             meta["total_requirements"] = n
-        meta.setdefault("total_conflicts", len(rows))
+        meta["total_conflicts"] = len(rows)  # post-process sonrası gerçek sayı
 
         _log.info(
             "Çiftler arası çelişki analizi tamamlandı | conflicts={} confidence={}",

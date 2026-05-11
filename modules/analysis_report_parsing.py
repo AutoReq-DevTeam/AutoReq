@@ -47,6 +47,11 @@ def conflicts_payload_to_report_dicts(data: dict[str, Any]) -> list[dict]:
             row["severity"] = c["severity"]
         if c.get("suggested_resolution"):
             row["suggested_resolution"] = c["suggested_resolution"]
+        if c.get("confidence") is not None:
+            try:
+                row["confidence"] = float(c["confidence"])
+            except (TypeError, ValueError):
+                pass
         rows.append(row)
     return rows
 

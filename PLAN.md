@@ -171,7 +171,7 @@ Gereksinim
 ### GÖREV 5a — Çakışma Tespiti İyileştir
 **Dosya:** `modules/conflict_prompts.py` + `modules/conflict_detector.py`
 **Grup:** 5
-**Durum:** [ ] Bekliyor
+**Durum:** [x] Tamamlandı — 60/60 test, %100 doğruluk
 
 - Per-conflict confidence skoru zorunlu hale getir (şu an sadece meta-level var)
 - Minimum confidence threshold: 0.6 altındaki çakışmaları filtrele

@@ -62,6 +62,7 @@ Girdi:
   "conflicts": [
     {
       "id": "C1",
+      "confidence": 0.85,
       "severity": "high | medium | low",
       "type": "logic | business_rule | performance | security | usability | other",
       "requirements": ["R1", "R3"],
@@ -76,6 +77,12 @@ Girdi:
     "confidence": "high | medium | low"
   }
 }
+
+"confidence" alanı (0.0–1.0): Bu çelişkinin gerçek olduğuna dair güven skorun.
+- 0.9+  → Kesin çelişki, net kanıt var
+- 0.7–0.89 → Yüksek olasılık, bağlam gerektirebilir
+- 0.6–0.69 → Şüpheli, insan onayı önerilir
+- 0.6 altı → Raporlama; bu eşiğin altındaki çelişkiler sistem tarafından otomatik filtrelenir
 
 Kurallar:
 - Hiç çelişki bulamazsan:
