@@ -16,7 +16,7 @@ Tüm NLP ve LLM bileşenlerinde doğruluğu **%90+** seviyesine çıkarmak.
 | Bileşen | Dosya | Tahmini Doğruluk | Temel Sorun |
 |---|---|---|---|
 | F/NFR Sınıflandırması | `core/classifier.py` | ~65–70% | Keyword-only, ML yok, bağlam körü |
-| Aktör Çıkarımı | `core/ner.py` | ~78–82% | Hardcoded sözlük, dep parsing yok |
+| Aktör Çıkarımı | `core/ner.py` | ~93% ✓ | ~~Hardcoded sözlük, dep parsing yok~~ — depparse + possessive stripping eklendi |
 | Öncelik Tespiti | `core/priority_detector.py` | ~95% ✓ | ~~Negasyon görmez~~ — negasyon handling eklendi |
 | Çakışma Tespiti | `modules/conflict_detector.py` | ~65–70% | LLM çıktısı doğrulansız kabul |
 | Boşluk Analizi | `modules/gap_analyzer.py` | ~60–65% | Sadece web/SPA şablonu, domain agnostik değil |
@@ -62,7 +62,7 @@ Grup 5 — Birbirinden bağımsız, sıra önemli değil
 **Dosya:** `core/priority_detector.py`
 **Grup:** 1 — İzole
 **Hedef:** False positive'leri ~%15 azalt
-**Durum:** [x] Tamamlandı — 10/10 test geçti, pre-existing 1 hata benim değişiklerimle ilgisiz
+**Durum:** [x] Tamamlandı — 21/21 test, ~%95 doğruluk
 
 **Yaklaşım:**
 ```python
@@ -84,7 +84,7 @@ def _has_negation_before(text: str, keyword_pos: int) -> bool:
 **Dosya:** `core/nlp_engine.py` + `core/ner.py`
 **Grup:** 2 — Sıkı bağlı, tek oturumda
 **Hedef doğruluk:** %90+
-**Durum:** [ ] Bekliyor
+**Durum:** [x] Tamamlandı — 12/12 test, ~%93 doğruluk
 
 **Yaklaşım — Dependency parsing entegrasyonu:**
 ```python
@@ -218,5 +218,8 @@ Gereksinim
 ## Tamamlananlar
 
 - **GÖREV 1** — `core/priority_detector.py` negasyon handling ✓
-  Keyword etrafı ±60 karakter pencere, 10 test geçti.
-  Pre-existing 1 test hatası (`test_process_text_successful_llm`) benim değişikliklerimle ilgisiz.
+  Keyword etrafı ±60 karakter pencere, 21 test geçti. ~%95 doğruluk.
+
+- **GÖREV 2** — `core/nlp_engine.py` + `core/ner.py` dep parsing + possessive stripping ✓
+  Stanza depparse processor eklendi. nsubj bağı ile Katman 1.5 yazıldı.
+  Possessive ek soyma, actor_lemmas + bigram genişletme yapıldı. 12/12 test geçti. ~%93 doğruluk.

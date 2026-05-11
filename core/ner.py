@@ -61,6 +61,10 @@ class EntityRecognizer:
             "satıcı", "alıcı", "tedarikçi", "bayi", "tüketici",
             # Genel profesyonel
             "danışman", "stajyer", "mühendis",
+            # Domain-agnostik genel roller (yeni)
+            "koordinatör", "yetkili", "sorumlu", "temsilci",
+            "operatör", "teknisyen", "analist", "moderatör",
+            "editör", "müdür", "direktör", "sekreter",
             # Sistem / teknik — generic, düşük öncelik (Katman 3'te fallback)
             "sistem", "uygulama", "cihaz", "platform", "sunucu", "istemci",
         }
@@ -82,6 +86,11 @@ class EntityRecognizer:
             ("teknik", "destek"):      "teknik destek",
             ("kalite", "güvence"):     "kalite güvence",
             ("veri", "bilim"):         "veri bilimci",
+            ("yazılım", "geliştirici"): "yazılım geliştirici",
+            ("test", "uzman"):         "test uzmanı",
+            ("içerik", "üretici"):     "içerik üreticisi",
+            ("proje", "koordinatör"):  "proje koordinatörü",
+            ("alan", "uzman"):         "alan uzmanı",
         }
 
         # Generic (sistem/platform) aktörler — insan aktör bulunamazsa Katman 3 devreye girer.
@@ -110,6 +119,19 @@ class EntityRecognizer:
         """
         return text.lower().replace("̇", "")
 
+    @staticmethod
+    def _strip_possessive(text_word: str) -> str:
+        """Türkçe tamlayan (iyelik) eklerini soyar: müşterinin → müşteri.
+
+        Yalnızca sonuç en az 3 karakter uzunluğundaysa uygular.
+        """
+        for suffix in ("nin", "nın", "nün", "nun", "in", "ın", "ün", "un"):
+            if text_word.endswith(suffix):
+                base = text_word[: -len(suffix)]
+                if len(base) >= 3:
+                    return base
+        return text_word
+
     def _find_actor_k1(self, lemma: str, text_word: str) -> str | None:
         """Katman 1: Lemma tablosu ve Türkçe agglutination prefix-match."""
         if lemma in self.actor_lemmas:
@@ -117,11 +139,32 @@ class EntityRecognizer:
         # Stanza POS/lemma hatası (örn. "Çalışan" → lemma="çalış")
         if text_word in self.actor_lemmas:
             return text_word
-        # Çekimli form: "müşterinin".startswith("müşteri") → True
+        # Tamlayan eki soyma: "müşterinin" → "müşteri"
+        stripped = self._strip_possessive(text_word)
+        if stripped != text_word and stripped in self.actor_lemmas:
+            return stripped
+        # Çekimli form prefix-match: "müşteriye".startswith("müşteri") → True
         for actor in self.actor_lemmas:
             if len(actor) >= 4 and text_word.startswith(actor) and len(text_word) > len(actor):
                 return actor
         return None
+
+    def _extract_by_dependency(self, sentence) -> set[str]:
+        """Katman 1.5: nsubj bağıyla işaretlenmiş özneyi yakalar.
+
+        Dependency parsing'in belirlediği nominal özne (nsubj / nsubj:pass)
+        doğrudan actor_lemmas tablosuna karşı kontrol edilir.
+        """
+        actors: set[str] = set()
+        for word in sentence.words:
+            if word.deprel not in ("nsubj", "nsubj:pass"):
+                continue
+            lemma = self._norm(word.lemma or word.text)
+            text_word = self._norm(word.text)
+            actor = self._find_actor_k1(lemma, text_word)
+            if actor:
+                actors.add(actor)
+        return actors
 
     def _has_morph_suffix(self, word) -> bool:
         """Kelimenin morfolojik suffix aldığını tespit eder (text ≠ lemma)."""
@@ -311,15 +354,21 @@ class EntityRecognizer:
                 if 2 <= len(noun_run) <= 3:
                     found_objects.add(" ".join(noun_run).lower())
 
-                # === Katman 2: Syntactic pattern (yalnızca K1 insan actor bulamazsa) ===
-                # matched_multiword'deki insan aktörler de K1 sayılır — K2 tetiklenmez.
+                # === Katman 1.5: Dependency parsing tabanlı özne tespiti ===
                 human_k1 = {a for a in layer1_sent if a not in self.generic_actors}
                 human_k1 |= {a for a in matched_multiword if a not in self.generic_actors}
+                dep_actors: set[str] = set()
+                if not human_k1:
+                    dep_actors = self._extract_by_dependency(sentence)
+                    human_k1 |= {a for a in dep_actors if a not in self.generic_actors}
+
+                # === Katman 2: Syntactic pattern (K1 ve K1.5 insan actor bulamazsa) ===
                 layer2_sent: set[str] = set()
                 if not human_k1:
                     layer2_sent = self._extract_layer2_actors(sentence)
 
                 found_actors |= layer1_sent
+                found_actors |= dep_actors
 
                 # Katman 2 sonuçlarını ekle — zaten bulunanlarla veya object_lemmas ile çakışma varsa atla
                 for a in layer2_sent:
