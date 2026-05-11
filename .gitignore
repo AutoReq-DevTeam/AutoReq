@@ -210,6 +210,9 @@ __marimo__/
 # AutoReq — Proje Spesifik
 # ============================================================
 
+# Arşiv klasörü (eski ekip raporları, geçici dosyalar)
+_archive/
+
 # Üretilen çıktı dosyaları (PDF, DOCX, XLSX vb.)
 outputs/generated/*
 !outputs/generated/.gitkeep
