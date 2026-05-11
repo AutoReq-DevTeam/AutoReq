@@ -33,31 +33,33 @@ gereksinim cümlesine dönüştürmektir.
 
 {
   "improved": "Ölçülebilir, net ifade (tek cümle veya kısa paragraf).",
-  "reason": "Hangi muğlak ifadelerin nasıl somutlaştırıldığının kısa gerekçesi."
+  "reason": "Hangi muğlak ifadelerin nasıl somutlaştırıldığının kısa gerekçesi.",
+  "vague_terms": ["hızlı", "kolay"],
+  "feasibility": "Önerilen metriğin tipik bir uygulama altyapısında gerçekçiliğine dair tek cümlelik not."
 }
 
 Few-shot örnekleri (bunları birebir kopyalama; stil rehberi olarak kullan):
 
 1) Hız (performans):
 Girdi: "Ödeme ekranı süper hızlı olmalı."
-Beklenen mantık: yanıt süresi, eşzamanlı kullanıcı veya p95 eşiği.
-Örnek çıktı:
 {"improved": "Ödeme işleminin p95 yanıt süresi, 500 eşzamanlı kullanıcı yükünde 800 ms'yi aşmamalıdır.",
- "reason": "Süreç süresi belirsizliği, sayısal yanıt süresi ve yük profiliyle somutlaştırıldı."}
+ "reason": "Süreç süresi belirsizliği, sayısal yanıt süresi ve yük profiliyle somutlaştırıldı.",
+ "vague_terms": ["hızlı"],
+ "feasibility": "800 ms eşiği, CDN ve önbellek kullanılan tipik REST API altyapısında 1 sprint içinde doğrulanabilir."}
 
 2) Kullanılabilirlik:
 Girdi: "Kullanıcı arayüzü sezgisel ve kolay olmalı."
-Beklenen mantık: görev tamamlama süresi, hata oranı veya standart (örn. WCAG) atfı.
-Örnek çıktı:
 {"improved": "Temel sipariş akışı, önceden eğitim almamış bir kullanıcı tarafından ortalama 3 denemede, 120 saniyede hatasız tamamlanabilmelidir.",
- "reason": "Kolaylık, ölçülebilir görev süresi ve deneme sayısına indirgendi."}
+ "reason": "Kolaylık, ölçülebilir görev süresi ve deneme sayısına indirgendi.",
+ "vague_terms": ["sezgisel", "kolay"],
+ "feasibility": "Kullanıcı testi için 5 kişilik pilot grup, mevcut sprint döngüsünde yeterlidir."}
 
 3) Güvenlik:
 Girdi: "Müşteri verileri güvenli tutulmalı."
-Beklenen mantık: şifreleme, yetkilendirme veya standart (TLS, dinlenme halinde şifreleme).
-Örnek çıktı:
-{"improved": "Hareket hâlinde ve dinlenen müşteri verileri, endüstri standardı (TLS 1.2+, AES-256) ile şifrelenmeli; yalnızca yetkili roller erişim belirteci ile veriye erişebilmelidir.",
- "reason": "Güvenlik beklentisi, şifreleme sürümleri ve erişim kontrolüyle netleştirildi."}
+{"improved": "Hareket hâlinde ve dinlenen müşteri verileri, TLS 1.2+ ve AES-256 ile şifrelenmeli; yalnızca yetkili roller erişim belirteci ile veriye erişebilmelidir.",
+ "reason": "Güvenlik beklentisi, şifreleme sürümleri ve erişim kontrolüyle netleştirildi.",
+ "vague_terms": ["güvenli"],
+ "feasibility": "TLS ve AES-256 yapılandırması, standart bulut sağlayıcılarında gün içinde tamamlanabilir."}
 """.strip()
 
 
@@ -97,7 +99,9 @@ doğrulanabilir hale getirerek JSON dizisi olarak döndürmektir.
   {
     "req_id": "REQ_001",
     "improved": "Ölçülebilir, net ifade (tek cümle veya kısa paragraf).",
-    "reason": "Hangi muğlak ifadelerin nasıl somutlaştırıldığının kısa gerekçesi."
+    "reason": "Hangi muğlak ifadelerin nasıl somutlaştırıldığının kısa gerekçesi.",
+    "vague_terms": ["hızlı"],
+    "feasibility": "Önerilen metriğin tipik altyapıda gerçekçiliğine dair tek cümlelik not."
   }
 ]
 
@@ -105,6 +109,7 @@ Kurallar:
 - Her gereksinim için listede tam olarak bir öğe olmalı; req_id girişle eşleşmeli.
 - Çıktı Türkçe kalmalı; teknik terimler gerektiğinde İngilizce kısaltma (p95, ms) kullanılabilir.
 - Performans ifadelerinde mümkünse eşzamanlı kullanıcı, yüzde dilim veya süre eşiği belirt.
+- feasibility: önerilen ölçütün gerçekçi olup olmadığını kısa değerlendir.
 """.strip()
 
 

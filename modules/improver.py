@@ -10,6 +10,7 @@ teknik, ölçülebilir kriterlere dönüştürmek için LLM önerileri üretir.
 from __future__ import annotations
 
 import concurrent.futures
+import re
 from typing import Any, Optional
 
 from core.models import Requirement
@@ -34,33 +35,56 @@ _NO_VAGUE_REASON = (
 # Ön filtre: yalnızca bu kelimelerden en az biri metinde geçerse LLM çağrılır.
 vague_keywords = frozenset(
     {
-        "hızlı",
-        "kolay",
-        "basit",
-        "güvenli",
-        "şık",
-        "modern",
-        "kullanışlı",
-        "iyi",
-        "kötü",
-        "büyük",
-        "küçük",
+        # Türkçe — performans
+        "hızlı", "hızlıca",
+        # Türkçe — kullanılabilirlik
+        "kolay", "kolayca", "kolaylıkla", "sezgisel", "kullanıcı dostu", "kullanışlı",
+        # Türkçe — genel kalite
+        "iyi", "kötü", "basit", "güzel", "şık", "modern",
+        # Türkçe — boyut
+        "büyük", "küçük",
+        # Türkçe — sağlamlık/güvenlik
+        "güvenli", "sağlam", "kararlı", "stabil",
+        # Türkçe — verimlilik/ölçek
+        "verimli", "etkili", "esnek", "ölçeklenebilir", "performanslı",
+        # İngilizce
+        "fast", "quick", "simple", "easy", "good", "better", "best",
+        "secure", "safe", "responsive", "scalable", "efficient",
+        "robust", "user-friendly", "intuitive", "clean",
     }
 )
 
+# Önceden derlenmiş regex'ler (tek kelimelik anahtar kelimeler için)
+_VAGUE_PATTERNS: list[tuple[str, re.Pattern]] = [
+    (kw, re.compile(r"(?<!\w)" + re.escape(kw) + r"(?!\w)", re.IGNORECASE))
+    for kw in vague_keywords
+    if " " not in kw and "-" not in kw
+]
+_VAGUE_MULTIWORD: list[str] = [
+    kw for kw in vague_keywords if " " in kw or "-" in kw
+]
+
 
 def _text_has_vague_keyword(text: str) -> bool:
-    """
-    Gereksinim metninde (küçük harf) muğlak anahtar kelime var mı kontrol eder.
-
-    Parametreler:
-        text: İncelenecek metin.
-
-    Döndürür:
-        bool: Eşleşme varsa True.
-    """
+    """Gereksinim metninde muğlak anahtar kelime var mı kontrol eder (kelime sınırı duyarlı)."""
     lower = (text or "").lower()
-    return any(kw in lower for kw in vague_keywords)
+    for kw, pat in _VAGUE_PATTERNS:
+        if pat.search(lower):
+            return True
+    return any(kw in lower for kw in _VAGUE_MULTIWORD)
+
+
+def _detected_vague_terms(text: str) -> list[str]:
+    """Metindeki tüm eşleşen muğlak anahtar kelimeleri döndürür."""
+    lower = (text or "").lower()
+    found: list[str] = []
+    for kw, pat in _VAGUE_PATTERNS:
+        if pat.search(lower):
+            found.append(kw)
+    for kw in _VAGUE_MULTIWORD:
+        if kw in lower:
+            found.append(kw)
+    return found
 
 
 def _coerce_str(value: Any, fallback: str) -> str:
@@ -127,11 +151,17 @@ class RequirementImprover:
             req_id = item.get("req_id", "")
             returned_ids.add(req_id)
             original = next((r.text.strip() for r in chunk if r.id == req_id), "")
-            chunk_results[req_id] = {
+            row: dict[str, Any] = {
                 "original": original,
                 "improved": _coerce_str(item.get("improved"), original),
                 "reason": _coerce_str(item.get("reason"), "(Açıklama yok.)"),
             }
+            if item.get("feasibility"):
+                row["feasibility"] = _coerce_str(item["feasibility"], "")
+            vt = item.get("vague_terms")
+            if isinstance(vt, list):
+                row["vague_terms"] = [str(v) for v in vt if v]
+            chunk_results[req_id] = row
 
         for req in chunk:
             if req.id not in returned_ids:
@@ -141,6 +171,7 @@ class RequirementImprover:
                     "original": original,
                     "improved": original,
                     "reason": "Toplu LLM yanıtında bu gereksinim döndürülmedi.",
+                    "vague_terms": _detected_vague_terms(original),
                 }
 
         return chunk_results
@@ -254,14 +285,16 @@ class RequirementImprover:
             }
 
         improved = _coerce_str(payload.get("improved"), original)
-        reason = _coerce_str(
-            payload.get("reason"),
-            "(Açıklama yok.)",
-        )
+        reason = _coerce_str(payload.get("reason"), "(Açıklama yok.)")
 
-        _log.info("Gereksinim iyileştirme tamamlandı | req_id={}", requirement.id)
-        return {
+        result: dict[str, Any] = {
             "original": original,
             "improved": improved,
             "reason": reason,
+            "vague_terms": _detected_vague_terms(original),
         }
+        if payload.get("feasibility"):
+            result["feasibility"] = _coerce_str(payload["feasibility"], "")
+
+        _log.info("Gereksinim iyileştirme tamamlandı | req_id={}", requirement.id)
+        return result

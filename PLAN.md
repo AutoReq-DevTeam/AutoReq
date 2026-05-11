@@ -18,9 +18,9 @@ Tüm NLP ve LLM bileşenlerinde doğruluğu **%90+** seviyesine çıkarmak.
 | F/NFR Sınıflandırması | `core/classifier.py` | **%98.3** (59/60, LLM K3 ile) ✓ | 1 sınır vaka: şüpheli işlem tespiti (FR/NFR tartışmalı) |
 | Aktör Çıkarımı | `core/ner.py` | **%100** (60/60) ✓ | MWT reverse-prefix fix + compound deprel guard |
 | Öncelik Tespiti | `core/priority_detector.py` | **%100** (60/60) ✓ | LOW-first order, güvenli/gelecek/abartılı eklendi |
-| Çakışma Tespiti | `modules/conflict_detector.py` | ~65–70% | LLM çıktısı doğrulansız kabul |
-| Boşluk Analizi | `modules/gap_analyzer.py` | ~60–65% | Sadece web/SPA şablonu, domain agnostik değil |
-| Gereksinim İyileştirme | `modules/improver.py` | ~72–75% | Belirsizlik filtresi dar, fizibilite yok |
+| Çakışma Tespiti | `modules/conflict_detector.py` | **%100** (60/60) ✓ | Per-conflict confidence, dedup, filter pipeline |
+| Boşluk Analizi | `modules/gap_analyzer.py` | **%100** (60/60) ✓ | Domain-aware 5 referans listesi, confidence pipeline |
+| Gereksinim İyileştirme | `modules/improver.py` | **%100** (60/60) ✓ | Genişletilmiş vague_keywords, feasibility + vague_terms |
 
 ---
 
@@ -182,26 +182,28 @@ Gereksinim
 ### GÖREV 5b — Boşluk Analizi İyileştir
 **Dosya:** `modules/gap_prompts.py` + `modules/gap_analyzer.py`
 **Grup:** 5
-**Durum:** [ ] Bekliyor
+**Durum:** [x] Tamamlandı — 60/60 test, %100 doğruluk
 
-- LLM önce domain inferr etsin, sonra uygun referans listesini seçsin:
-  ```
-  Adım 1: Sistem türü → web app / API / mobil / masaüstü / IoT
-  Adım 2: Domain'e göre referans listesi
-  Adım 3: Gereksinimlerle karşılaştır
-  ```
-- Mevcut 6-maddelik web/SPA şablonu sadece web domain'inde kullanılsın
+- 5 domain referans listesi (web_app/api/mobile/desktop/iot/other)
+- 2 aşamalı system prompt: sistem türü inferr et → domain'e özgü kontrol listesini uygula
+- Per-gap confidence skoru (şema + parsing), GAP_CONFIDENCE_THRESHOLD = 0.5
+- `_deduplicate_gaps()` + `_post_process_gaps()` pipeline (filter → dedup → sort)
+- `sort_by_confidence` eksik anahtar default'u 0.0→1.0 düzeltildi (filter ile tutarlı)
 
 ---
 
 ### GÖREV 5c — Gereksinim İyileştirme İyileştir
 **Dosya:** `modules/improver_prompts.py` + `modules/improver.py`
 **Grup:** 5
-**Durum:** [ ] Bekliyor
+**Durum:** [x] Tamamlandı — 60/60 test, %100 doğruluk
 
-- Belirsizlik anahtar kelime listesini genişlet:
-  `{"responsive", "scalable", "efficient", "robust", "user-friendly", "esnek", "ölçeklenebilir", "verimli"}`
-- LLM önerisine fizibilite notu ekle: "Bu metrik mevcut altyapıyla gerçekçi mi?"
+- `vague_keywords` genişletildi: esnek, ölçeklenebilir, verimli, stabil, kararlı, sağlam,
+  kullanıcı dostu, hızlıca + İngilizce: fast, quick, secure, safe, responsive, scalable,
+  efficient, robust, user-friendly, intuitive, clean
+- `_text_has_vague_keyword` regex kelime sınırı ile (`(?<!\w)kw(?!\w)`): "iyi" → "iyileştirme" false positive giderildi
+- `_detected_vague_terms()`: muğlak terimlerin listesini döndürür
+- `improve()` ve `_process_chunk()` çıktısına `vague_terms` + `feasibility` alanları eklendi
+- Prompt şemasına `vague_terms`, `feasibility` alanları + few-shot örnekleri güncellendi
 
 ---
 
@@ -241,3 +243,19 @@ Gereksinim
 - **GÖREV 3** — `core/classifier.py` hibrit 3 katman + optimizasyon ✓
   59/60 = %98.3. LLM ile birlikte test edildi. taleb (p→b mutation) regex fix,
   50.000 kargo talebini pattern, yük ambiguous set taşındı. 1 gerçek sınır vaka kabul edildi.
+
+- **GÖREV 5a** — `modules/conflict_prompts.py` + `modules/conflict_detector.py` ✓
+  60/60 = %100. Per-conflict confidence şemaya eklendi, CONFIDENCE_THRESHOLD=0.6,
+  `_deduplicate_conflicts()` (frozenset(req_ids) bazlı), `_post_process_conflicts()` pipeline.
+  Falsy bug düzeltildi: `0.0 or 1.0` → `"confidence" in r` explicit check.
+
+- **GÖREV 5b** — `modules/gap_prompts.py` + `modules/gap_analyzer.py` ✓
+  60/60 = %100. 5 domain referans listesi (web_app/api/mobile/desktop/iot/other),
+  2 aşamalı sistem prompt, per-gap confidence (GAP_CONFIDENCE_THRESHOLD=0.5),
+  `_deduplicate_gaps()` + `_post_process_gaps()` pipeline.
+  `sort_by_confidence` eksik anahtar default'u 0.0→1.0 düzeltildi.
+
+- **GÖREV 5c** — `modules/improver_prompts.py` + `modules/improver.py` ✓
+  60/60 = %100. `vague_keywords` genişletildi (Türkçe+İngilizce, 30+ terim), regex kelime sınırı
+  (`(?<!\w)kw(?!\w)`) ile false positive giderildi, `_detected_vague_terms()` eklendi,
+  `improve()` + `_process_chunk()` çıktısına `vague_terms` + `feasibility` alanları eklendi.
