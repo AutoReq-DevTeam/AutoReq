@@ -83,6 +83,11 @@ def gaps_payload_to_report_dicts(data: dict[str, Any]) -> list[dict]:
             row["related_standard_step"] = g["related_standard_step"]
         if g.get("rationale"):
             row["rationale"] = g["rationale"]
+        if g.get("confidence") is not None:
+            try:
+                row["confidence"] = float(g["confidence"])
+            except (TypeError, ValueError):
+                pass
         rows.append(row)
     return rows
 

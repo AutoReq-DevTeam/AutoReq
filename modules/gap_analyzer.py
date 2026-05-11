@@ -20,10 +20,48 @@ from core.models import ParsedDocument
 from .analysis_report_parsing import gaps_payload_to_report_dicts
 from .gap_prompts import build_gap_analysis_system_prompt, build_gap_analysis_user_prompt
 from .llm_client import LLMClient, LLMClientError
-from .llm_response_utils import extract_json_object
+from .llm_response_utils import extract_json_object, sort_by_confidence
 from .logging_utils import get_module_logger
 
 _log = get_module_logger("gap_analyzer")
+
+GAP_CONFIDENCE_THRESHOLD = 0.5
+
+
+def _deduplicate_gaps(rows: list[dict]) -> list[dict]:
+    """Aynı missing_area'ya sahip gap'leri tekilleştirir; en yüksek confidence'lıyı tutar."""
+    seen: dict[str, dict] = {}
+    no_area: list[dict] = []
+
+    for row in rows:
+        area = (row.get("missing_area") or "").strip().lower()
+        if not area:
+            no_area.append(row)
+            continue
+        if area not in seen:
+            seen[area] = row
+        else:
+            existing_conf = float(seen[area]["confidence"]) if "confidence" in seen[area] else 1.0
+            new_conf = float(row["confidence"]) if "confidence" in row else 1.0
+            if new_conf > existing_conf:
+                seen[area] = row
+
+    return list(seen.values()) + no_area
+
+
+def _post_process_gaps(
+    rows: list[dict],
+    threshold: float = GAP_CONFIDENCE_THRESHOLD,
+) -> list[dict]:
+    """Gap listesine confidence filtresi + dedup + sıralama uygular."""
+    rows = [
+        r for r in rows
+        if (float(r["confidence"]) if "confidence" in r else 1.0) >= threshold
+    ]
+    rows = _deduplicate_gaps(rows)
+    rows = sort_by_confidence(rows)
+    return rows
+
 
 # Minimum anlamlı eksiklik için: yalnızca giriş/kimlik ifadesi varken kurtarma adımı yoksa.
 _LOGIN_MARKERS: tuple[str, ...] = (
@@ -176,6 +214,17 @@ class GapAnalyzer:
 
         rows = gaps_payload_to_report_dicts(payload)
         meta_raw = payload.get("meta")
+
+        # Post-processing: confidence filtresi + dedup + sıralama
+        raw_count = len(rows)
+        rows = _post_process_gaps(rows)
+        if raw_count != len(rows):
+            _log.debug(
+                "Post-processing sonrası gap sayısı düşürüldü | önce={} sonra={}",
+                raw_count,
+                len(rows),
+            )
+
         if isinstance(meta_raw, dict) and meta_raw.get("total_gaps") != len(rows):
             _log.debug(
                 "meta.total_gaps ile liste uzunluğu uyumsuz; satır sayısı esas alındı | reported={} actual={}",
@@ -185,9 +234,11 @@ class GapAnalyzer:
 
         rows = _append_auth_recovery_gap_if_needed(doc, rows)
 
+        inferred = (meta_raw or {}).get("system_type", "?") if isinstance(meta_raw, dict) else "?"
         _log.info(
-            "Gap analizi bitti | gaps={} confidence={}",
+            "Gap analizi bitti | gaps={} system_type={} confidence={}",
             len(rows),
+            inferred,
             (meta_raw or {}).get("confidence") if isinstance(meta_raw, dict) else "?",
         )
         return rows

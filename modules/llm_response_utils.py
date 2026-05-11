@@ -154,8 +154,10 @@ def sort_by_confidence(
         Sıralanmış yeni liste; orijinal liste değiştirilmez.
     """
     def _score(item: dict) -> float:
+        if confidence_key not in item:
+            return 1.0
         try:
-            return float(item.get(confidence_key, 0) or 0)
+            return float(item[confidence_key])
         except (TypeError, ValueError):
             return 0.0
 

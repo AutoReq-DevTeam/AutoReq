@@ -184,10 +184,10 @@ SBC_CASES: list[tuple[list, list]] = [
         [{"confidence": 0.9}, {"confidence": 0.5}],
         [{"confidence": 0.9}, {"confidence": 0.5}],
     ),
-    # Confidence eksik → 0.0 kabul
+    # Confidence eksik → 1.0 kabul (filter ile tutarlı)
     (
         [{"id": "A"}, {"id": "B", "confidence": 0.7}],
-        [{"id": "B", "confidence": 0.7}, {"id": "A"}],
+        [{"id": "A"}, {"id": "B", "confidence": 0.7}],
     ),
     # Tümü aynı → sıra korunur (stable sort)
     (
