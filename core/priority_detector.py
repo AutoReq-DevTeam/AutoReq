@@ -22,10 +22,25 @@ _log = get_module_logger("priority_detector")
 # standart ASCII değerlerine indirgemeden önce düzeltir.
 _TR_UPPER_TO_LOWER = str.maketrans("İIÇÖÜŞĞ", "iıçöüşğ")
 
+_NEGATION_TOKENS = frozenset({
+    "değil", "olmayan", "olmamalı", "olmaması", "gerekmiyor",
+    "gerekmez", "zorunlu değil", "şart değil", "not",
+})
+
 
 def _normalize(text: str) -> str:
     """Türkçe büyük harf normalizasyonu sonrası küçük harfe çevirir."""
     return text.translate(_TR_UPPER_TO_LOWER).lower()
+
+
+def _negated(text: str, keyword_start: int, keyword: str) -> bool:
+    """Keyword etrafındaki 60 karakterlik pencerede negasyon token'ı var mı bakar.
+
+    Hem öncesi ("şart değil") hem sonrası ("güvenlik olmamalı") kontrol edilir.
+    """
+    keyword_end = keyword_start + len(keyword)
+    window = text[max(0, keyword_start - 60): min(len(text), keyword_end + 60)]
+    return any(neg in window for neg in _NEGATION_TOKENS)
 
 
 class PriorityDetector:
@@ -77,7 +92,8 @@ class PriorityDetector:
             return req
 
         for keyword in self.HIGH_KEYWORDS:
-            if keyword in text_lower:
+            idx = text_lower.find(keyword)
+            if idx != -1 and not _negated(text_lower, idx, keyword):
                 req.priority = "HIGH"
                 _log.debug(
                     "HIGH \u00f6ncelik atand\u0131 | req_id={} keyword={}",

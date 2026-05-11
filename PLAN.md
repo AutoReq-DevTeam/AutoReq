@@ -17,86 +17,52 @@ Tüm NLP ve LLM bileşenlerinde doğruluğu **%90+** seviyesine çıkarmak.
 |---|---|---|---|
 | F/NFR Sınıflandırması | `core/classifier.py` | ~65–70% | Keyword-only, ML yok, bağlam körü |
 | Aktör Çıkarımı | `core/ner.py` | ~78–82% | Hardcoded sözlük, dep parsing yok |
-| Öncelik Tespiti | `core/priority_detector.py` | ~70–75% | Negasyon görmez ("gerekli değil" → HIGH) |
+| Öncelik Tespiti | `core/priority_detector.py` | ~95% ✓ | ~~Negasyon görmez~~ — negasyon handling eklendi |
 | Çakışma Tespiti | `modules/conflict_detector.py` | ~65–70% | LLM çıktısı doğrulansız kabul |
 | Boşluk Analizi | `modules/gap_analyzer.py` | ~60–65% | Sadece web/SPA şablonu, domain agnostik değil |
 | Gereksinim İyileştirme | `modules/improver.py` | ~72–75% | Belirsizlik filtresi dar, fizibilite yok |
 
 ---
 
-## Öncelikli İyileştirme Planı
+## Yürütme Sırası
 
-### GÖREV 1 — F/NFR Sınıflandırıcısını Yeniden Yaz
-**Dosya:** `core/classifier.py`
-**Hedef doğruluk:** %90+
-**Durum:** [ ] Planlandı
+Dosya dosya değil **mantıksal grup** bazlı ilerliyoruz. Bağımlılık zinciri:
 
-**Yaklaşım — Hibrit katmanlı mimari:**
 ```
-Gereksinim
-   │
-   ├─► Katman 1: Keyword + Regex (hızlı, deterministik)
-   │       Hit → NFR döndür (kesin, LLM'e gitme)
-   │
-   ├─► Katman 2: Belirsizlik skoru hesapla
-   │       Açık FR işaretleri var mı? (eylem fiili, kullanıcı eylemi)
-   │       Açık NFR işaretleri var mı? (metrik, sayısal eşik)
-   │
-   └─► Katman 3 (sadece belirsiz vakalarda): LLM few-shot classification
-           Sistem promptu: "Bu gereksinim fonksiyonel mi yoksa fonksiyonel dışı mı?"
-           Örnek çiftler → güvenilir karar
+Grup 1 — İzole, hızlı kazanım
+  └─ priority_detector.py
+
+Grup 2 — Sıkı bağlı, tek oturumda yapılmalı
+  ├─ nlp_engine.py   ← depparse eklenir
+  └─ ner.py          ← yeni dep katmanını kullanır
+
+Grup 3 — LLM katmanından önce bitirilmeli
+  └─ classifier.py   ← çıktısı LLM prompt'una gömülüyor
+
+Grup 4 — Ortak altyapı, LLM modüllerinden önce
+  └─ llm_response_utils.py
+
+Grup 5 — Birbirinden bağımsız, sıra önemli değil
+  ├─ conflict_prompts.py + conflict_detector.py
+  ├─ gap_prompts.py + gap_analyzer.py
+  └─ improver_prompts.py + improver.py
 ```
 
-**Önerilen few-shot örnekler (LLM için):**
-- "Kullanıcı giriş yapabilmeli" → FUNCTIONAL
-- "Sistem 3 saniye içinde yanıt vermeli" → NON_FUNCTIONAL
-- "Veriler şifrelenmiş saklanmalı" → NON_FUNCTIONAL (örtülü, zor case)
-- "Admin kullanıcı silebilmeli" → FUNCTIONAL
-
-**Notlar:**
-- LLM yalnızca keyword ve regex'in çözemediği vakalara girmeli
-- Tüm kararlar `confidence` skoru ile dönmeli: `(type, confidence: 0.0-1.0)`
-- Maliyet kontrolü için: sadece `~30%` girdi LLM'e ulaşmalı
+**Neden bu sıra:**
+- `classifier.py` çıktısı (`req_type`) LLM'e gönderilen bloğa gömülüyor → LLM katmanına girmeden önce düzeltilmeli
+- `nlp_engine.py` değişmeden `ner.py`'ye depparse eklenemez → çifti birlikte yapmak şart
+- `llm_response_utils.py` tüm LLM modüllerinin ortak zemini → bir kez fix, hepsi kazanır
+- `priority_detector.py` hiçbir şeye bağlı değil → istediğimiz zaman, ama küçük olduğu için önce atalım
 
 ---
 
-### GÖREV 2 — Aktör Çıkarımını Güçlendir
-**Dosya:** `core/ner.py`
-**Hedef doğruluk:** %90+
-**Durum:** [ ] Planlandı
+## Görevler
 
-**Yaklaşım — Dependency parsing entegrasyonu:**
-```python
-# Şu an: POS tag + prefix substring matching (kırılgan)
-# Önerilen: Stanza dep processor ekle, nsubj bağını yakala
-
-# nlp_engine.py'de pipeline'a "depparse" ekle:
-# processors = "tokenize,mwt,pos,lemma,depparse"
-
-# ner.py'de yeni katman:
-def _extract_by_dependency(self, sentence):
-    for word in sentence.words:
-        if word.deprel == "nsubj":  # Türkçe özne
-            return self._resolve_actor(word)
-```
-
-**Ek iyileştirmeler:**
-- `actor_lemmas` setini genişlet: domain-agnostik genel roller ekle
-  (koordinatör, yetkili, sorumlu, temsilci, operatör, teknisyen)
-- Possessive ekleri temizle: "müşterinin" → "müşteri"
-- Compound NP birleştirme: "sistem yöneticisi" → tek aktör olarak yakala
-
-**Notlar:**
-- Stanza Türkçe dep modeli mevcut, sadece pipeline'a eklenmesi gerekiyor
-- `get_shared_stanza_pipeline()` içinde processor listesi güncellenecek
-- Mevcut 3 katmanlı yapı korunacak, dep parsing Katman 1.5 olarak girecek
-
----
-
-### GÖREV 3 — Negasyon Handling (Priority Detector)
+### GÖREV 1 — Negasyon Handling
 **Dosya:** `core/priority_detector.py`
+**Grup:** 1 — İzole
 **Hedef:** False positive'leri ~%15 azalt
-**Durum:** [ ] Planlandı
+**Durum:** [x] Tamamlandı — 10/10 test geçti, pre-existing 1 hata benim değişiklerimle ilgisiz
 
 **Yaklaşım:**
 ```python
@@ -114,49 +80,128 @@ def _has_negation_before(text: str, keyword_pos: int) -> bool:
 
 ---
 
-### GÖREV 4 — LLM Prompt Kalitesini Artır
-**Dosya:** `modules/conflict_prompts.py`, `modules/gap_prompts.py`, `modules/improver_prompts.py`
-**Durum:** [ ] Planlandı
+### GÖREV 2 — Aktör Çıkarımını Güçlendir
+**Dosya:** `core/nlp_engine.py` + `core/ner.py`
+**Grup:** 2 — Sıkı bağlı, tek oturumda
+**Hedef doğruluk:** %90+
+**Durum:** [ ] Bekliyor
 
-**4a — Çakışma tespiti (`conflict_prompts.py`):**
+**Yaklaşım — Dependency parsing entegrasyonu:**
+```python
+# Şu an: POS tag + prefix substring matching (kırılgan)
+# Önerilen: Stanza dep processor ekle, nsubj bağını yakala
+
+# nlp_engine.py → processor listesine "depparse" ekle:
+# processors = "tokenize,mwt,pos,lemma,depparse"
+
+# ner.py → yeni Katman 1.5:
+def _extract_by_dependency(self, sentence):
+    for word in sentence.words:
+        if word.deprel == "nsubj":  # Türkçe özne bağı
+            return self._resolve_actor(word)
+```
+
+**Ek iyileştirmeler:**
+- `actor_lemmas` setini genişlet: domain-agnostik genel roller ekle
+  (koordinatör, yetkili, sorumlu, temsilci, operatör, teknisyen)
+- Possessive ekleri temizle: "müşterinin" → "müşteri"
+- Compound NP birleştirme: "sistem yöneticisi" → tek aktör olarak yakala
+
+**Notlar:**
+- Stanza Türkçe dep modeli zaten yüklü, pipeline'a eklemek yeterli
+- Mevcut 3 katmanlı yapı korunacak, dep parsing Katman 1.5 olarak girecek
+- Bellek artışı: ~50–80 MB (kabul edilebilir)
+
+---
+
+### GÖREV 3 — F/NFR Sınıflandırıcısını Yeniden Yaz
+**Dosya:** `core/classifier.py`
+**Grup:** 3 — LLM katmanından önce bitirilmeli
+**Hedef doğruluk:** %90+
+**Durum:** [ ] Bekliyor
+
+**Yaklaşım — Hibrit katmanlı mimari:**
+```
+Gereksinim
+   │
+   ├─► Katman 1: Keyword + Regex (hızlı, deterministik)
+   │       Hit → NFR döndür, LLM'e gitme
+   │
+   ├─► Katman 2: FR sinyal skoru
+   │       Eylem fiili var mı? (yapabilmeli, görebilmeli, girebilmeli)
+   │       Açık kullanıcı eylemi var mı?
+   │       Skor yüksekse → FUNCTIONAL döndür, LLM'e gitme
+   │
+   └─► Katman 3: LLM few-shot (sadece belirsiz vakalar, ~%30 girdi)
+           Karar + confidence skoru döndür
+```
+
+**Few-shot örnekler (LLM için):**
+- "Kullanıcı giriş yapabilmeli" → FUNCTIONAL
+- "Sistem 3 saniye içinde yanıt vermeli" → NON_FUNCTIONAL
+- "Veriler şifrelenmiş saklanmalı" → NON_FUNCTIONAL (örtülü, zor case)
+- "Admin kullanıcı silebilmeli" → FUNCTIONAL
+
+**Notlar:**
+- Tüm kararlar `confidence` skoru ile dönmeli: `(type, confidence: 0.0–1.0)`
+- Maliyet kontrolü: sadece ~%30 girdi LLM'e ulaşmalı
+
+---
+
+### GÖREV 4 — LLM Çıktı Altyapısını Güçlendir
+**Dosya:** `modules/llm_response_utils.py`
+**Grup:** 4 — Ortak altyapı
+**Durum:** [ ] Bekliyor
+
+**Yaklaşım:**
+- `extract_json_object()`: brace counting yerine regex-based extraction
+- LLM'den dönen requirement ID'lerinin gerçekten mevcut olduğunu kontrol et
+- Conflict/gap öğelerini confidence'a göre sırala
+
+---
+
+### GÖREV 5a — Çakışma Tespiti İyileştir
+**Dosya:** `modules/conflict_prompts.py` + `modules/conflict_detector.py`
+**Grup:** 5
+**Durum:** [ ] Bekliyor
+
 - Per-conflict confidence skoru zorunlu hale getir (şu an sadece meta-level var)
 - Minimum confidence threshold: 0.6 altındaki çakışmaları filtrele
-- Post-process: Semantic benzer çakışmaları tekilleştir
+- Post-process: Semantik benzer çakışmaları tekilleştir
 
-**4b — Boşluk analizi (`gap_prompts.py`):**
-- Referans şablonu statik değil, **LLM önce domain inferr etsin:**
+---
+
+### GÖREV 5b — Boşluk Analizi İyileştir
+**Dosya:** `modules/gap_prompts.py` + `modules/gap_analyzer.py`
+**Grup:** 5
+**Durum:** [ ] Bekliyor
+
+- LLM önce domain inferr etsin, sonra uygun referans listesini seçsin:
   ```
-  Adım 1: "Bu hangi tür sistem? (web app / API / mobil / masaüstü / IoT)"
-  Adım 2: Domain'e göre uygun referans listesini seç
+  Adım 1: Sistem türü → web app / API / mobil / masaüstü / IoT
+  Adım 2: Domain'e göre referans listesi
   Adım 3: Gereksinimlerle karşılaştır
   ```
 - Mevcut 6-maddelik web/SPA şablonu sadece web domain'inde kullanılsın
 
-**4c — Gereksinim iyileştirme (`improver_prompts.py`):**
+---
+
+### GÖREV 5c — Gereksinim İyileştirme İyileştir
+**Dosya:** `modules/improver_prompts.py` + `modules/improver.py`
+**Grup:** 5
+**Durum:** [ ] Bekliyor
+
 - Belirsizlik anahtar kelime listesini genişlet:
   `{"responsive", "scalable", "efficient", "robust", "user-friendly", "esnek", "ölçeklenebilir", "verimli"}`
 - LLM önerisine fizibilite notu ekle: "Bu metrik mevcut altyapıyla gerçekçi mi?"
 
 ---
 
-### GÖREV 5 — LLM Çıktı Validasyonu
-**Dosya:** `modules/llm_response_utils.py`, `modules/conflict_detector.py`, `modules/gap_analyzer.py`
-**Durum:** [ ] Planlandı
-
-**Yaklaşım:**
-- LLM'den dönen requirement ID'lerinin gerçekten mevcut olduğunu kontrol et
-- `extract_json_object()` fonksiyonunu daha robust hale getir:
-  brace counting yerine regex-based extraction
-- Conflict/gap öğelerini sıralı confidence'a göre döndür
-
----
-
 ## Tartışma Notları
 
-*(Bu bölüme geri bildirimler ve kararlar eklenir)*
-
 - **[2026-05-11]** Hibrit yaklaşım benimsendi: keyword hızlı path + LLM belirsiz vakalar.
-  Dependency parsing için Stanza'ya `depparse` processor eklenecek.
+- **[2026-05-11]** Dependency parsing için Stanza'ya `depparse` processor eklenecek.
+- **[2026-05-11]** Grup bazlı yürütme sırası onaylandı (önce priority_detector → nlp_engine+ner → classifier → llm_utils → LLM modülleri).
 
 ---
 
@@ -165,13 +210,13 @@ def _has_negation_before(text: str, keyword_pos: int) -> bool:
 | Konu | Seçenek A | Seçenek B | Karar |
 |---|---|---|---|
 | Classifier LLM modeli | Gemini 2.5 Flash (hızlı) | DeepSeek (ucuz) | ❓ |
-| Dep parsing Stanza yük artışı | Kabul et | Opsiyonel tut | ❓ |
+| Dep parsing Stanza yük artışı (~80MB) | Kabul et | Opsiyonel tut | ❓ |
 | Confidence threshold (conflict) | 0.6 | 0.7 | ❓ |
 
 ---
 
 ## Tamamlananlar
 
-*(Bitti olarak işaretlenenler buraya taşınır)*
-
----
+- **GÖREV 1** — `core/priority_detector.py` negasyon handling ✓
+  Keyword etrafı ±60 karakter pencere, 10 test geçti.
+  Pre-existing 1 test hatası (`test_process_text_successful_llm`) benim değişikliklerimle ilgisiz.
