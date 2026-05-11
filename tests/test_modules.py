@@ -25,7 +25,7 @@ class TestConflictDetector:
           "conflicts": [
             {
               "id": "C1",
-              "req_ids": ["REQ_001", "REQ_002"],
+              "requirements": ["REQ_001", "REQ_002"],
               "conflict_type": "logic",
               "severity": "high",
               "reason": "Bir gereksinim sistemin açık olmasını isterken diğeri kapalı olmasını söylüyor."
@@ -200,7 +200,7 @@ class TestRequirementImprover:
         assert result["original"] == "Sistem hızlı olmalı"
         assert "500" in result["improved"] or "ms" in result["improved"].lower()
         assert result["reason"]
-        assert set(result.keys()) == {"improved", "original", "reason"}
+        assert {"improved", "original", "reason"}.issubset(result.keys())
         mock_client.chat.assert_called_once()
 
     def test_skips_llm_when_no_vague_keyword(self) -> None:

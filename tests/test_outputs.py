@@ -82,12 +82,15 @@ class TestStoryGenerator:
         """generate() FUNCTIONAL gereksinim için role/goal/benefit/ac içeren dict döndürmeli."""
         from outputs.story_generator import StoryGenerator
 
-        payload = {
-            "role": "kullanıcı",
-            "goal": "sisteme giriş yapabilmek",
-            "benefit": "kişisel hesabıma erişebilmek",
-            "acceptance_criteria": ["Giriş formu hatasız çalışmalı."],
-        }
+        payload = [
+            {
+                "req_id": "REQ_001",
+                "role": "kullanıcı",
+                "goal": "sisteme giriş yapabilmek",
+                "benefit": "kişisel hesabıma erişebilmek",
+                "acceptance_criteria": ["Giriş formu hatasız çalışmalı."],
+            }
+        ]
         mock_client = self._mock_llm_client(payload)
         report = _make_report()
 

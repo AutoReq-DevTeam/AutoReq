@@ -386,7 +386,7 @@ class TestPipeline:
         monkeypatch.setattr(pm, "GapAnalyzer", mock_gap)
 
         mock_improver = MagicMock()
-        mock_improver.return_value.improve.return_value = improvement
+        mock_improver.return_value.improve_batch.return_value = [improvement]
         monkeypatch.setattr(pm, "RequirementImprover", mock_improver)
 
         self._patch_outputs(monkeypatch, pm)
