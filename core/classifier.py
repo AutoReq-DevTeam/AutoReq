@@ -46,43 +46,49 @@ class RequirementClassifier:
     def __init__(self) -> None:
         # Katman 2: NFR anahtar kelime kümesi.
         # "arayüz" ve "standart" çıkarıldı — FR cümlelerinde false positive üretiyordu.
+        # "hızlı" ambiguous sete taşındı — "Hızlı ödeme" gibi özellik adlarında FR.
+        # "en fazla/az" regex pattern'a taşındı — "birden fazla" substring false positive'i engeller.
         self.nfr_keywords: frozenset = frozenset([
             # Performans
-            "hızlı", "saniye", "performans", "gecikme", "milisaniye", "mili saniye",
+            "saniye", "performans", "gecikme", "milisaniye", "mili saniye",
             "eş zamanlı", "eşzamanlı", "yanıt süresi", "throughput",
-            # Güvenlik (örtülü formlar eklendi)
+            # Güvenlik
             "güvenli", "güvenlik", "kripto", "ssl", "korunmalı", "mahremiyet",
             "şifrelen", "şifreli", "şifreleme", "yetkisiz erişim",
+            # Güvenlik — veri saklama kısıtları
+            "saklanmamalı", "tutulmamalı", "tokenize", "token hali", "tokenlanmış",
             # Ölçeklenebilirlik & kapasite
             "ölçek", "kapasite",
             # Erişilebilirlik & süreklilik
             "kesintisiz", "ulaşılabilir", "uptime", "erişilebilir", "yedek",
             "hatasız çalış", "çökmemeli", "çökmeli",
-            # Kullanılabilirlik (sadece spesifik olanlar)
+            # Kullanılabilirlik
             "kullanılabilirlik", "responsive",
             # Güvenilirlik
             "crash", "hata oranı", "yedeklenmiş",
             # Kısıtlama ifadeleri
             "kaldırabilmeli", "desteklemelidir",
             "geçmemelidir", "geçmemeli", "aşmamalı", "aşmamali",
-            "en fazla", "en az", "minimum", "maksimum", "en çok", "en geç",
+            "minimum", "maksimum", "en çok", "en geç",
             "karşılamalıdır", "sağlamalıdır",
         ])
 
         # Katman 2: Sayısal eşik pattern'ları
+        # "en fazla / en az" regex olarak: kelime sınırlı eşleşme ("birden fazla" false positive'i önler)
         self.nfr_numeric_patterns: list = [
             re.compile(r'%\s*\d'),
             re.compile(r'\d\s*%'),
             re.compile(r'\d[\d,\.]*\s*(ms\b|sn\b|milisaniye|mili\s*saniye)'),
             re.compile(r'\d[\d,\.]*\s*(eş\s*zamanlı|eşzamanlı|concurrent)'),
             re.compile(r'\d{1,3}\.\d{3}\s*(?:\w+\s+)?(kullanıcı|istek|işlem|bağlantı|kayıt|talep|taleb|sipariş|mesaj)'),
+            re.compile(r'\ben\s+fazla\s+(?=\d|%)'),
+            re.compile(r'\ben\s+az\s+(?=\d|%)'),
         ]
 
         # FR cümlelerinde nesne olarak da geçebilen ambiguous keyword'ler.
-        # Örn: "güvenlik loglarını görüntüleyebilmeli" → nesne konumunda, FR.
-        # Bu keyword'ler yalnızca FR fiili yoksa K2'yi tetikler.
+        # "hızlı" eklendi: "Hızlı ödeme için X kaydedilebilmelidir" → FR fiili varsa FR.
         self._ambiguous_nfr_keywords: frozenset = frozenset({
-            "güvenlik", "yedek", "erişilebilir", "yük",
+            "güvenlik", "yedek", "erişilebilir", "yük", "hızlı",
         })
 
         # "güvenli" → "güvenlik" substring çakışmasını önler (güvenlik ambiguous sette).
