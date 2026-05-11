@@ -159,7 +159,7 @@ Gereksinim
 ### GÖREV 4 — LLM Çıktı Altyapısını Güçlendir
 **Dosya:** `modules/llm_response_utils.py`
 **Grup:** 4 — Ortak altyapı
-**Durum:** [ ] Bekliyor
+**Durum:** [x] Tamamlandı — 64/64 test, %100 doğruluk
 
 **Yaklaşım:**
 - `extract_json_object()`: brace counting yerine regex-based extraction
@@ -232,6 +232,11 @@ Gereksinim
 - **GÖREV 2** — `core/nlp_engine.py` + `core/ner.py` dep parsing + optimizasyon ✓
   60/60 = %100. Stanza MWT reverse-prefix fix (yönet→yönetici, sorum→sorumlu),
   compound deprel guard (nsubj+obj karışımını önler), possessive stripping.
+
+- **GÖREV 4** — `modules/llm_response_utils.py` LLM çıktı altyapısı ✓
+  64/64 = %100. Brace-counting ile rfind yerine güvenli JSON span bulma,
+  `filter_valid_requirement_ids` (LLM ID hallucination önlemi),
+  `sort_by_confidence` (sonuçları skora göre sıralama). 5 mevcut regression testi korundu.
 
 - **GÖREV 3** — `core/classifier.py` hibrit 3 katman + optimizasyon ✓
   59/60 = %98.3. LLM ile birlikte test edildi. taleb (p→b mutation) regex fix,
