@@ -4,6 +4,7 @@ app.py — Ana Uygulama Modülü
 
 import os
 import streamlit as st
+import streamlit.components.v1 as components
 from dotenv import load_dotenv
 from ui.state import init_state
 
@@ -16,33 +17,145 @@ st.set_page_config(
 
 init_state()
 
+# Theme toggle — pure client-side, persists across sessions via localStorage.
+# Runs on every Streamlit re-render; idempotent (button guard prevents duplicates).
+components.html("""
+<script>
+(function () {
+    var doc = window.parent.document;
+    var root = doc.documentElement;
+    var saved = window.parent.localStorage.getItem('ar-theme') || 'light';
+    if (saved === 'dark') root.setAttribute('data-theme', 'dark');
+    else root.removeAttribute('data-theme');
+
+    // Inject late-override stylesheet after Streamlit's emotion CSS so it wins
+    // the cascade without relying on specificity alone. CSS variables make it
+    // theme-aware automatically.
+    if (!doc.getElementById('ar-late-overrides')) {
+        var s = doc.createElement('style');
+        s.id = 'ar-late-overrides';
+        s.textContent = [
+            'section[data-testid="stSidebar"] button {',
+            '  background-color: var(--bg-card) !important;',
+            '  border: 1px solid var(--border-subtle) !important;',
+            '  color: var(--text-secondary) !important;',
+            '  border-radius: 5px !important;',
+            '  font-family: "JetBrains Mono", monospace !important;',
+            '  font-size: 0.72rem !important;',
+            '  line-height: 1.3 !important;',
+            '  box-shadow: none !important;',
+            '  transition: all 0.15s ease !important;',
+            '}',
+            'section[data-testid="stSidebar"] button:hover {',
+            '  background-color: var(--bg-card-hover) !important;',
+            '  border-color: var(--border-default) !important;',
+            '  color: var(--text-primary) !important;',
+            '  box-shadow: none !important;',
+            '  transform: none !important;',
+            '}'
+        ].join('\\n');
+        doc.head.appendChild(s);
+    }
+
+    if (!doc.getElementById('ar-theme-toggle')) {
+        var btn = doc.createElement('button');
+        btn.id = 'ar-theme-toggle';
+
+        function syncIcon() {
+            var dark = root.getAttribute('data-theme') === 'dark';
+            btn.innerHTML = dark
+                ? '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7a5 5 0 1 0 0 10A5 5 0 0 0 12 7zm0-5a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1zm0 18a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm8.66-14.5a1 1 0 0 1 0 1.41l-.71.71a1 1 0 1 1-1.41-1.41l.71-.71a1 1 0 0 1 1.41 0zm-14.5 14.5a1 1 0 0 1 0 1.41l-.71.71a1 1 0 1 1-1.41-1.41l.71-.71a1 1 0 0 1 1.41 0zm14.5 0a1 1 0 0 1-1.41 0l-.71-.71a1 1 0 1 1 1.41-1.41l.71.71a1 1 0 0 1 0 1.41zM5.64 5.64a1 1 0 0 1-1.41 0l-.71-.71A1 1 0 1 1 4.93 3.52l.71.71a1 1 0 0 1 0 1.41zM21 11h1a1 1 0 1 1 0 2h-1a1 1 0 1 1 0-2zM2 11h1a1 1 0 1 1 0 2H2a1 1 0 1 1 0-2z"/></svg>'
+                : '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>';
+            btn.title = dark ? 'Switch to light theme' : 'Switch to dark theme';
+        }
+
+        btn.onclick = function () {
+            var dark = root.getAttribute('data-theme') === 'dark';
+            if (dark) {
+                root.removeAttribute('data-theme');
+                window.parent.localStorage.setItem('ar-theme', 'light');
+            } else {
+                root.setAttribute('data-theme', 'dark');
+                window.parent.localStorage.setItem('ar-theme', 'dark');
+            }
+            syncIcon();
+        };
+
+        syncIcon();
+        doc.body.appendChild(btn);
+    }
+})();
+</script>
+""", height=0)
+
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ================================================================
-   AUTOREQ — PREMIUM DARK THEME
+   AUTOREQ — THEME TOKEN LAYER
+   :root          = Light theme (default, IEEE-academic)
+   [data-theme="dark"] = Dark theme (opt-in)
    ================================================================ */
 
 :root {
-  --bg-base: #0a0e14;
-  --bg-elevated: #11161d;
-  --bg-card: #161c24;
-  --bg-card-hover: #1c2330;
-  --text-primary: #e6edf3;
-  --text-secondary: #8b949e;
-  --text-tertiary: #6e7681;
-  --border-subtle: #21262d;
-  --border-default: #30363d;
-  --accent-primary: #3fb984;
+  /* Light — Academic / IEEE */
+  --bg-base:            #f7f8fb;
+  --bg-elevated:        #ffffff;
+  --bg-card:            #ffffff;
+  --bg-card-hover:      #eef2f7;
+  --text-primary:       #1a2433;
+  --text-secondary:     #374151;
+  --text-tertiary:      #6b7280;
+  --border-subtle:      #e5e9ee;
+  --border-default:     #ced4da;
+  --accent-primary:     #1a56db;
+  --accent-primary-hover: #1347c2;
+  --accent-glow:        rgba(26, 86, 219, 0.10);
+  --accent-text:        #ffffff;
+  --accent-border-hover: rgba(26, 86, 219, 0.35);
+  --color-danger:       #dc2626;
+  --color-danger-bg:    rgba(220, 38, 38, 0.08);
+  --color-warning:      #b45309;
+  --color-warning-bg:   rgba(180, 83, 9, 0.08);
+  --color-success:      #059669;
+  --color-info:         #0e7490;
+  --badge-func-bg:      rgba(26, 86, 219, 0.08);
+  --badge-nfr-bg:       rgba(14, 116, 144, 0.10);
+  --diff-before-bg:     rgba(220, 38, 38, 0.04);
+  --diff-after-bg:      rgba(26, 86, 219, 0.05);
+  --shadow-card:        rgba(0, 0, 0, 0.07);
+  --shadow-overlay:     rgba(0, 0, 0, 0.12);
+}
+
+html[data-theme="dark"] {
+  /* Dark — original premium dark */
+  --bg-base:            #0a0e14;
+  --bg-elevated:        #11161d;
+  --bg-card:            #161c24;
+  --bg-card-hover:      #1c2330;
+  --text-primary:       #e6edf3;
+  --text-secondary:     #8b949e;
+  --text-tertiary:      #6e7681;
+  --border-subtle:      #21262d;
+  --border-default:     #30363d;
+  --accent-primary:     #3fb984;
   --accent-primary-hover: #4ac896;
-  --accent-glow: rgba(63, 185, 132, 0.15);
-  --color-danger: #f85149;
-  --color-danger-bg: rgba(248, 81, 73, 0.1);
-  --color-warning: #d29922;
-  --color-warning-bg: rgba(210, 153, 34, 0.1);
-  --color-success: #3fb950;
-  --color-info: #58a6ff;
+  --accent-glow:        rgba(63, 185, 132, 0.15);
+  --accent-text:        #040d08;
+  --accent-border-hover: rgba(63, 185, 132, 0.35);
+  --color-danger:       #f85149;
+  --color-danger-bg:    rgba(248, 81, 73, 0.1);
+  --color-warning:      #d29922;
+  --color-warning-bg:   rgba(210, 153, 34, 0.1);
+  --color-success:      #3fb950;
+  --color-info:         #58a6ff;
+  --badge-func-bg:      rgba(63, 185, 132, 0.12);
+  --badge-nfr-bg:       rgba(88, 166, 255, 0.12);
+  --diff-before-bg:     rgba(248, 81, 73, 0.04);
+  --diff-after-bg:      rgba(63, 185, 132, 0.04);
+  --shadow-card:        rgba(0, 0, 0, 0.25);
+  --shadow-overlay:     rgba(0, 0, 0, 0.50);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -51,6 +164,16 @@ html, body, .stApp {
     background-color: var(--bg-base) !important;
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
     color: var(--text-primary) !important;
+}
+
+header[data-testid="stHeader"],
+[data-testid="stHeader"] {
+    background-color: var(--bg-base) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+[data-testid="stToolbar"] {
+    background-color: var(--bg-base) !important;
 }
 
 .main .block-container {
@@ -172,8 +295,8 @@ section[data-testid="stSidebar"] hr {
     font-weight: 500 !important;
 }
 
-/* Sidebar metric buttons scoped */
-#ar-metric-btns .stButton > button {
+/* Sidebar metric buttons */
+section[data-testid="stSidebar"] .stButton > button {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border-subtle) !important;
     border-radius: 5px !important;
@@ -190,7 +313,7 @@ section[data-testid="stSidebar"] hr {
     box-shadow: none !important;
 }
 
-#ar-metric-btns .stButton > button:hover {
+section[data-testid="stSidebar"] .stButton > button:hover {
     background-color: var(--bg-card-hover) !important;
     border-color: var(--border-default) !important;
     color: var(--text-primary) !important;
@@ -238,7 +361,7 @@ section[data-testid="stSidebar"] hr {
 .stButton > button[kind="primary"],
 .stButton > button[data-testid="baseButton-primary"] {
     background-color: var(--accent-primary) !important;
-    color: #040d08 !important;
+    color: var(--accent-text) !important;
     border-color: var(--accent-primary) !important;
     font-weight: 600 !important;
 }
@@ -247,7 +370,7 @@ section[data-testid="stSidebar"] hr {
 .stButton > button[data-testid="baseButton-primary"]:hover {
     background-color: var(--accent-primary-hover) !important;
     border-color: var(--accent-primary-hover) !important;
-    color: #040d08 !important;
+    color: var(--accent-text) !important;
 }
 
 .stDownloadButton > button {
@@ -335,7 +458,7 @@ section[data-testid="stSidebar"] hr {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border-default) !important;
     border-radius: 6px !important;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+    box-shadow: 0 8px 24px var(--shadow-overlay) !important;
 }
 
 [data-baseweb="popover"] [role="option"] {
@@ -553,7 +676,7 @@ hr {
     border: 1px solid var(--border-default) !important;
     border-radius: 6px !important;
     color: var(--text-secondary) !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.5) !important;
+    box-shadow: 0 4px 16px var(--shadow-overlay) !important;
 }
 
 /* === CODE === */
@@ -571,6 +694,33 @@ code {
 ::-webkit-scrollbar-track { background: var(--bg-base); }
 ::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-default); filter: brightness(1.3); }
+
+/* === THEME TOGGLE BUTTON === */
+#ar-theme-toggle {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+    padding: 0;
+    box-shadow: 0 1px 4px var(--shadow-card);
+}
+
+#ar-theme-toggle:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: var(--accent-glow);
+}
 
 /* ================================================================
    COMPONENT CLASSES
@@ -607,12 +757,12 @@ code {
 
 .ar-step--complete .ar-step-dot {
     background-color: var(--accent-primary);
-    color: #040d08;
+    color: var(--accent-text);
 }
 
 .ar-step--active .ar-step-dot {
     background-color: var(--accent-primary);
-    color: #040d08;
+    color: var(--accent-text);
     box-shadow: 0 0 14px var(--accent-glow);
 }
 
@@ -693,7 +843,7 @@ code {
     border-color: var(--border-default);
     border-left-color: var(--accent-primary);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    box-shadow: 0 4px 12px var(--shadow-card);
 }
 
 .ar-req-card--nfr {
@@ -718,10 +868,10 @@ code {
     margin-right: 0.6rem;
 }
 
-.ar-badge--func   { background-color: rgba(63, 185, 132, 0.12); color: var(--accent-primary); }
-.ar-badge--nfr    { background-color: rgba(88, 166, 255, 0.12);  color: var(--color-info); }
-.ar-badge--high   { background-color: var(--color-danger-bg);    color: var(--color-danger); }
-.ar-badge--medium { background-color: var(--color-warning-bg);   color: var(--color-warning); }
+.ar-badge--func   { background-color: var(--badge-func-bg); color: var(--accent-primary); }
+.ar-badge--nfr    { background-color: var(--badge-nfr-bg);  color: var(--color-info); }
+.ar-badge--high   { background-color: var(--color-danger-bg);   color: var(--color-danger); }
+.ar-badge--medium { background-color: var(--color-warning-bg);  color: var(--color-warning); }
 .ar-badge--low    { background-color: rgba(110, 118, 129, 0.15); color: var(--text-tertiary); }
 
 /* Requirement ID */
@@ -798,7 +948,7 @@ code {
 
 .ar-req-link:hover {
     color: var(--accent-primary) !important;
-    border-color: rgba(63, 185, 132, 0.35) !important;
+    border-color: var(--accent-border-hover) !important;
     background-color: var(--accent-glow) !important;
 }
 
@@ -852,7 +1002,7 @@ code {
 .ar-diff-wrap:hover {
     border-color: var(--border-default);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px var(--shadow-card);
 }
 
 .ar-diff-header {
@@ -884,7 +1034,7 @@ code {
 .ar-diff-before {
     flex: 1;
     border-right: 1px solid var(--border-subtle);
-    background-color: rgba(248, 81, 73, 0.04);
+    background-color: var(--diff-before-bg);
     padding: 0.75rem 1rem;
     font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
@@ -895,7 +1045,7 @@ code {
 
 .ar-diff-after {
     flex: 1;
-    background-color: rgba(63, 185, 132, 0.04);
+    background-color: var(--diff-after-bg);
     padding: 0.75rem 1rem;
     font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
@@ -972,8 +1122,8 @@ code {
     font-size: 0.72rem;
     font-weight: 500;
     color: var(--accent-primary);
-    background-color: rgba(63, 185, 132, 0.08);
-    border: 1px solid rgba(63, 185, 132, 0.25);
+    background-color: var(--badge-func-bg);
+    border: 1px solid var(--accent-border-hover);
     border-radius: 4px;
     padding: 0.3rem 0.6rem;
     margin-top: 0.4rem;
