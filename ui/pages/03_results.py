@@ -1,9 +1,10 @@
 import streamlit as st
 from ui.results import render_results
 from ui.components import page_header, empty_state
+from ui.i18n import t
 
 page_header(
-    title="Analiz Sonuçları",
+    title=t("results_title"),
     subtitle="",
     step=3,
 )
@@ -11,13 +12,12 @@ page_header(
 if st.session_state.get("analysis_report") is None:
     empty_state(
         icon="🔍",
-        heading="Henüz bir analiz yapılmadı",
-        body="Sonuçları görmek için önce Analiz sayfasından bir analiz başlatın.",
-        cta_label="Analiz Sayfasına Git",
+        heading=t("results_empty_heading"),
+        body=t("results_empty_body"),
+        cta_label=t("results_go_analysis"),
         cta_page="ui/pages/02_analysis.py",
     )
 else:
-    # Inject JS to click the right tab when navigated here from sidebar metrics
     scroll_to = st.session_state.pop("result_scroll_to", None)
     if scroll_to in ("conflicts", "gaps"):
         st.components.v1.html(
@@ -30,7 +30,6 @@ else:
             tabs[idx].click();
         }
     }
-    // tab index 1 = Çelişkiler & Eksiklikler
     setTimeout(function() { clickTab(1); }, 400);
 })();
 </script>

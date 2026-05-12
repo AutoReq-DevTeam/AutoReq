@@ -13,6 +13,7 @@ def init_state():
         "total_tokens_used": 0,
         "total_cost_usd": 0.0,
         "demo_mode": False,
+        "language": "en",
     }
 
     for key, value in defaults.items():

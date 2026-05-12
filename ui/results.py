@@ -1,5 +1,5 @@
 """
-ui/results.py — Analiz Sonuç Paneli
+ui/results.py — Analysis Results Panel
 """
 
 import streamlit as st
@@ -11,6 +11,7 @@ from ui.components import (
     req_card,
     empty_state,
 )
+from ui.i18n import t
 
 
 def _section(label: str, margin_top: str = "0.5rem"):
@@ -26,24 +27,23 @@ def render_results(report):
     gaps = getattr(report, "gaps", [])
     improvements = getattr(report, "improvements", [])
 
-    # Build lookup dict for conflict side-by-side view
     req_lookup = {
         getattr(req, "id", f"REQ-{i}"): getattr(req, "text", str(req))
         for i, req in enumerate(requirements, start=1)
     }
 
     tab1, tab2, tab3 = st.tabs(
-        ["Gereksinimler", "Çelişkiler & Eksiklikler", "İyileştirme Önerileri"]
+        [t("tab_requirements"), t("tab_conflicts_gaps"), t("tab_improvements")]
     )
 
     with tab1:
         col1, col2 = st.columns([3, 1])
         with col1:
-            _section("Ayrıştırılan Gereksinimler")
+            _section(t("req_section_label"))
         with col2:
             filter_type = st.selectbox(
-                "Filtrele",
-                ["Tümü", "Fonksiyonel", "Fonksiyonel Olmayan"],
+                "Filter",
+                [t("filter_all"), t("filter_functional"), t("filter_nfr")],
                 label_visibility="collapsed",
             )
 
@@ -53,9 +53,9 @@ def render_results(report):
                 req_type = getattr(req, "req_type", "UNKNOWN")
                 req_id = getattr(req, "id", f"REQ-{i}")
 
-                if filter_type == "Fonksiyonel" and req_type != "FUNCTIONAL":
+                if filter_type == t("filter_functional") and req_type != "FUNCTIONAL":
                     continue
-                if filter_type == "Fonksiyonel Olmayan" and req_type != "NON_FUNCTIONAL":
+                if filter_type == t("filter_nfr") and req_type != "NON_FUNCTIONAL":
                     continue
 
                 st.markdown(f"<a id='{req_id}'></a>", unsafe_allow_html=True)
@@ -63,8 +63,8 @@ def render_results(report):
         else:
             empty_state(
                 icon="📋",
-                heading="Gereksinim bulunamadı",
-                body="Metinden gereksinim çıkarılamadı. Lütfen daha açık gereksinim cümleleri içeren bir metin deneyin.",
+                heading=t("req_empty_heading"),
+                body=t("req_empty_body"),
             )
 
     with tab2:
@@ -78,7 +78,7 @@ def render_results(report):
             box-shadow:0 0 24px var(--color-danger-bg);">
     <div style="font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;
                 text-transform:uppercase;letter-spacing:0.1em;color:var(--text-tertiary);
-                margin-bottom:0.4rem;">Toplam Çelişki</div>
+                margin-bottom:0.4rem;">{t("total_conflicts_label")}</div>
     <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;
                 color:var(--color-danger);line-height:1;">{len(conflicts)}</div>
 </div>""",
@@ -93,14 +93,14 @@ def render_results(report):
             box-shadow:0 0 24px var(--color-warning-bg);">
     <div style="font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;
                 text-transform:uppercase;letter-spacing:0.1em;color:var(--text-tertiary);
-                margin-bottom:0.4rem;">Toplam Eksiklik</div>
+                margin-bottom:0.4rem;">{t("total_gaps_label")}</div>
     <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;
                 color:var(--color-warning);line-height:1;">{len(gaps)}</div>
 </div>""",
                 unsafe_allow_html=True,
             )
 
-        _section("Çelişkiler")
+        _section(t("conflicts_section"))
         if conflicts:
             for conflict in conflicts:
                 if isinstance(conflict, dict):
@@ -108,9 +108,9 @@ def render_results(report):
                 else:
                     st.write(conflict)
         else:
-            st.info("Çelişki bulunamadı.")
+            st.info(t("no_conflicts_info"))
 
-        _section("Eksiklikler", margin_top="1.25rem")
+        _section(t("gaps_section"), margin_top="1.25rem")
         if gaps:
             grouped_gaps: dict = {}
             for gap in gaps:
@@ -130,10 +130,10 @@ def render_results(report):
                     else:
                         st.write(gap)
         else:
-            st.info("Eksiklik bulunamadı.")
+            st.info(t("no_gaps_info"))
 
     with tab3:
-        _section("İyileştirme Önerileri")
+        _section(t("improvements_section"))
         if improvements:
             for improvement in improvements:
                 if isinstance(improvement, dict):
@@ -143,6 +143,6 @@ def render_results(report):
         else:
             empty_state(
                 icon="✨",
-                heading="İyileştirme önerisi yok",
-                body="Tüm gereksinimler yeterince açık ve eksiksiz görünüyor, ya da LLM bağlantısı etkin değil.",
+                heading=t("improvements_empty_heading"),
+                body=t("improvements_empty_body"),
             )

@@ -2,6 +2,7 @@ import streamlit as st
 from pathlib import Path
 from ui.file_loader import extract_text_from_upload
 from ui.components import page_header, empty_state
+from ui.i18n import t
 
 _DATA_ROOT = Path(__file__).parent.parent.parent / "data"
 _SAMPLES_DIR = _DATA_ROOT / "samples"
@@ -54,13 +55,13 @@ def _set_input(text: str) -> None:
 demo_mode = st.session_state.get("demo_mode", False)
 
 page_header(
-    title="Gereksinim Girişi",
-    subtitle="Analiz edilecek gereksinim metnini girin veya hazır bir örnek yükleyin.",
+    title=t("input_title"),
+    subtitle=t("input_subtitle"),
     step=1,
 )
 
 if demo_mode:
-    st.info("Demo Modu aktif — demo senaryoları listeye eklendi.")
+    st.info(t("demo_active_info"))
 
 # Sample loader — only in demo mode
 if demo_mode:
@@ -76,40 +77,38 @@ if demo_mode:
             options[label] = f
 
     if options:
-        label_list = ["— Örnek veri seç —"] + list(options.keys())
+        placeholder = t("sample_select_placeholder")
+        label_list = [placeholder] + list(options.keys())
         selected_label = st.selectbox(
-            "Örnek Veri Yükle",
+            t("sample_load_label"),
             label_list,
             index=0,
             key="sample_selector",
             help="data/samples/ ve data/demo_scenarios/ dosyalarını listeler.",
         )
 
-        if selected_label != "— Örnek veri seç —":
+        if selected_label != placeholder:
             sample_path = options[selected_label]
             try:
                 content = sample_path.read_text(encoding="utf-8")
-                if st.button(f"'{selected_label}' dosyasını yükle", key="load_sample_btn"):
+                if st.button(t("sample_load_btn").format(label=selected_label), key="load_sample_btn"):
                     _set_input(content)
-                    st.toast(f"✓ {selected_label} yüklendi.")
+                    st.toast(t("sample_loaded_toast").format(label=selected_label))
                     st.rerun()
             except OSError:
-                st.warning(f"'{sample_path.name}' dosyası okunamadı.")
+                st.warning(t("sample_read_error").format(name=sample_path.name))
 
-if st.button("İleri: Analiz →", type="primary", use_container_width=True):
+if st.button(t("next_analysis_btn"), type="primary", use_container_width=True):
     raw = st.session_state.user_input.strip()
     if not raw:
-        st.error("Lütfen metin gir!")
+        st.error(t("empty_text_error"))
     elif not _is_requirements_text(raw):
-        st.error(
-            "Girilen metin bir yazılım gereksinim belgesi gibi görünmüyor. "
-            "Lütfen 'Kullanıcı sisteme giriş yapabilmeli.' gibi gereksinim cümleleri içeren bir metin girin."
-        )
+        st.error(t("invalid_req_error"))
     else:
         st.switch_page("ui/pages/02_analysis.py")
 
 uploaded_file = st.file_uploader(
-    "Dosya yükle (.txt, .docx, .pdf)",
+    t("file_upload_label"),
     type=["txt", "docx", "pdf"],
 )
 
@@ -117,7 +116,7 @@ if uploaded_file is not None:
     try:
         extracted_text = extract_text_from_upload(uploaded_file)
         _set_input(extracted_text)
-        st.toast("✓ Dosya yüklendi ve metin çıkarıldı.")
+        st.toast(t("file_loaded_toast"))
     except ValueError as e:
         st.error(str(e))
 
@@ -127,8 +126,8 @@ def _sync_input():
 
 
 text_val = st.text_area(
-    label="Gereksinim metnini gir:",
-    placeholder="Örnek: Kullanıcı sisteme giriş yapabilmeli. Şifresini unuttuğunda sıfırlayabilmeli.",
+    label=t("text_area_label"),
+    placeholder=t("text_area_placeholder"),
     height=220,
     key="_input_widget",
     value=st.session_state.get("user_input", ""),
@@ -138,11 +137,9 @@ text_val = st.text_area(
 if text_val != st.session_state.get("user_input", ""):
     st.session_state.user_input = text_val
 
-# Empty state hint when text area is empty
 if not st.session_state.get("user_input", "").strip():
     empty_state(
         icon="📋",
-        heading="Henüz metin girilmedi",
-        body="Gereksinim metninizi yukarıdaki alana yazın veya bir dosya yükleyin. "
-             "Sistem gereksinimleri analiz ederek çelişkileri ve eksiklikleri tespit eder.",
+        heading=t("empty_state_no_text_heading"),
+        body=t("empty_state_no_text_body"),
     )
