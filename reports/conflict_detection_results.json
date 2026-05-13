@@ -1,0 +1,11 @@
+{
+  "ground_truth_pairs": 6,
+  "found_pairs": 6,
+  "tp": 6,
+  "fp": 0,
+  "fn": 0,
+  "detection_rate": 100.0,
+  "false_positive_rate": 0.0,
+  "precision": 100.0,
+  "recall": 100.0
+}

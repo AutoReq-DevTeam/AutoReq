@@ -49,8 +49,8 @@ class RequirementClassifier:
         # "hızlı" ambiguous sete taşındı — "Hızlı ödeme" gibi özellik adlarında FR.
         # "en fazla/az" regex pattern'a taşındı — "birden fazla" substring false positive'i engeller.
         self.nfr_keywords: frozenset = frozenset([
-            # Performans
-            "saniye", "performans", "gecikme", "milisaniye", "mili saniye",
+            # Performans ("performans" ambiguous sete taşındı — İK domain'inde FR olabilir)
+            "saniye", "gecikme", "milisaniye", "mili saniye",
             "eş zamanlı", "eşzamanlı", "yanıt süresi", "throughput",
             # Güvenlik
             "güvenli", "güvenlik", "kripto", "ssl", "korunmalı", "mahremiyet",
@@ -88,7 +88,7 @@ class RequirementClassifier:
         # FR cümlelerinde nesne olarak da geçebilen ambiguous keyword'ler.
         # "hızlı" eklendi: "Hızlı ödeme için X kaydedilebilmelidir" → FR fiili varsa FR.
         self._ambiguous_nfr_keywords: frozenset = frozenset({
-            "güvenlik", "yedek", "erişilebilir", "yük", "hızlı",
+            "güvenlik", "yedek", "erişilebilir", "yük", "hızlı", "performans",
         })
 
         # "güvenli" → "güvenlik" substring çakışmasını önler (güvenlik ambiguous sette).

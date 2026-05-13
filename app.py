@@ -7,6 +7,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from dotenv import load_dotenv
 from ui.state import init_state
+from ui.i18n import t, lang_selector_sidebar
 
 load_dotenv()
 
@@ -28,12 +29,14 @@ components.html("""
     if (saved === 'dark') root.setAttribute('data-theme', 'dark');
     else root.removeAttribute('data-theme');
 
-    // Inject late-override stylesheet after Streamlit's emotion CSS so it wins
-    // the cascade without relying on specificity alone. CSS variables make it
-    // theme-aware automatically.
-    if (!doc.getElementById('ar-late-overrides')) {
+    // ── Late-override stylesheet (sidebar buttons + selectbox no-typing) ──────
+    var styleVer = '6';
+    var existingStyle = doc.getElementById('ar-late-overrides');
+    if (!existingStyle || existingStyle.getAttribute('data-ver') !== styleVer) {
+        if (existingStyle) existingStyle.remove();
         var s = doc.createElement('style');
         s.id = 'ar-late-overrides';
+        s.setAttribute('data-ver', styleVer);
         s.textContent = [
             'section[data-testid="stSidebar"] button {',
             '  background-color: var(--bg-card) !important;',
@@ -52,10 +55,124 @@ components.html("""
             '  color: var(--text-primary) !important;',
             '  box-shadow: none !important;',
             '  transform: none !important;',
-            '}'
+            '}',
+            'section[data-testid="stSidebar"] .stSelectbox input {',
+            '  pointer-events: none !important;',
+            '  caret-color: transparent !important;',
+            '  cursor: pointer !important;',
+            '  user-select: none !important;',
+            '}',
+            '[data-baseweb="popover"] > div {',
+            '  background: var(--bg-elevated, #ffffff) !important;',
+            '  border: 1px solid var(--border-default, #ced4da) !important;',
+            '  border-radius: 6px !important;',
+            '  box-shadow: 0 4px 16px var(--shadow-overlay, rgba(0,0,0,0.10)) !important;',
+            '}',
+            '[data-baseweb="popover"] {',
+            '  background: var(--bg-elevated, #ffffff) !important;',
+            '}',
+            '[data-baseweb="popover"] div, [data-baseweb="popover"] ul {',
+            '  background: var(--bg-elevated, #ffffff) !important;',
+            '}',
+            '[data-baseweb="menu"] {',
+            '  background: var(--bg-elevated, #ffffff) !important;',
+            '}',
+            '[data-baseweb="listbox"] {',
+            '  background: var(--bg-elevated, #ffffff) !important;',
+            '}',
+            '[data-baseweb="menu"] [role="option"] {',
+            '  font-family: Inter, sans-serif !important;',
+            '  font-size: 0.85rem !important;',
+            '  color: var(--text-secondary, #374151) !important;',
+            '  background: transparent !important;',
+            '}',
+            '[data-baseweb="menu"] [role="option"]:hover {',
+            '  background: var(--accent-glow, rgba(26,86,219,0.10)) !important;',
+            '  color: var(--accent-primary, #1a56db) !important;',
+            '}',
         ].join('\\n');
         doc.head.appendChild(s);
     }
+
+    // ── MutationObserver: style popover menus with inline styles ─────────────
+    // CSS rules cannot reliably override Streamlit/emotion dynamic styles on
+    // portal-rendered elements. Inline styles (with 'important' priority) always
+    // win regardless of cascade order.
+    function arStyleMenus() {
+        var dark = root.getAttribute('data-theme') === 'dark';
+        var bg     = dark ? '#161c24' : '#ffffff';
+        var border = dark ? '#30363d' : '#ced4da';
+        var shadow = dark ? '0 8px 24px rgba(0,0,0,0.50)' : '0 4px 16px rgba(0,0,0,0.10)';
+        var optColor = dark ? '#8b949e' : '#374151';
+
+        // Walk entire popover tree and force background on every element
+        doc.querySelectorAll('[data-baseweb="popover"]').forEach(function (pop) {
+            // Style all descendants that might have inline bg set by emotion/baseweb
+            var els = pop.querySelectorAll('*');
+            for (var i = 0; i < els.length; i++) {
+                var el = els[i];
+                var role = el.getAttribute('role');
+                if (role === 'option') {
+                    el.style.setProperty('font-family', 'Inter, sans-serif', 'important');
+                    el.style.setProperty('font-size', '0.85rem', 'important');
+                    el.style.setProperty('color', optColor, 'important');
+                    el.style.setProperty('background', 'transparent', 'important');
+                    // Add hover handlers (only once)
+                    if (!el.__arHover) {
+                        el.__arHover = true;
+                        el.addEventListener('mouseenter', function () {
+                            var d = root.getAttribute('data-theme') === 'dark';
+                            this.style.setProperty('background', d ? 'rgba(63,185,132,0.12)' : 'rgba(26,86,219,0.10)', 'important');
+                            this.style.setProperty('color', d ? '#3fb984' : '#1a56db', 'important');
+                        });
+                        el.addEventListener('mouseleave', function () {
+                            var d = root.getAttribute('data-theme') === 'dark';
+                            if (this.getAttribute('aria-selected') !== 'true') {
+                                this.style.setProperty('background', 'transparent', 'important');
+                                this.style.setProperty('color', d ? '#8b949e' : '#374151', 'important');
+                            }
+                        });
+                    }
+                } else {
+                    el.style.setProperty('background', bg, 'important');
+                }
+            }
+            pop.style.setProperty('background', bg, 'important');
+            pop.style.setProperty('border', '1px solid ' + border, 'important');
+            pop.style.setProperty('border-radius', '6px', 'important');
+            pop.style.setProperty('box-shadow', shadow, 'important');
+        });
+    }
+
+    // Expose the latest arStyleMenus for the observer to call
+    window.parent.__arStyleMenus = arStyleMenus;
+
+    if (!window.parent.__arMenuObserver) {
+        var _timer = null;
+        var _timer2 = null;
+        window.parent.__arMenuObserver = new MutationObserver(function () {
+            // Debounce: let baseweb finish its own inline styling first
+            clearTimeout(_timer);
+            clearTimeout(_timer2);
+            _timer = setTimeout(function () {
+                if (window.parent.__arStyleMenus) window.parent.__arStyleMenus();
+            }, 50);
+            // Second pass to catch late baseweb style applications
+            _timer2 = setTimeout(function () {
+                if (window.parent.__arStyleMenus) window.parent.__arStyleMenus();
+            }, 200);
+        });
+        window.parent.__arMenuObserver.observe(doc.body, { childList: true, subtree: true });
+
+        // Also watch for data-theme attribute changes on <html>
+        var _attrObserver = new MutationObserver(function () {
+            setTimeout(function () {
+                if (window.parent.__arStyleMenus) window.parent.__arStyleMenus();
+            }, 10);
+        });
+        _attrObserver.observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    }
+    arStyleMenus();
 
     if (!doc.getElementById('ar-theme-toggle')) {
         var btn = doc.createElement('button');
@@ -423,7 +540,10 @@ section[data-testid="stSidebar"] .stButton > button:hover {
 
 .stTextArea textarea:disabled,
 .stTextInput input:disabled {
-    opacity: 0.4 !important;
+    opacity: 0.6 !important;
+    background-color: var(--bg-elevated) !important;
+    color: var(--text-primary) !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
 }
 
 .stTextArea label, .stTextInput label,
@@ -452,25 +572,6 @@ section[data-testid="stSidebar"] .stButton > button:hover {
 
 .stSelectbox [data-baseweb="select"] > div:hover {
     border-color: var(--border-default) !important;
-}
-
-[data-baseweb="popover"] [data-baseweb="menu"] {
-    background-color: var(--bg-card) !important;
-    border: 1px solid var(--border-default) !important;
-    border-radius: 6px !important;
-    box-shadow: 0 8px 24px var(--shadow-overlay) !important;
-}
-
-[data-baseweb="popover"] [role="option"] {
-    font-family: 'Inter', sans-serif !important;
-    font-size: 0.85rem !important;
-    color: var(--text-secondary) !important;
-}
-
-[data-baseweb="popover"] [role="option"]:hover,
-[data-baseweb="popover"] [aria-selected="true"] {
-    background-color: var(--accent-glow) !important;
-    color: var(--accent-primary) !important;
 }
 
 /* === FILE UPLOADER === */
@@ -1281,38 +1382,40 @@ conflict_count = st.session_state.get("conflict_count", 0)
 gap_count = st.session_state.get("gap_count", 0)
 
 if os.getenv("OPENROUTER_API_KEY"):
-    api_label, api_color = "Aktif — OpenRouter", "var(--color-success)"
+    api_label, api_color = t("api_active_openrouter"), "var(--color-success)"
 elif os.getenv("DEEPSEEK_API_KEY"):
-    api_label, api_color = "Aktif — DeepSeek", "var(--color-success)"
+    api_label, api_color = t("api_active_deepseek"), "var(--color-success)"
 elif os.getenv("GEMINI_API_KEY"):
-    api_label, api_color = "Aktif — Gemini", "var(--color-success)"
+    api_label, api_color = t("api_active_gemini"), "var(--color-success)"
 else:
-    api_label, api_color = "Tanımsız", "var(--color-danger)"
+    api_label, api_color = t("api_undefined"), "var(--color-danger)"
 
 st.sidebar.markdown(f"""
 <div class="ar-sidebar-brand">
     <div class="ar-sidebar-brand-dot"></div>
     <span class="ar-sidebar-brand-name">AutoReq</span>
 </div>
+""", unsafe_allow_html=True)
 
+st.sidebar.markdown(f"""
 <div class="ar-sidebar-section">
-    <div class="ar-sidebar-section-title">Sistem Durumu</div>
+    <div class="ar-sidebar-section-title">{t("system_status")}</div>
     <div class="ar-stat-row">
-        <span class="ar-stat-key">API</span>
+        <span class="ar-stat-key">{t("api")}</span>
         <span class="ar-stat-val" style="color:{api_color}">{api_label}</span>
     </div>
     <div class="ar-stat-row">
-        <span class="ar-stat-key">Maliyet</span>
+        <span class="ar-stat-key">{t("cost")}</span>
         <span class="ar-stat-val">${session_cost:.4f}</span>
     </div>
     <div class="ar-stat-row">
-        <span class="ar-stat-key">Token</span>
+        <span class="ar-stat-key">{t("tokens")}</span>
         <span class="ar-stat-val">{session_tokens:,}</span>
     </div>
 </div>
 
 <div class="ar-sidebar-section" style="margin-top:0.75rem;">
-    <div class="ar-sidebar-section-title">Analiz Özeti</div>
+    <div class="ar-sidebar-section-title">{t("analysis_summary")}</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1320,23 +1423,23 @@ st.sidebar.markdown('<div id="ar-metric-btns">', unsafe_allow_html=True)
 _mc1, _mc2, _mc3 = st.sidebar.columns(3)
 with _mc1:
     _req_click = st.button(
-        f"{req_count}\nGerek.",
+        f"{req_count}\n{t('req_short')}",
         key="sb_req_metric",
-        help="Gereksinimler sayfasına git",
+        help=t("sb_req_help"),
         use_container_width=True,
     )
 with _mc2:
     _conf_click = st.button(
-        f"{conflict_count}\nÇelişki",
+        f"{conflict_count}\n{t('conflict_short')}",
         key="sb_conflict_metric",
-        help="Çelişkiler bölümüne git",
+        help=t("sb_conflict_help"),
         use_container_width=True,
     )
 with _mc3:
     _gap_click = st.button(
-        f"{gap_count}\nEksiklik",
+        f"{gap_count}\n{t('gap_short')}",
         key="sb_gap_metric",
-        help="Eksiklikler bölümüne git",
+        help=t("sb_gap_help"),
         use_container_width=True,
     )
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
@@ -1351,12 +1454,15 @@ elif _req_click:
     st.session_state.result_scroll_to = "requirements"
     st.switch_page("ui/pages/03_results.py")
 
-st.sidebar.markdown('<div style="border-top:1px solid var(--border-subtle);margin:0.875rem 0 0.625rem;"></div>', unsafe_allow_html=True)
+st.sidebar.markdown(
+    '<div style="border-top:1px solid var(--border-subtle);margin:0.875rem 0 0.625rem;"></div>',
+    unsafe_allow_html=True,
+)
 
 demo_mode = st.sidebar.checkbox(
-    "Demo Modu",
+    t("demo_mode"),
     value=st.session_state.get("demo_mode", False),
-    help="Demo senaryolarını gösterir ve sunum dostu arayüzü etkinleştirir.",
+    help=t("demo_mode_help"),
     key="demo_mode_toggle",
 )
 st.session_state.demo_mode = demo_mode
@@ -1364,17 +1470,23 @@ if demo_mode:
     st.sidebar.markdown(
         '<div class="ar-demo-badge">'
         '<div style="width:5px;height:5px;background:var(--accent-primary);border-radius:50%;"></div>'
-        ' Demo Modu Aktif'
+        f' {t("demo_mode_active")}'
         '</div>',
         unsafe_allow_html=True,
     )
 
+st.sidebar.markdown(
+    '<div style="border-top:1px solid var(--border-subtle);margin:0.875rem 0 0.4rem;"></div>',
+    unsafe_allow_html=True,
+)
+lang_selector_sidebar()
+
 pages = {
     "AutoReq": [
-        st.Page("ui/pages/01_input.py", title="Girdi"),
-        st.Page("ui/pages/02_analysis.py", title="Analiz"),
-        st.Page("ui/pages/03_results.py", title="Sonuçlar"),
-        st.Page("ui/pages/04_export.py", title="Dışa Aktarım"),
+        st.Page("ui/pages/01_input.py", title=t("step_input")),
+        st.Page("ui/pages/02_analysis.py", title=t("step_analysis")),
+        st.Page("ui/pages/03_results.py", title=t("step_results")),
+        st.Page("ui/pages/04_export.py", title=t("step_export")),
     ]
 }
 
