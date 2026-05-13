@@ -1,0 +1,30 @@
+Hasta randevu almadan önce TC kimlik numarasını doğrulatmalıdır.
+Doktor, hastanın tıbbi geçmişini görüntüleyebilmelidir.
+Hemşire, hasta yatak başı gözlem formunu doldurabilmelidir.
+Eczacı, reçetedeki ilaçları hasta adına karşılayabilmelidir.
+Laborant, test sonuçlarını sisteme girebilmelidir.
+Diyetisyen, hastaya özel beslenme planı oluşturabilmelidir.
+Fizyoterapist, tedavi seanslarını planlayabilmelidir.
+Hasta yakını, hastanın durumunu çevrimiçi takip edebilmelidir.
+Acil servis triaj hemşiresi hastaları önceliklendirmelidir.
+Radyolog, görüntüleme sonuçlarını PACS sistemine yükleyebilmelidir.
+Başhekim, klinik bazlı doluluk oranlarını raporlayabilmelidir.
+Hastane yöneticisi, personel nöbet çizelgesini düzenleyebilmelidir.
+Tıbbi sekreter, hasta dosyasını arşivleyebilmelidir.
+Hasta, faturasını online ödeyebilmelidir.
+Doktor, e-reçete yazabilmeli ve eczaneye iletebilmelidir.
+Hasta verilerinin yedeklenmesi günde en az iki kez yapılmalıdır.
+Sistem, eş zamanlı 500 poliklinik kaydını işleyebilmelidir.
+Tıbbi kayıtlar KVKK kapsamında şifrelenmiş olarak saklanmalıdır.
+Acil çağrı bildirimleri 2 saniye içinde ilgili ekibe ulaşmalıdır.
+Laboratuvar sonuçları otomatik olarak doktorun ekranına düşmelidir.
+Sistem %99,5 uptime hedefini sağlamalıdır.
+Hasta taburcu işlemi ortalama 15 dakikayı geçmemelidir.
+Ameliyathane doluluk oranı anlık olarak izlenebilmelidir.
+Eczane stok seviyesi kritik eşiğin altına düştüğünde otomatik uyarı verilmelidir.
+İlaç etkileşim kontrolü reçete yazılmadan önce otomatik gerçekleştirilmelidir.
+Hasta memnuniyet anketi taburculuk sonrası 24 saat içinde gönderilmelidir.
+Doktor, ameliyat notlarını sesli komutla dikte edebilmelidir.
+Sigorta şirketi entegrasyonu üzerinden hasta provizyon sorgulama yapılabilmelidir.
+Teletıp görüşmeleri uçtan uca şifrelenmiş video altyapısı üzerinden gerçekleştirilmelidir.
+Kan bankası envanter takibi FIFO prensibiyle yönetilmelidir.
