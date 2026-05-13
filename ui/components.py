@@ -1,15 +1,15 @@
 """
-ui/components.py — Ortak Arayüz Bileşenleri
+ui/components.py — Shared UI Components
 """
 
 import streamlit as st
+from ui.i18n import t
 
 
 # ── Step indicator + page header ─────────────────────────────────────────────
 
 def page_header(title: str, subtitle: str = "", step: int = 1) -> None:
-    """Render the step indicator, page title, and optional subtitle."""
-    steps = ["Girdi", "Analiz", "Sonuçlar", "Dışa Aktarım"]
+    steps = [t("step_input"), t("step_analysis"), t("step_results"), t("step_export")]
 
     parts = []
     for i, label in enumerate(steps):
@@ -56,7 +56,6 @@ def empty_state(
     cta_label: str = "",
     cta_page: str = "",
 ) -> None:
-    """Render a centered empty-state placeholder with an optional CTA button."""
     st.markdown(
         f"""
 <div class="ar-empty-state">
@@ -79,7 +78,7 @@ def empty_state(
 def req_card(req_id: str, text: str, req_type: str) -> None:
     is_func = req_type == "FUNCTIONAL"
     badge_cls = "ar-badge ar-badge--func" if is_func else "ar-badge ar-badge--nfr"
-    badge_lbl = "Fonksiyonel" if is_func else "Fonksiyonel Olmayan"
+    badge_lbl = t("badge_functional") if is_func else t("badge_nfr")
     card_mod = "" if is_func else " ar-req-card--nfr"
 
     st.markdown(
@@ -101,13 +100,13 @@ def req_card(req_id: str, text: str, req_type: str) -> None:
 def conflict_card(conflict: dict, req_lookup: dict | None = None) -> None:
     severity = str(conflict.get("severity", "medium")).upper()
     req_ids = conflict.get("req_ids", [])
-    reason = conflict.get("reason", "Çelişki açıklaması bulunamadı.")
-    conflict_type = conflict.get("conflict_type", "Genel Çelişki")
+    reason = conflict.get("reason", t("conflict_reason_not_found"))
+    conflict_type = conflict.get("conflict_type", "")
 
     sev_map = {
-        "HIGH":   ("ar-badge ar-badge--high",   "Yüksek",   ""),
-        "MEDIUM": ("ar-badge ar-badge--medium",  "Orta",     " ar-conflict-card--medium"),
-        "LOW":    ("ar-badge ar-badge--low",     "Düşük",    " ar-conflict-card--low"),
+        "HIGH":   ("ar-badge ar-badge--high",   t("severity_high"),   ""),
+        "MEDIUM": ("ar-badge ar-badge--medium",  t("severity_medium"), " ar-conflict-card--medium"),
+        "LOW":    ("ar-badge ar-badge--low",     t("severity_low"),    " ar-conflict-card--low"),
     }
     badge_cls, badge_lbl, card_mod = sev_map.get(severity, sev_map["MEDIUM"])
 
@@ -128,12 +127,11 @@ def conflict_card(conflict: dict, req_lookup: dict | None = None) -> None:
         unsafe_allow_html=True,
     )
 
-    with st.expander("Çelişki detayını görüntüle"):
-        # Side-by-side view when requirement texts are available
+    with st.expander(t("conflict_detail_expander")):
         if req_lookup and req_ids:
             panes_html = '<div class="ar-conflict-detail">'
             for rid in req_ids:
-                req_text = req_lookup.get(rid, "Gereksinim metni bulunamadı.")
+                req_text = req_lookup.get(rid, t("req_text_not_found"))
                 panes_html += (
                     f'<div class="ar-conflict-detail-pane">'
                     f'<div class="ar-conflict-detail-id">{rid}</div>'
@@ -146,7 +144,7 @@ def conflict_card(conflict: dict, req_lookup: dict | None = None) -> None:
         st.markdown(
             f"""
 <div class="ar-conflict-reason">
-    <div class="ar-conflict-reason-label">Çelişki Açıklaması</div>
+    <div class="ar-conflict-reason-label">{t("conflict_reason_label")}</div>
     <div class="ar-conflict-reason-text">{reason}</div>
 </div>
 """,
@@ -160,14 +158,14 @@ def gap_card(gap: dict) -> None:
     import hashlib
 
     scenario = gap.get("scenario", "unknown")
-    missing_area = gap.get("missing_area", "Eksik alan belirtilmemiş.")
-    suggestion = gap.get("suggestion", "Öneri bulunamadı.")
+    missing_area = gap.get("missing_area", t("gap_missing_area_not_found"))
+    suggestion = gap.get("suggestion", t("gap_suggestion_not_found"))
     severity = str(gap.get("severity", "medium")).upper()
 
     sev_map = {
-        "HIGH":   ("ar-badge ar-badge--high",   "Yüksek",   ""),
-        "MEDIUM": ("ar-badge ar-badge--medium",  "Orta",     ""),
-        "LOW":    ("ar-badge ar-badge--low",     "Düşük",    " ar-gap-card--low"),
+        "HIGH":   ("ar-badge ar-badge--high",   t("severity_high"),   ""),
+        "MEDIUM": ("ar-badge ar-badge--medium",  t("severity_medium"), ""),
+        "LOW":    ("ar-badge ar-badge--low",     t("severity_low"),    " ar-gap-card--low"),
     }
     badge_cls, badge_lbl, card_mod = sev_map.get(severity, sev_map["MEDIUM"])
 
@@ -188,7 +186,7 @@ def gap_card(gap: dict) -> None:
     )
 
     st.checkbox(
-        f"Öneri: {suggestion}",
+        f"{t('suggestion_prefix')}{suggestion}",
         value=False,
         key=_stable_key,
     )
@@ -197,8 +195,8 @@ def gap_card(gap: dict) -> None:
 # ── Improvement diff card ─────────────────────────────────────────────────────
 
 def improvement_diff_card(improvement: dict) -> None:
-    original = improvement.get("original", "Önceki ifade bulunamadı.")
-    improved = improvement.get("improved", "İyileştirilmiş ifade bulunamadı.")
+    original = improvement.get("original", t("original_not_found"))
+    improved = improvement.get("improved", t("improved_not_found"))
     reason = improvement.get("reason", "")
 
     st.markdown(
@@ -206,10 +204,10 @@ def improvement_diff_card(improvement: dict) -> None:
 <div class="ar-diff-wrap">
     <div class="ar-diff-header">
         <div class="ar-diff-col">
-            <span class="ar-diff-label">Önceki</span>
+            <span class="ar-diff-label">{t("diff_before_label")}</span>
         </div>
         <div class="ar-diff-col">
-            <span class="ar-diff-label">İyileştirilmiş</span>
+            <span class="ar-diff-label">{t("diff_after_label")}</span>
         </div>
     </div>
     <div class="ar-diff-body">
@@ -222,7 +220,7 @@ def improvement_diff_card(improvement: dict) -> None:
     )
 
     if reason:
-        with st.expander("İyileştirme gerekçesini görüntüle"):
+        with st.expander(t("improvement_reason_expander")):
             st.markdown(
                 f'<p style="font-family:\'Inter\',sans-serif;font-size:0.875rem;'
                 f'color:var(--text-secondary);line-height:1.7;margin:0;">{reason}</p>',

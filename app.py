@@ -7,6 +7,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from dotenv import load_dotenv
 from ui.state import init_state
+from ui.i18n import t, lang_selector_sidebar
 
 load_dotenv()
 
@@ -1281,38 +1282,40 @@ conflict_count = st.session_state.get("conflict_count", 0)
 gap_count = st.session_state.get("gap_count", 0)
 
 if os.getenv("OPENROUTER_API_KEY"):
-    api_label, api_color = "Aktif — OpenRouter", "var(--color-success)"
+    api_label, api_color = t("api_active_openrouter"), "var(--color-success)"
 elif os.getenv("DEEPSEEK_API_KEY"):
-    api_label, api_color = "Aktif — DeepSeek", "var(--color-success)"
+    api_label, api_color = t("api_active_deepseek"), "var(--color-success)"
 elif os.getenv("GEMINI_API_KEY"):
-    api_label, api_color = "Aktif — Gemini", "var(--color-success)"
+    api_label, api_color = t("api_active_gemini"), "var(--color-success)"
 else:
-    api_label, api_color = "Tanımsız", "var(--color-danger)"
+    api_label, api_color = t("api_undefined"), "var(--color-danger)"
 
 st.sidebar.markdown(f"""
 <div class="ar-sidebar-brand">
     <div class="ar-sidebar-brand-dot"></div>
     <span class="ar-sidebar-brand-name">AutoReq</span>
 </div>
+""", unsafe_allow_html=True)
 
+st.sidebar.markdown(f"""
 <div class="ar-sidebar-section">
-    <div class="ar-sidebar-section-title">Sistem Durumu</div>
+    <div class="ar-sidebar-section-title">{t("system_status")}</div>
     <div class="ar-stat-row">
-        <span class="ar-stat-key">API</span>
+        <span class="ar-stat-key">{t("api")}</span>
         <span class="ar-stat-val" style="color:{api_color}">{api_label}</span>
     </div>
     <div class="ar-stat-row">
-        <span class="ar-stat-key">Maliyet</span>
+        <span class="ar-stat-key">{t("cost")}</span>
         <span class="ar-stat-val">${session_cost:.4f}</span>
     </div>
     <div class="ar-stat-row">
-        <span class="ar-stat-key">Token</span>
+        <span class="ar-stat-key">{t("tokens")}</span>
         <span class="ar-stat-val">{session_tokens:,}</span>
     </div>
 </div>
 
 <div class="ar-sidebar-section" style="margin-top:0.75rem;">
-    <div class="ar-sidebar-section-title">Analiz Özeti</div>
+    <div class="ar-sidebar-section-title">{t("analysis_summary")}</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1320,23 +1323,23 @@ st.sidebar.markdown('<div id="ar-metric-btns">', unsafe_allow_html=True)
 _mc1, _mc2, _mc3 = st.sidebar.columns(3)
 with _mc1:
     _req_click = st.button(
-        f"{req_count}\nGerek.",
+        f"{req_count}\n{t('req_short')}",
         key="sb_req_metric",
-        help="Gereksinimler sayfasına git",
+        help=t("sb_req_help"),
         use_container_width=True,
     )
 with _mc2:
     _conf_click = st.button(
-        f"{conflict_count}\nÇelişki",
+        f"{conflict_count}\n{t('conflict_short')}",
         key="sb_conflict_metric",
-        help="Çelişkiler bölümüne git",
+        help=t("sb_conflict_help"),
         use_container_width=True,
     )
 with _mc3:
     _gap_click = st.button(
-        f"{gap_count}\nEksiklik",
+        f"{gap_count}\n{t('gap_short')}",
         key="sb_gap_metric",
-        help="Eksiklikler bölümüne git",
+        help=t("sb_gap_help"),
         use_container_width=True,
     )
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
@@ -1351,12 +1354,15 @@ elif _req_click:
     st.session_state.result_scroll_to = "requirements"
     st.switch_page("ui/pages/03_results.py")
 
-st.sidebar.markdown('<div style="border-top:1px solid var(--border-subtle);margin:0.875rem 0 0.625rem;"></div>', unsafe_allow_html=True)
+st.sidebar.markdown(
+    '<div style="border-top:1px solid var(--border-subtle);margin:0.875rem 0 0.625rem;"></div>',
+    unsafe_allow_html=True,
+)
 
 demo_mode = st.sidebar.checkbox(
-    "Demo Modu",
+    t("demo_mode"),
     value=st.session_state.get("demo_mode", False),
-    help="Demo senaryolarını gösterir ve sunum dostu arayüzü etkinleştirir.",
+    help=t("demo_mode_help"),
     key="demo_mode_toggle",
 )
 st.session_state.demo_mode = demo_mode
@@ -1364,17 +1370,23 @@ if demo_mode:
     st.sidebar.markdown(
         '<div class="ar-demo-badge">'
         '<div style="width:5px;height:5px;background:var(--accent-primary);border-radius:50%;"></div>'
-        ' Demo Modu Aktif'
+        f' {t("demo_mode_active")}'
         '</div>',
         unsafe_allow_html=True,
     )
 
+st.sidebar.markdown(
+    '<div style="border-top:1px solid var(--border-subtle);margin:0.875rem 0 0.4rem;"></div>',
+    unsafe_allow_html=True,
+)
+lang_selector_sidebar()
+
 pages = {
     "AutoReq": [
-        st.Page("ui/pages/01_input.py", title="Girdi"),
-        st.Page("ui/pages/02_analysis.py", title="Analiz"),
-        st.Page("ui/pages/03_results.py", title="Sonuçlar"),
-        st.Page("ui/pages/04_export.py", title="Dışa Aktarım"),
+        st.Page("ui/pages/01_input.py", title=t("step_input")),
+        st.Page("ui/pages/02_analysis.py", title=t("step_analysis")),
+        st.Page("ui/pages/03_results.py", title=t("step_results")),
+        st.Page("ui/pages/04_export.py", title=t("step_export")),
     ]
 }
 
