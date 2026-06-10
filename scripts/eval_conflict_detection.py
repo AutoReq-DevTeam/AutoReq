@@ -40,7 +40,6 @@ GROUND_TRUTH_CONFLICTS = [
     ("REQ_004", "REQ_005"),  # stok engelle vs izin ver
     ("REQ_006", "REQ_007"),  # adres zorunlu değil vs zorunlu
     ("REQ_008", "REQ_009"),  # kupon tek vs çoklu
-    ("REQ_010", "REQ_011"),  # kart saklanmamalı vs kaydedilebilmeli
     ("REQ_012", "REQ_013"),  # stok güncelleme zamanlaması
 ]
 

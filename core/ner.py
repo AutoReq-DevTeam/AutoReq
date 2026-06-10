@@ -347,7 +347,16 @@ class EntityRecognizer:
 
                     actor_match = self._find_actor_k1(lemma, text_word)
                     if actor_match:
-                        layer1_sent.add(actor_match)
+                        is_subject_or_agent = False
+                        if word.deprel in ("nsubj", "nsubj:pass", "obl:agent"):
+                            is_subject_or_agent = True
+                        else:
+                            for w2 in sentence.words:
+                                if w2.head == word.id and w2.text == "tarafından":
+                                    is_subject_or_agent = True
+                                    break
+                        if is_subject_or_agent:
+                            layer1_sent.add(actor_match)
                         noun_run = []
                     elif lemma in self.object_lemmas:
                         found_objects.add(lemma)

@@ -39,6 +39,8 @@ def _run_pipeline(text, monkeypatch):
     import core.pipeline as pm
 
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
     monkeypatch.setattr(pm, "generate_srs", MagicMock())
     monkeypatch.setattr(pm, "export_backlog_xlsx", MagicMock())
     monkeypatch.setattr(pm, "export_stories_docx", MagicMock())

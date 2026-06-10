@@ -1,14 +1,14 @@
 {
   "corpus": "development",
   "total_sentences": 63,
-  "actor_precision": 56.1,
-  "actor_recall": 82.2,
-  "actor_f1": 66.7,
+  "actor_precision": 36.7,
+  "actor_recall": 73.3,
+  "actor_f1": 48.9,
   "classification_accuracy": 93.7,
   "domain_breakdown": {
     "e-ticaret": {
-      "precision": 66.7,
-      "recall": 80.0,
+      "precision": 25.0,
+      "recall": 42.9,
       "clf_accuracy": 100.0,
       "sentences": 13
     },
@@ -19,20 +19,20 @@
       "sentences": 10
     },
     "eğitim": {
-      "precision": 54.5,
-      "recall": 75.0,
+      "precision": 20.0,
+      "recall": 100.0,
       "clf_accuracy": 83.3,
       "sentences": 12
     },
     "kurumsal": {
-      "precision": 72.2,
-      "recall": 100.0,
+      "precision": 83.3,
+      "recall": 76.9,
       "clf_accuracy": 100.0,
       "sentences": 13
     },
     "mobil": {
-      "precision": 20.0,
-      "recall": 42.9,
+      "precision": 0.0,
+      "recall": 0.0,
       "clf_accuracy": 86.7,
       "sentences": 15
     }

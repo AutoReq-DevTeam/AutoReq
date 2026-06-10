@@ -162,7 +162,7 @@ class TestLLMClient:
             mock_client_cls.return_value = mock_client
 
             isolated = LLMPromptCache(default_ttl_seconds=3600)
-            client = LLMClient(prompt_cache=isolated)
+            client = LLMClient(provider="gemini", prompt_cache=isolated)
 
             first = client.chat("system prompt", "user prompt")
             second = client.chat("system prompt", "user prompt")

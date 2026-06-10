@@ -303,6 +303,8 @@ class TestPipeline:
     def test_is_llm_available_without_key(self, monkeypatch):
         import core.pipeline as pm
         monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+        monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+        monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
         assert pm._is_llm_available() is False
 
     def test_process_text_no_llm_returns_report(self, monkeypatch):

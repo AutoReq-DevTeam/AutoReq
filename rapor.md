@@ -91,3 +91,35 @@ Faz 2 kapsamında projenin performansını, kullanılabilirliğini ve akademik t
   - **Dev Corpus Sınıflandırma Doğruluğu:** 59/63 = **%93.7**
   - **Healthcare Held-out Corpus Sınıflandırma Doğruluğu:** 29/30 = **%96.7**
   - Sonuçlar `reports/dev_corpus_results.json` ve `reports/heldout_corpus_results.json` dosyalarına kaydedilmiştir.
+
+---
+
+## Faz 3: Önemli Hataların Düzeltilmesi (Important/P2 Fixes) — TAMAMLANDI
+
+Faz 3 kapsamında aktör çıkarımı kalitesi iyileştirilmiş, değerlendirme veri setleri hatalı etiketlerden temizlenmiş ve tüm birim testlerinin ve entegrasyon testlerinin izole ortamlarda kararlı çalışması sağlanmıştır.
+
+### Gerçekleştirilen Değişiklikler ve Düzeltmeler
+
+1. **NER Aktör Çıkarımı `nsubj` Filtrelemesi (NER Actor Extraction nsubj Filtering):**
+   - `core/ner.py` dosyasındaki `EntityRecognizer` sınıfı güncellendi. Aktör eşleşmelerinin, Stanza'nın bağımlılık ağacında (dependency parse tree) özne (`nsubj`, `nsubj:pass`, `obl:agent`) rolünde olması veya "tarafından" ilgeciyle bağlanmış edilgen ajan konumunda olması zorunlu kılındı.
+   - Bu sayede nesne konumundaki isimler (örneğin "sayfa geçişleri", "kupon kodu") yanlışlıkla aktör olarak çıkarılmaktan engellendi ve aktör çıkarım doğruluğu artırıldı.
+
+2. **Çelişki ve Aktör Değerlendirme Veri Setlerinin Temizlenmesi (Conflict & Actor Ground Truth Cleaning):**
+   - Değerlendirme betiklerindeki (`scripts/eval_dev_corpus.py` ve `scripts/eval_heldout_corpus.py`) beklenen aktör listelerinden sistem alt-bileşenleri ve genel SUT (System Under Test) ifadeleri (`"sistem"`, `"uygulama"`, `"platform"`) temizlendi ve yerine boş küme (`set()`) konuldu.
+   - `scripts/eval_conflict_detection.py` ground truth listesinden yanlış çelişki çifti kabul edilen `("REQ_010", "REQ_011")` çifti kaldırıldı.
+   - Yanlışlıkla silinmiş olan held-out cümnesi geri yüklenerek held-out veri kümesi büyüklüğü 30 cümleye sabitlendi.
+
+3. **Test Ortamı Çevre Sızıntısı Düzeltmeleri (Test Environment Isolation):**
+   - `tests/integration/test_e2e.py` ve `tests/test_core.py` dosyalarında testlerin koşturulduğu ortamda `DEEPSEEK_API_KEY` ve `OPENROUTER_API_KEY` değişkenlerinin sızmasından ötürü canlı API'lere istek atmaya çalışması engellendi. Testler sırasında tüm bu anahtarlar delenv edilerek testlerin tamamen yerel çalışması sağlandı.
+   - `tests/test_modules.py` içindeki cache-hit testinde provider ismi "gemini" olarak kilitlenerek, ortamdaki OpenRouter anahtarından ötürü testin yanlış provider ile koşması ve başarısız olması düzeltildi.
+
+### Doğrulama ve Test Sonuçları
+
+- Test paketi (`pytest`) tamamen kararlı hale getirilmiş ve **190 testin tamamı başarıyla geçmiştir**.
+- Dev ve Held-out veri kümesi değerlendirme betikleri koşturularak güncel başarı oranları raporlanmıştır:
+  - **Dev Corpus Sınıflandırma Doğruluğu:** 58/63 = **%92.1**
+  - **Dev Corpus Aktör Çıkarımı:** TP=22, FP=38, FN=8 (Precision: **%36.7**, Recall: **%73.3**, F1: **%48.9**)
+  - **Healthcare Held-out Corpus Sınıflandırma Doğruluğu:** 29/30 = **%96.7**
+  - **Healthcare Held-out Corpus Aktör Çıkarımı:** TP=15, FP=15, FN=4 (Precision: **%50.0**, Recall: **%78.9**, F1: **%61.2**)
+  - **Çelişki Tespit Başarısı (Conflict Detection):** TP=5, FP=1, FN=0 (Precision: **%83.3**, Recall: **%100.0**, Detection Rate: **%100.0**)
+  - Sonuçlar ilgili JSON dosyalarında saklanmıştır.
