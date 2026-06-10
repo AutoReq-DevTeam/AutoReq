@@ -65,7 +65,7 @@ Tek geçişten 4 artefakt: ISO 29148 SRS (PDF/DOCX) · User Story · Gherkin · 
 | Aktör — Precision | %36.7 |
 | Aktör — Recall | %73.3 |
 | Aktör — F1 Skoru | %48.9 |
-| FR/NFR Sınıflandırma Doğruluğu | %93.7 |
+| FR/NFR Sınıflandırma Doğruluğu | %92.1 |
 | Çelişki Tespiti (Recall) | %100.0 (TP: 5, FN: 0) |
 | Çelişki Tespiti Kesinlik (Precision) | %83.3 (FP: 1) |
 | Yanlış Pozitif Oranı (FPR) | %16.7 |
@@ -114,7 +114,7 @@ Gereksinim hataları, yazılım projelerinin başarısızlığında başlıca ne
 
 Sistem üç katmandan oluşur: Stanza tabanlı önişleme (cümle bölme, Türkçe küçük harfe dönüştürme, KVKK maskeleme, aktör/iş nesnesi çıkarımı, FR/NFR etiketleme); Gemini 2.5 Flash üzerinden paralel çalışan üç LLM modülü (ConflictDetector, GapAnalyzer, RequirementImprover); ve **ISO/IEC/IEEE 29148** uyumlu SRS, kullanıcı hikâyeleri, Gherkin BDD senaryoları ile ürün backlog'unu tek geçişte üreten üretim katmanı.
 
-Beş alanı kapsayan 63 cümlelik geliştirme korpusunda **%93.7 FR/NFR doğruluğu**, aktör çıkarımında **%36.7 precision / %73.3 recall** ve **%100 çelişki tespiti** (%83.3 kesinlik, TP=5, FP=1) elde edilmiştir. Ayrı tutulan 30 cümlelik sağlık korpusunda FR/NFR doğruluğu **%96.7**'ye, aktör duyarlılığı ise **%78.9**'a (%50.0 kesinlik) ulaşmıştır.
+Beş alanı kapsayan 63 cümlelik geliştirme korpusunda **%92.1 FR/NFR doğruluğu**, aktör çıkarımında **%36.7 precision / %73.3 recall** ve **%100 çelişki tespiti** (%83.3 kesinlik, TP=5, FP=1) elde edilmiştir. Ayrı tutulan 30 cümlelik sağlık korpusunda FR/NFR doğruluğu **%96.7**'ye, aktör duyarlılığı ise **%78.9**'a (%50.0 kesinlik) ulaşmıştır.
 
 ---
 

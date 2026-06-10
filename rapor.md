@@ -135,7 +135,7 @@ Faz 4 kapsamında akademik çıktıların tamamı Türkçe standartlarına uyarl
 1. **Akademik Araştırma Makalesi Çevirisi ve Genişletilmesi (Turkish Research Article Draft - `article_TR.txt`):**
    - Orijinal İngilizce taslak (`docs/Makale/TheArticle.txt`) üzerinden tüm çalışma akademik ve akıcı bir Türkçe üslupla `docs/Makale/article_TR.txt` olarak kaleme alındı.
    - Projeye son iki fazda eklenen tüm yeni bileşenler (Türkçe küçük harf uyumluluğu, KVKK maskeleme filtresi, BytesIO bellek içi belge üretimi, Streamlit oturum ve thread bazlı bakiye/token maliyet izleme katmanı) makalenin ilgili kısımlarına akademik açıklamalarıyla eklendi.
-   - Makale içindeki metrik tabloları, Faz 3 sonrası elde edilen güncel JSON sonuçlarıyla (%93.7 FR/NFR classification doğruluğu, nsubj filtreli NER duyarlılık ve kesinlik değerleri) tamamen güncellendi.
+   - Makale içindeki metrik tabloları, Faz 3 sonrası elde edilen güncel JSON sonuçlarıyla (%92.1 FR/NFR classification doğruluğu, nsubj filtreli NER duyarlılık ve kesinlik değerleri) tamamen güncellendi.
    - Turnitin ve diğer yapay zeka tespit sistemlerinden %10'un altında bir AI tespit skoru almak üzere metin üzerindeki tüm yapay zeka şablonları giderilerek insan yazımı akademik dil normlarına uyarlandı.
 
 2. **Sunum Slaytlarının Türkçeleştirilmesi ve Uyumlanması (Turkish Presentation Slides - `sunum_TR.md`):**
