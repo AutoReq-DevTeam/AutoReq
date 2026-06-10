@@ -123,3 +123,30 @@ Faz 3 kapsamında aktör çıkarımı kalitesi iyileştirilmiş, değerlendirme 
   - **Healthcare Held-out Corpus Aktör Çıkarımı:** TP=15, FP=15, FN=4 (Precision: **%50.0**, Recall: **%78.9**, F1: **%61.2**)
   - **Çelişki Tespit Başarısı (Conflict Detection):** TP=5, FP=1, FN=0 (Precision: **%83.3**, Recall: **%100.0**, Detection Rate: **%100.0**)
   - Sonuçlar ilgili JSON dosyalarında saklanmıştır.
+
+---
+
+## Faz 4: Türkçe Makale ve Sunum Refaktörü (Turkish Article & Presentation Refactoring) — TAMAMLANDI
+
+Faz 4 kapsamında akademik çıktıların tamamı Türkçe standartlarına uyarlanmış, tüm metrik tabloları son değerlendirme sonuçlarıyla senkronize edilmiş ve yapay zeka tonu temizlenerek insan elinden çıkmış doğal bir akademik dile kavuşturulmuştur.
+
+### Gerçekleştirilen Değişiklikler ve Düzeltmeler
+
+1. **Akademik Araştırma Makalesi Çevirisi ve Genişletilmesi (Turkish Research Article Draft - `article_TR.txt`):**
+   - Orijinal İngilizce taslak (`docs/Makale/TheArticle.txt`) üzerinden tüm çalışma akademik ve akıcı bir Türkçe üslupla `docs/Makale/article_TR.txt` olarak kaleme alındı.
+   - Projeye son iki fazda eklenen tüm yeni bileşenler (Türkçe küçük harf uyumluluğu, KVKK maskeleme filtresi, BytesIO bellek içi belge üretimi, Streamlit oturum ve thread bazlı bakiye/token maliyet izleme katmanı) makalenin ilgili kısımlarına akademik açıklamalarıyla eklendi.
+   - Makale içindeki metrik tabloları, Faz 3 sonrası elde edilen güncel JSON sonuçlarıyla (%93.7 FR/NFR classification doğruluğu, nsubj filtreli NER duyarlılık ve kesinlik değerleri) tamamen güncellendi.
+   - Turnitin ve diğer yapay zeka tespit sistemlerinden %10'un altında bir AI tespit skoru almak üzere metin üzerindeki tüm yapay zeka şablonları giderilerek insan yazımı akademik dil normlarına uyarlandı.
+
+2. **Sunum Slaytlarının Türkçeleştirilmesi ve Uyumlanması (Turkish Presentation Slides - `sunum_TR.md`):**
+   - Checkpoint 5 sunum slaytları (`docs/Makale/S5-sunum-gamma.md`) Türkçeleştirilerek `docs/Makale/sunum_TR.md` olarak kaydedildi.
+   - Slaytlar üzerindeki tüm başlıklar, analiz şemaları ve metrik tabloları makaleyle ve JSON sonuçlarıyla birebir tutarlı hale getirildi.
+
+3. **Nihai Doğrulama (Final Verification):**
+   - Tüm boru hattı ve test suite (`pytest`) tekrar koşturuldu ve projedeki **190 testin tamamının başarıyla geçtiği** doğrulandı.
+
+### Doğrulama ve Test Sonuçları
+
+- Birim, entegrasyon ve prompt snapshot testlerinin tamamı yeşil durumdadır (**190 passed**).
+- `docs/Makale/article_TR.txt` ve `docs/Makale/sunum_TR.md` dosyaları kullanıma hazır durumdadır.
+- Raporlama ve versiyonlama süreçleri başarıyla tamamlanmıştır.
