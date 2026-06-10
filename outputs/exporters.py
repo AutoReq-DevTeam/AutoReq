@@ -208,12 +208,12 @@ def export_stories_docx(
         # Story başlığı
         heading = doc.add_heading(level=2)
         heading.add_run(f"[{req_id}] ").bold = True
-        heading.add_run(f"As a {role}, I want {goal} so that {benefit}.")
+        heading.add_run(f"Bir {role} olarak, {benefit} amacıyla {goal} istiyorum.")
 
         # Acceptance Criteria bölümü
         if acceptance_criteria:
             ac_label = doc.add_paragraph()
-            ac_run = ac_label.add_run("Acceptance Criteria:")
+            ac_run = ac_label.add_run("Kabul Kriterleri:")
             ac_run.bold = True
             for criterion in acceptance_criteria:
                 doc.add_paragraph(criterion, style="List Bullet")

@@ -110,12 +110,37 @@ def _is_retryable_gemini_error(exc: BaseException) -> bool:
 
 
 _usage_lock = threading.Lock()
-_pending_tokens: int = 0
-_pending_cost: float = 0.0
+_session_usages: dict[str, dict[str, Any]] = {}
+_thread_local = threading.local()
+
+
+def set_thread_session_id(session_id: str) -> None:
+    """Aktif iş parçacığı için Streamlit session ID'sini kaydeder."""
+    _thread_local.session_id = session_id
+
+
+def get_thread_session_id() -> str | None:
+    """İş parçacığı için kayıtlı session ID'yi döner."""
+    return getattr(_thread_local, "session_id", None)
+
+
+def _get_current_session_id() -> str:
+    """Mevcut Streamlit session ID'sini bulur, bulamazsa varsayılan döndürür."""
+    tid = get_thread_session_id()
+    if tid:
+        return tid
+    try:
+        from streamlit.runtime.scriptrunner import get_script_run_ctx
+        ctx = get_script_run_ctx()
+        if ctx and ctx.session_id:
+            return ctx.session_id
+    except Exception:
+        pass
+    return "default"
 
 
 def _accumulate_streamlit_session_usage(usage_metadata: Dict[str, Any]) -> None:
-    """Token ve maliyet verilerini thread-safe sayaca ekler.
+    """Token ve maliyet verilerini oturum bazlı thread-safe sayaca ekler.
 
     Worker thread'lerden güvenle çağrılabilir. Streamlit session_state'e
     doğrudan yazmaz; flush_usage_to_session() ana thread'den çağrılmalıdır.
@@ -123,31 +148,34 @@ def _accumulate_streamlit_session_usage(usage_metadata: Dict[str, Any]) -> None:
     Args:
         usage_metadata: input_tokens, output_tokens, estimated_cost_usd içeren sözlük.
     """
-    global _pending_tokens, _pending_cost
     inp = int(usage_metadata.get("input_tokens", 0) or 0)
     out = int(usage_metadata.get("output_tokens", 0) or 0)
     cost = float(usage_metadata.get("estimated_cost_usd", 0.0) or 0.0)
+    session_id = _get_current_session_id()
     with _usage_lock:
-        _pending_tokens += inp + out
-        _pending_cost += cost
+        if session_id not in _session_usages:
+            _session_usages[session_id] = {"tokens": 0, "cost": 0.0}
+        _session_usages[session_id]["tokens"] += inp + out
+        _session_usages[session_id]["cost"] += cost
 
 
 def flush_usage_to_session() -> None:
-    """Biriken token/maliyet değerlerini Streamlit session_state'e aktarır.
+    """Biriken token/maliyet değerlerini ilgili oturumun Streamlit session_state'ine aktarır.
 
     Ana thread'den (pipeline tamamlandıktan sonra) çağrılmalıdır.
     """
-    global _pending_tokens, _pending_cost
+    session_id = _get_current_session_id()
     try:
         import streamlit as st  # type: ignore[import-untyped]
     except ImportError:
         return
     try:
         with _usage_lock:
-            tokens = _pending_tokens
-            cost = _pending_cost
-            _pending_tokens = 0
-            _pending_cost = 0.0
+            usage = _session_usages.pop(session_id, None)
+        if not usage:
+            return
+        tokens = usage["tokens"]
+        cost = usage["cost"]
         if "total_tokens_used" not in st.session_state:
             st.session_state.total_tokens_used = 0
         if "total_cost_usd" not in st.session_state:
@@ -395,4 +423,4 @@ class LLMClient:
         raise LLMClientError(f"Gemini çağrısı başarısız: {last_exc}") from last_exc
 
 
-__all__ = ["LLMClient", "LLMClientError", "LLMResponse"]
+__all__ = ["LLMClient", "LLMClientError", "LLMResponse", "set_thread_session_id", "get_thread_session_id"]

@@ -27,7 +27,7 @@ Skorlama formülü:
     conflict_penalty : Çelişki listesinde geçen req_id'lere ×1.5 (önce çözülsün)
 
 Story points hesabı (basit heuristic):
-    score ≥ 5 → 8 puan
+    score ≥ 4 → 8 puan
     score ≥ 3 → 5 puan
     score ≥ 2 → 3 puan
     diğer     → 1 puan
@@ -112,7 +112,7 @@ def _score_to_story_points(score: float) -> int:
     Returns:
         int: Fibonacci benzeri story points tahmini (1, 3, 5, 8).
     """
-    if score >= 5.0:
+    if score >= 4.0:
         return 8
     if score >= 3.0:
         return 5

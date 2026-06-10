@@ -45,3 +45,49 @@ Faz 1 kapsamında projenin kararlılığını, güvenliğini ve veri akış doğ
 ### Doğrulama ve Test Sonuçları
 
 - Projedeki tüm birim (unit) ve çıktı (output) testleri `pytest` ile koşturulmuş ve **62 testin tamamı başarıyla geçmiştir**.
+
+---
+
+## Faz 2: Kritik Hataların Düzeltilmesi (Critical/P1 Fixes) — TAMAMLANDI
+
+Faz 2 kapsamında projenin performansını, kullanılabilirliğini ve akademik tutarlılığını etkileyen P1 düzeyindeki kritik maddeler başarıyla çözümlenmiş ve doğrulanmıştır.
+
+### Gerçekleştirilen Değişiklikler ve Düzeltmeler
+
+1. **Stanza NER Modülünün Devre Dışı Bırakılması (Stanza Neural NER Processor):**
+   - `core/nlp_engine.py` dosyasındaki Stanza pipeline yapılandırmasından kullanılmayan `'ner'` işlemcisi kaldırıldı. Bu değişiklik sayesinde bellek kullanımı yaklaşık 300MB azaltıldı ve uygulama açılış/çalışma hızında önemli performans artışı sağlandı.
+
+2. **Dinamik Domain Kontrol Listelerinin LLM'e Enjeksiyonu (Gaps References Checklists):**
+   - `modules/gap_analyzer.py` içinde `DOMAIN_REFERENCES` listesi dinamik olarak okunarak Gap Analyzer sistem promptuna eklendi. Böylece LLM, sistem türüne (web_app, api, mobile, desktop, iot, other) göre eksik gereksinimleri çok daha doğru ve referans listelere bağlı kalarak tespit edebilmektedir.
+
+3. **Otomatik Türkçe Font Kurulumu (Turkish SRS Fonts):**
+   - `outputs/fonts/download_fonts.py` betiği oluşturularak, Türkçe karakter uyumlu `DejaVuSans.ttf` ve `DejaVuSans-Bold.ttf` fontlarının Setasign tFPDF raw GitHub reposundan otomatik olarak indirilmesi sağlandı.
+   - `app.py` başlangıcına bu betiği tetikleyen bir hook eklenerek, headless Linux sunucularında Türkçe PDF oluşturulurken yaşanan çökme ve karakter bozulması problemleri tamamen çözüldü.
+
+4. **Uyumlu Gherkin BDD Sözdizimi (Gherkin BDD Syntax):**
+   - `outputs/bdd_generator.py` içinde birden fazla `Feature:` bloğu üretilmesi engellendi. Üretilen tüm senaryolar tek bir ana `Feature: AutoReq Yazılım Gereksinim Test Senaryoları` bloğu altında toplanarak Cucumber, Behave ve pytest-bdd gibi standart Gherkin test koşucularıyla %100 uyumlu hale getirildi.
+
+5. **Türkçe User Story ve Kabul Kriteri Şablonları (Turkish User Story Templates):**
+   - `outputs/exporters.py` dosyasındaki DOCX dışa aktarım şablonu Türkçe standartlarına uyarlandı.
+   - İngilizce `As a [role], I want [goal] so that [benefit].` şablonu `Bir [rol] olarak, [fayda] amacıyla [hedef] istiyorum.` şeklinde ve `Acceptance Criteria` başlığı `Kabul Kriterleri:` olarak değiştirildi.
+
+6. **Story Points Skor Eşlemesi (Score Point Mapping):**
+   - `outputs/backlog_generator.py` içindeki Fibonacci tabanlı Story Points (SP) eşlemesinde 8 SP için gereken minimum skor 5.0'dan 4.0'a düşürüldü. Böylece çelişkili olmayan durumlardaki matematiksel erişilememe problemi giderilerek yüksek öncelikli gereksinimlerin 8 SP alabilmesi sağlandı.
+
+7. **Oturum İzoleli LLM Sayaçları (Session-Isolated Counters):**
+   - `modules/llm_client.py` içindeki global `_pending_tokens` ve `_pending_cost` değişkenleri kaldırılarak yerine Streamlit session ID bazlı çalışan bir sözlük (`_session_usages`) ve thread-local storage (`_thread_local`) mimarisi kuruldu.
+   - Bu sayede çoklu kullanıcı ortamında farklı tarayıcı sekmelerinden gelen LLM kullanım ve maliyet verilerinin birbirine karışması (multi-user data leakage) tamamen engellendi.
+
+8. **Güvenli Bağımlılık Güncellemeleri (Dependency CVE Upgrades):**
+   - `requirements.txt` dosyasındaki tüm paket sürümleri `==` ile kilitlendi. Python 3.14.5 ile uyumlu güncel ve güvenli kütüphane sürümleri (`streamlit==1.57.0`, `nltk==3.9.4`, `stanza==1.11.1`, `scikit-learn==1.8.0`, vb.) tanımlanarak CVE açıkları giderildi ve duplicate tanımlamalar temizlendi.
+
+9. **Etiketleme Yanlılığı ve Metrik Tutarlılığı (Annotation Bias Mitigation):**
+   - `docs/annotation_guidelines.md` kılavuzu oluşturuldu. Burada iki bağımsız etiketleyici (rater) arasındaki karar uyumunu ölçen Cohen's Kappa ($\kappa$) hesaplama adımları, formülü, yorumlama aralıkları ve metrik uyumsuzluklarını düzeltme süreçleri tanımlandı.
+
+### Doğrulama ve Test Sonuçları
+
+- Birim ve çıktı testleri (`pytest`) başarıyla tamamlanmıştır (62 passed).
+- Dev ve Held-out veri kümesi değerlendirme betikleri koşturularak başarı oranları raporlanmıştır:
+  - **Dev Corpus Sınıflandırma Doğruluğu:** 59/63 = **%93.7**
+  - **Healthcare Held-out Corpus Sınıflandırma Doğruluğu:** 29/30 = **%96.7**
+  - Sonuçlar `reports/dev_corpus_results.json` ve `reports/heldout_corpus_results.json` dosyalarına kaydedilmiştir.

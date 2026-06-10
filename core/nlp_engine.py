@@ -40,7 +40,7 @@ def get_shared_stanza_pipeline() -> stanza.Pipeline:
         _log.info("Stanza Türkçe pipeline yükleniyor (tek seferlik)...")
         _shared_pipeline = stanza.Pipeline(
             lang="tr",
-            processors="tokenize,mwt,pos,lemma,depparse,ner",
+            processors="tokenize,mwt,pos,lemma,depparse",
             use_gpu=False,
             verbose=False,
         )

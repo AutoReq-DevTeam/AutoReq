@@ -15,7 +15,7 @@ from core.priority_detector import PriorityDetector
 from modules.conflict_detector import ConflictDetector
 from modules.gap_analyzer import GapAnalyzer
 from modules.improver import RequirementImprover
-from modules.llm_client import LLMClientError, flush_usage_to_session
+from modules.llm_client import LLMClientError, flush_usage_to_session, set_thread_session_id
 
 from outputs.srs_generator import generate_srs
 from outputs.story_generator import StoryGenerator
@@ -40,6 +40,10 @@ def _is_llm_available() -> bool:
     return bool(os.getenv("GEMINI_API_KEY") or os.getenv("DEEPSEEK_API_KEY") or os.getenv("OPENROUTER_API_KEY"))
 
 def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
+    from streamlit.runtime.scriptrunner import get_script_run_ctx
+    ctx = get_script_run_ctx()
+    session_id = ctx.session_id if ctx else None
+
     if status_ui: status_ui.update(label="Stanza ile ön işleme yapılıyor...")
     parsed_doc = nlp_engines["preprocessor"].process(raw_text)
 
@@ -82,9 +86,13 @@ def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
         if status_ui: status_ui.update(label="LLM ile çelişki ve eksiklik analizi yapılıyor...")
 
         def _run_conflicts():
+            if session_id:
+                set_thread_session_id(session_id)
             return ConflictDetector().analyze(parsed_doc)
 
         def _run_gaps():
+            if session_id:
+                set_thread_session_id(session_id)
             return GapAnalyzer().analyze(parsed_doc)
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:
@@ -127,6 +135,8 @@ def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
     if status_ui: status_ui.update(label="Paralel belge üretimi yapılıyor...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
         def gen_srs():
+            if session_id:
+                set_thread_session_id(session_id)
             try:
                 pdf_buf = generate_srs(report, in_memory=True)
                 return pdf_buf.getvalue(), None
@@ -139,6 +149,8 @@ def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
                     return None, f"SRS Belgesi Üretimi: {e2}"
 
         def gen_backlog():
+            if session_id:
+                set_thread_session_id(session_id)
             try:
                 backlog = BacklogGenerator().generate(report)
                 xlsx_buf = export_backlog_xlsx(backlog, in_memory=True)
@@ -153,6 +165,8 @@ def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
                     return None, f"Backlog Üretimi: {e2}"
 
         def gen_stories():
+            if session_id:
+                set_thread_session_id(session_id)
             try:
                 if _is_llm_available():
                     stories = StoryGenerator().generate(report)
@@ -170,6 +184,8 @@ def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
                     return None, f"Kullanıcı Hikayesi Üretimi: {e2}"
 
         def gen_bdd():
+            if session_id:
+                set_thread_session_id(session_id)
             try:
                 if _is_llm_available():
                     bdd = BDDGenerator()
@@ -189,6 +205,8 @@ def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
                     return None, f"BDD Senaryosu Üretimi: {e2}"
 
         def gen_json():
+            if session_id:
+                set_thread_session_id(session_id)
             try:
                 json_buf = export_report_json(report, in_memory=True)
                 return json_buf.getvalue(), None

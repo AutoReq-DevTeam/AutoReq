@@ -183,10 +183,13 @@ class GapAnalyzer:
             _log.info("Gap analizi atlandı: gereksinim listesi boş.")
             return []
 
+        from .gap_prompts import DOMAIN_REFERENCES
         n = len(doc.requirements)
         block = _format_requirements_block(doc)
         user_prompt = build_gap_analysis_user_prompt(block, n, domain_hint=domain_hint)
-        system_prompt = build_gap_analysis_system_prompt()
+        
+        refs_str = "\n\n".join(DOMAIN_REFERENCES.values())
+        system_prompt = f"{build_gap_analysis_system_prompt()}\n\n## Standart Kontrol Listeleri:\n{refs_str}"
         client = self._get_client()
 
         try:

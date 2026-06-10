@@ -1,46 +1,42 @@
 # ============================================================
-#  AutoReq - Python Bağımlılıkları
+#  AutoReq - Python Bağımlılıkları (Pinned for Python 3.14)
 #  Kurulum: pip install -r requirements.txt
 # ============================================================
 
 # --- Web Arayüzü ---
-streamlit>=1.32.0
+streamlit==1.57.0
 
 # --- NLP Kütüphaneleri ---
-stanza>=1.8.0
-nltk>=3.8.1
-# Stanza Türkçe modeli için:
-# python -c "import stanza; stanza.download('tr')"
+stanza==1.11.1
+nltk==3.9.4
 
 # --- Makine Öğrenmesi (Sınıflandırma) ---
-scikit-learn>=1.4.0
-numpy>=1.26.0
-pandas>=2.2.0
+scikit-learn==1.8.0
+numpy==2.4.4
+pandas==3.0.2
 
 # --- PDF Üretimi ---
-fpdf2>=2.7.9
-reportlab>=4.1.0
+fpdf2==2.8.7
+reportlab==4.5.0
 
 # --- Veri Serileştirme & Export ---
-openpyxl>=3.1.2       # Excel export
-python-docx>=1.1.0    # Word export
+openpyxl==3.1.5
+python-docx==1.2.0
 
 # --- Zeka Katmanı (LLM / Generative AI) ---
-google-genai>=1.0.0
-openai>=1.12.0
-langchain>=0.1.0
-langchain-openai>=0.0.5
-langchain-community>=0.0.20
+google-genai==1.75.0
+openai==2.34.0
+langchain==1.2.17
+langchain-openai==1.2.1
+langchain-community==0.4.1
 
 # --- Yardımcı Kütüphaneler ---
-python-dotenv>=1.0.0  # Ortam değişkenleri
-loguru>=0.7.2         # Gelişmiş loglama
-pydantic>=2.6.0       # Veri doğrulama
+python-dotenv==1.2.2
+loguru==0.7.3
+pydantic==2.13.3
 
 # --- Test ---
-pytest>=8.0.0
-pytest-cov>=4.1.0
-pypdf>=4.0.0
-syrupy>=4.6.0  # Issue #22: prompt regression snapshot tests
-
-openai>=1.0.0
+pytest==9.0.3
+pytest-cov==7.1.0
+pypdf==6.10.2
+syrupy==5.1.0

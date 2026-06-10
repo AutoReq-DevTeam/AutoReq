@@ -8,6 +8,10 @@ import streamlit.components.v1 as components
 from dotenv import load_dotenv
 from ui.state import init_state
 from ui.i18n import t, lang_selector_sidebar
+from outputs.fonts.download_fonts import download_fonts
+
+# Ensure Turkish DejaVu fonts are downloaded at startup
+download_fonts()
 
 load_dotenv()
 

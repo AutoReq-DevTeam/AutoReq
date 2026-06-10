@@ -86,7 +86,7 @@ def _build_gherkin_block(feature_title: str, scenario: dict, req_id: str) -> str
     when_steps = scenario.get("when") or []
     then_steps = scenario.get("then") or []
 
-    block = f"Feature: {feature_title}  # {req_id}\n\n"
+    block = f"  # {req_id} - Feature: {feature_title}\n"
     block += f"  Scenario: {title}\n"
     block += _steps_to_gherkin_lines("Given", given_steps)
     block += _steps_to_gherkin_lines("When", when_steps)
@@ -105,14 +105,14 @@ def _make_fallback_gherkin(req: Requirement) -> List[str]:
     """
     feature = f"Gereksinim: {req.text[:50].strip()}"
     happy = (
-        f"Feature: {feature}  # {req.id}\n\n"
+        f"  # {req.id} - Feature: {feature}\n"
         f"  Scenario: Başarılı akış (fallback)\n"
         f"  Given Sistem hazır durumda\n"
         f"  When Kullanıcı işlemi gerçekleştirir\n"
         f"  Then İşlem başarıyla tamamlanmalı\n"
     )
     negative = (
-        f"Feature: {feature}  # {req.id}\n\n"
+        f"  # {req.id} - Feature: {feature}\n"
         f"  Scenario: Olumsuz akış (fallback)\n"
         f"  Given Sistem hazır durumda\n"
         f"  When Kullanıcı geçersiz veri girer\n"
@@ -335,6 +335,9 @@ class BDDGenerator:
             scenarios = []
             for req in functional_reqs:
                 scenarios.extend(_make_fallback_gherkin(req))
+
+        if scenarios:
+            scenarios[0] = "Feature: AutoReq Yazılım Gereksinim Test Senaryoları\n\n" + scenarios[0]
 
         _log.info("BDD üretimi tamamlandı | toplam_blok={}", len(scenarios))
         return scenarios
