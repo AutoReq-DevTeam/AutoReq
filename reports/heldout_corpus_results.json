@@ -4,5 +4,5 @@
   "actor_precision": 51.4,
   "actor_recall": 90.5,
   "actor_f1": 65.5,
-  "classification_accuracy": 96.7
+  "classification_accuracy": 100.0
 }

@@ -534,7 +534,8 @@ def generate_srs(
     report: Optional["AnalysisReport"] = None,
     output_path: Optional[Path] = None,
     draft_watermark: bool = False,
-) -> Path:
+    in_memory: bool = False,
+) -> Path | io.BytesIO:
     """AnalysisReport'tan ISO/IEC/IEEE 29148 uyumlu SRS PDF üretir.
 
     Geriye dönük uyumluluk için report=None çağrısı da kabul edilir;
@@ -546,19 +547,23 @@ def generate_srs(
         output_path: Çıktı PDF yolu. None ise outputs/generated/srs_{timestamp}.pdf
                      konumuna yazılır.
         draft_watermark: True ise her sayfaya 'DRAFT — AutoReq Generated' filigranı eklenir.
+        in_memory: True ise dosyayı disk yerine bellekte (io.BytesIO) üretir.
 
     Returns:
-        Path: Üretilen PDF dosyasının tam yolu.
+        Path | io.BytesIO: Üretilen PDF dosyasının tam yolu veya bellek tamponu.
     """
-    # outputs/generated/ klasörünü oluştur
-    generated_dir = Path(__file__).parent / "generated"
-    generated_dir.mkdir(parents=True, exist_ok=True)
+    import io
 
-    if output_path is None:
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_path = generated_dir / f"srs_{timestamp}.pdf"
+    # outputs/generated/ klasörünü oluştur (in_memory değilse gerekebilir)
+    if not in_memory:
+        generated_dir = Path(__file__).parent / "generated"
+        generated_dir.mkdir(parents=True, exist_ok=True)
 
-    output_path = Path(output_path)
+        if output_path is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            output_path = generated_dir / f"srs_{timestamp}.pdf"
+
+        output_path = Path(output_path)
 
     # Font çözümü — bundled fontlar öncelikli (Issue #23)
     bundled_regular = _resolve_font(_BUNDLED_FONT_CANDIDATES)
@@ -625,6 +630,13 @@ def generate_srs(
             pdf.add_section_title(title)
             pdf.add_body_text("Bu bölüm otomatik analiz sonuçlarıyla doldurulacaktır.")
             pdf.ln(3)
+
+    if in_memory:
+        pdf_bytes = pdf.output()
+        buf = io.BytesIO(pdf_bytes)
+        buf.seek(0)
+        _log.info("SRS PDF bellekte (BytesIO) oluşturuldu.")
+        return buf
 
     pdf.output(str(output_path))
     _log.info("SRS PDF oluşturuldu | yol={}", output_path)

@@ -12,7 +12,7 @@ Cümle içerisinden aktörleri ve nesneleri tespit eder. 3 katmanlı mimari:
 from modules.logging_utils import get_module_logger
 
 from .models import Requirement
-from .nlp_engine import get_shared_stanza_pipeline
+from .nlp_engine import get_shared_stanza_pipeline, turkish_lower
 
 _log = get_module_logger("ner")
 
@@ -117,7 +117,7 @@ class EntityRecognizer:
         İ → i dönüşümünde Python'un eklediği U+0307 combining-dot'u temizler
         böylece bigram ve prefix eşleşmeleri doğru çalışır.
         """
-        return text.lower().replace("̇", "")
+        return turkish_lower(text)
 
     @staticmethod
     def _strip_possessive(text_word: str) -> str:
@@ -356,11 +356,11 @@ class EntityRecognizer:
                         noun_run.append(word.text)
                     else:
                         if 2 <= len(noun_run) <= 3:
-                            found_objects.add(" ".join(noun_run).lower())
+                            found_objects.add(turkish_lower(" ".join(noun_run)))
                         noun_run = []
 
                 if 2 <= len(noun_run) <= 3:
-                    found_objects.add(" ".join(noun_run).lower())
+                    found_objects.add(turkish_lower(" ".join(noun_run)))
 
                 # === Katman 1.5: Dependency parsing tabanlı özne tespiti ===
                 human_k1 = {a for a in layer1_sent if a not in self.generic_actors}

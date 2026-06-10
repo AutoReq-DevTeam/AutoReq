@@ -45,7 +45,8 @@ _GENERATED_DIR = Path(__file__).parent / "generated"
 def export_backlog_xlsx(
     backlog: List[dict],
     path: Optional[Path] = None,
-) -> Path:
+    in_memory: bool = False,
+) -> Path | io.BytesIO:
     """Product Backlog'u Excel (.xlsx) formatında dışa aktarır.
 
     Her backlog öğesi için req_id, title, priority_score, story_points,
@@ -55,9 +56,10 @@ def export_backlog_xlsx(
         backlog: BacklogGenerator.generate() çıktısı — list[dict].
         path: Yazılacak .xlsx dosyasının yolu. None ise
               outputs/generated/backlog.xlsx kullanılır.
+        in_memory: True ise dosyayı disk yerine bellekte (io.BytesIO) üretir.
 
     Returns:
-        Path: Yazılan .xlsx dosyasının mutlak yolu.
+        Path | io.BytesIO: Yazılan .xlsx dosyasının mutlak yolu veya bellek tamponu.
 
     Raises:
         ImportError: openpyxl paketi kurulu değilse.
@@ -69,11 +71,14 @@ def export_backlog_xlsx(
     except ImportError as exc:
         raise ImportError("openpyxl paketi gerekli: pip install openpyxl") from exc
 
-    if path is None:
-        _GENERATED_DIR.mkdir(parents=True, exist_ok=True)
-        path = _GENERATED_DIR / "backlog.xlsx"
-    else:
-        path.parent.mkdir(parents=True, exist_ok=True)
+    import io
+
+    if not in_memory:
+        if path is None:
+            _GENERATED_DIR.mkdir(parents=True, exist_ok=True)
+            path = _GENERATED_DIR / "backlog.xlsx"
+        else:
+            path.parent.mkdir(parents=True, exist_ok=True)
 
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -125,6 +130,13 @@ def export_backlog_xlsx(
     # Başlık satırı yüksekliği
     ws.row_dimensions[1].height = 20
 
+    if in_memory:
+        buf = io.BytesIO()
+        wb.save(buf)
+        buf.seek(0)
+        _log.info("Backlog Excel dosyası bellekte (BytesIO) oluşturuldu.")
+        return buf
+
     wb.save(str(path))
     _log.info(
         "Backlog Excel dosyası yazıldı | path={} öğe_sayısı={}", path, len(backlog)
@@ -140,7 +152,8 @@ def export_backlog_xlsx(
 def export_stories_docx(
     stories: List[dict],
     path: Optional[Path] = None,
-) -> Path:
+    in_memory: bool = False,
+) -> Path | io.BytesIO:
     """User Stories listesini DOCX formatında dışa aktarır.
 
     Her story için resmi şablon: başlık + 'As a [role], I want [goal] so
@@ -150,9 +163,10 @@ def export_stories_docx(
         stories: StoryGenerator.generate() çıktısı — list[dict].
         path: Yazılacak .docx dosyasının yolu. None ise
               outputs/generated/user_stories.docx kullanılır.
+        in_memory: True ise dosyayı disk yerine bellekte (io.BytesIO) üretir.
 
     Returns:
-        Path: Yazılan .docx dosyasının mutlak yolu.
+        Path | io.BytesIO: Yazılan .docx dosyasının mutlak yolu veya bellek tamponu.
 
     Raises:
         ImportError: python-docx paketi kurulu değilse.
@@ -165,11 +179,14 @@ def export_stories_docx(
             "python-docx paketi gerekli: pip install python-docx"
         ) from exc
 
-    if path is None:
-        _GENERATED_DIR.mkdir(parents=True, exist_ok=True)
-        path = _GENERATED_DIR / "user_stories.docx"
-    else:
-        path.parent.mkdir(parents=True, exist_ok=True)
+    import io
+
+    if not in_memory:
+        if path is None:
+            _GENERATED_DIR.mkdir(parents=True, exist_ok=True)
+            path = _GENERATED_DIR / "user_stories.docx"
+        else:
+            path.parent.mkdir(parents=True, exist_ok=True)
 
     doc = Document()
 
@@ -203,6 +220,13 @@ def export_stories_docx(
 
         doc.add_paragraph("")
 
+    if in_memory:
+        buf = io.BytesIO()
+        doc.save(buf)
+        buf.seek(0)
+        _log.info("User Stories DOCX dosyası bellekte (BytesIO) oluşturuldu.")
+        return buf
+
     doc.save(str(path))
     _log.info(
         "User Stories DOCX dosyası yazıldı | path={} stories={}",
@@ -220,7 +244,8 @@ def export_stories_docx(
 def export_report_json(
     report: AnalysisReport,
     path: Optional[Path] = None,
-) -> Path:
+    in_memory: bool = False,
+) -> Path | io.BytesIO:
     """Tam AnalysisReport'u JSON formatında dışa aktarır.
 
     Pydantic model_dump_json() kullanılarak tip-güvenli serileştirme yapılır.
@@ -230,18 +255,28 @@ def export_report_json(
         report: Serileştirilecek AnalysisReport nesnesi.
         path: Yazılacak .json dosyasının yolu. None ise
               outputs/generated/analysis_report.json kullanılır.
+        in_memory: True ise dosyayı disk yerine bellekte (io.BytesIO) üretir.
 
     Returns:
-        Path: Yazılan .json dosyasının mutlak yolu.
+        Path | io.BytesIO: Yazılan .json dosyasının mutlak yolu veya bellek tamponu.
     """
-    if path is None:
-        _GENERATED_DIR.mkdir(parents=True, exist_ok=True)
-        path = _GENERATED_DIR / "analysis_report.json"
-    else:
-        path.parent.mkdir(parents=True, exist_ok=True)
+    import io
+
+    if not in_memory:
+        if path is None:
+            _GENERATED_DIR.mkdir(parents=True, exist_ok=True)
+            path = _GENERATED_DIR / "analysis_report.json"
+        else:
+            path.parent.mkdir(parents=True, exist_ok=True)
 
     # Pydantic v2 model_dump_json (ensure_ascii=False için özel serileştirme)
     json_str = report.model_dump_json(indent=2)
+
+    if in_memory:
+        buf = io.BytesIO(json_str.encode("utf-8"))
+        buf.seek(0)
+        _log.info("AnalysisReport JSON dosyası bellekte (BytesIO) oluşturuldu.")
+        return buf
 
     # Türkçe karakterlerin bozulmaması için doğrudan UTF-8 ile yaz
     path.write_text(json_str, encoding="utf-8")

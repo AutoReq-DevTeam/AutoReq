@@ -2,6 +2,7 @@
 ui/components.py — Shared UI Components
 """
 
+import html
 import streamlit as st
 from ui.i18n import t
 
@@ -42,7 +43,7 @@ def page_header(title: str, subtitle: str = "", step: int = 1) -> None:
         st.markdown(
             f'<p style="font-family:\'Inter\',sans-serif;font-size:0.875rem;'
             f'color:var(--text-tertiary);margin-top:-0.75rem;margin-bottom:1.5rem;">'
-            f'{subtitle}</p>',
+            f'{html.escape(subtitle)}</p>',
             unsafe_allow_html=True,
         )
 
@@ -59,9 +60,9 @@ def empty_state(
     st.markdown(
         f"""
 <div class="ar-empty-state">
-    <div class="ar-empty-state-icon">{icon}</div>
-    <div class="ar-empty-state-title">{heading}</div>
-    <div class="ar-empty-state-body">{body}</div>
+    <div class="ar-empty-state-icon">{html.escape(icon)}</div>
+    <div class="ar-empty-state-title">{html.escape(heading)}</div>
+    <div class="ar-empty-state-body">{html.escape(body)}</div>
 </div>
 """,
         unsafe_allow_html=True,
@@ -81,14 +82,17 @@ def req_card(req_id: str, text: str, req_type: str) -> None:
     badge_lbl = t("badge_functional") if is_func else t("badge_nfr")
     card_mod = "" if is_func else " ar-req-card--nfr"
 
+    escaped_id = html.escape(req_id)
+    escaped_text = html.escape(text)
+
     st.markdown(
         f"""
 <div class="ar-req-card{card_mod}">
     <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.25rem;margin-bottom:0.1rem;">
         <span class="{badge_cls}">{badge_lbl}</span>
-        <span class="ar-req-id">{req_id}</span>
+        <span class="ar-req-id">{escaped_id}</span>
     </div>
-    <div class="ar-req-text">{text}</div>
+    <div class="ar-req-text">{escaped_text}</div>
 </div>
 """,
         unsafe_allow_html=True,
@@ -110,8 +114,11 @@ def conflict_card(conflict: dict, req_lookup: dict | None = None) -> None:
     }
     badge_cls, badge_lbl, card_mod = sev_map.get(severity, sev_map["MEDIUM"])
 
+    escaped_type = html.escape(conflict_type)
+    escaped_reason = html.escape(reason)
+
     req_links_html = " ".join(
-        f'<a class="ar-req-link" href="#{rid}">{rid}</a>' for rid in req_ids
+        f'<a class="ar-req-link" href="#{html.escape(rid)}">{html.escape(rid)}</a>' for rid in req_ids
     ) if req_ids else '<span style="font-size:0.78rem;color:var(--text-tertiary);font-family:\'Inter\',sans-serif;">—</span>'
 
     st.markdown(
@@ -119,7 +126,7 @@ def conflict_card(conflict: dict, req_lookup: dict | None = None) -> None:
 <div class="ar-conflict-card{card_mod}">
     <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;">
         <span class="{badge_cls}">{badge_lbl}</span>
-        <span class="ar-conflict-title">{conflict_type}</span>
+        <span class="ar-conflict-title">{escaped_type}</span>
     </div>
     <div style="margin-bottom:0.25rem;">{req_links_html}</div>
 </div>
@@ -132,10 +139,12 @@ def conflict_card(conflict: dict, req_lookup: dict | None = None) -> None:
             panes_html = '<div class="ar-conflict-detail">'
             for rid in req_ids:
                 req_text = req_lookup.get(rid, t("req_text_not_found"))
+                escaped_rid = html.escape(rid)
+                escaped_req_text = html.escape(req_text)
                 panes_html += (
                     f'<div class="ar-conflict-detail-pane">'
-                    f'<div class="ar-conflict-detail-id">{rid}</div>'
-                    f'<div class="ar-conflict-detail-text">{req_text}</div>'
+                    f'<div class="ar-conflict-detail-id">{escaped_rid}</div>'
+                    f'<div class="ar-conflict-detail-text">{escaped_req_text}</div>'
                     f'</div>'
                 )
             panes_html += "</div>"
@@ -145,7 +154,7 @@ def conflict_card(conflict: dict, req_lookup: dict | None = None) -> None:
             f"""
 <div class="ar-conflict-reason">
     <div class="ar-conflict-reason-label">{t("conflict_reason_label")}</div>
-    <div class="ar-conflict-reason-text">{reason}</div>
+    <div class="ar-conflict-reason-text">{escaped_reason}</div>
 </div>
 """,
             unsafe_allow_html=True,
@@ -169,6 +178,9 @@ def gap_card(gap: dict) -> None:
     }
     badge_cls, badge_lbl, card_mod = sev_map.get(severity, sev_map["MEDIUM"])
 
+    escaped_scenario = html.escape(scenario)
+    escaped_missing_area = html.escape(missing_area)
+
     _raw_key = f"gap_{scenario}_{missing_area}_{suggestion}"
     _stable_key = "gap_" + hashlib.md5(_raw_key.encode("utf-8")).hexdigest()[:12]
 
@@ -177,9 +189,9 @@ def gap_card(gap: dict) -> None:
 <div class="ar-gap-card{card_mod}">
     <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem;">
         <span class="{badge_cls}">{badge_lbl}</span>
-        <span class="ar-gap-title">{scenario}</span>
+        <span class="ar-gap-title">{escaped_scenario}</span>
     </div>
-    <div class="ar-gap-area">{missing_area}</div>
+    <div class="ar-gap-area">{escaped_missing_area}</div>
 </div>
 """,
         unsafe_allow_html=True,
@@ -199,6 +211,10 @@ def improvement_diff_card(improvement: dict) -> None:
     improved = improvement.get("improved", t("improved_not_found"))
     reason = improvement.get("reason", "")
 
+    escaped_original = html.escape(original)
+    escaped_improved = html.escape(improved)
+    escaped_reason = html.escape(reason)
+
     st.markdown(
         f"""
 <div class="ar-diff-wrap">
@@ -211,8 +227,8 @@ def improvement_diff_card(improvement: dict) -> None:
         </div>
     </div>
     <div class="ar-diff-body">
-        <div class="ar-diff-before">{original}</div>
-        <div class="ar-diff-after">{improved}</div>
+        <div class="ar-diff-before">{escaped_original}</div>
+        <div class="ar-diff-after">{escaped_improved}</div>
     </div>
 </div>
 """,
@@ -223,7 +239,7 @@ def improvement_diff_card(improvement: dict) -> None:
         with st.expander(t("improvement_reason_expander")):
             st.markdown(
                 f'<p style="font-family:\'Inter\',sans-serif;font-size:0.875rem;'
-                f'color:var(--text-secondary);line-height:1.7;margin:0;">{reason}</p>',
+                f'color:var(--text-secondary);line-height:1.7;margin:0;">{escaped_reason}</p>',
                 unsafe_allow_html=True,
             )
 
@@ -232,7 +248,7 @@ def improvement_diff_card(improvement: dict) -> None:
 
 def priority_badge(priority: str) -> None:
     st.markdown(
-        f'<span class="ar-badge ar-badge--low">{priority}</span>',
+        f'<span class="ar-badge ar-badge--low">{html.escape(priority)}</span>',
         unsafe_allow_html=True,
     )
 

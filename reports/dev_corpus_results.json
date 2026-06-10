@@ -4,7 +4,7 @@
   "actor_precision": 56.1,
   "actor_recall": 82.2,
   "actor_f1": 66.7,
-  "classification_accuracy": 92.1,
+  "classification_accuracy": 93.7,
   "domain_breakdown": {
     "e-ticaret": {
       "precision": 66.7,
@@ -33,7 +33,7 @@
     "mobil": {
       "precision": 20.0,
       "recall": 42.9,
-      "clf_accuracy": 80.0,
+      "clf_accuracy": 86.7,
       "sentences": 15
     }
   }

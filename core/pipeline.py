@@ -56,7 +56,28 @@ def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
 
     conflicts = []
     gaps = []
+    improvements = []
     if _is_llm_available():
+        # 1. Run improvements synchronously first so other analyzers and output generators use improved text
+        try:
+            _log.info("LLM ile gereksinim iyileştirme toplu başlatılıyor...")
+            improver = RequirementImprover()
+            results = improver.improve_batch(parsed_doc.requirements)
+            for req, res in zip(parsed_doc.requirements, results):
+                original = res.get("original", "").strip()
+                improved = res.get("improved", "").strip()
+                req.original_text = original
+                if improved and improved != original:
+                    req.text = improved
+                    improvements.append(res)
+            _log.info("Gereksinim iyileştirme tamamlandı | improvements={}", len(improvements))
+        except (LLMClientError, ValueError) as exc:
+            _log.warning("Gereksinim iyileştirme başarısız | hata={}", exc)
+            if "pipeline_warnings" not in st.session_state:
+                st.session_state["pipeline_warnings"] = []
+            st.session_state["pipeline_warnings"].append(f"Gereksinim İyileştirme: {exc}")
+
+        # 2. Run conflicts and gaps in parallel on the improved requirements
         _log.info("LLM ile çelişki ve eksiklik analizi paralel başlatılıyor...")
         if status_ui: status_ui.update(label="LLM ile çelişki ve eksiklik analizi yapılıyor...")
 
@@ -99,65 +120,111 @@ def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
         parsed_doc=parsed_doc.model_dump(),
         conflicts=conflicts,
         gaps=gaps,
-        improvements=[],
+        improvements=improvements,
     )
 
     _log.info("Paralel çıktı üretimi başlatılıyor...")
     if status_ui: status_ui.update(label="Paralel belge üretimi yapılıyor...")
-    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
         def gen_srs():
-            try: generate_srs(report)
-            except Exception as e: _log.error("SRS üretimi hatası: {}", e)
+            try:
+                pdf_buf = generate_srs(report, in_memory=True)
+                return pdf_buf.getvalue(), None
+            except Exception as e1:
+                try:
+                    generate_srs(report)
+                    return None, None
+                except Exception as e2:
+                    _log.error("SRS üretimi hatası: {}", e2)
+                    return None, f"SRS Belgesi Üretimi: {e2}"
 
         def gen_backlog():
             try:
                 backlog = BacklogGenerator().generate(report)
-                export_backlog_xlsx(backlog)
-            except Exception as e: _log.error("Backlog üretimi hatası: {}", e)
+                xlsx_buf = export_backlog_xlsx(backlog, in_memory=True)
+                return xlsx_buf.getvalue(), None
+            except Exception as e1:
+                try:
+                    backlog = BacklogGenerator().generate(report)
+                    export_backlog_xlsx(backlog)
+                    return None, None
+                except Exception as e2:
+                    _log.error("Backlog üretimi hatası: {}", e2)
+                    return None, f"Backlog Üretimi: {e2}"
 
         def gen_stories():
             try:
                 if _is_llm_available():
                     stories = StoryGenerator().generate(report)
-                    export_stories_docx(stories)
-            except Exception as e: _log.error("Story üretimi hatası: {}", e)
+                    docx_buf = export_stories_docx(stories, in_memory=True)
+                    return docx_buf.getvalue(), None
+                return None, None
+            except Exception as e1:
+                try:
+                    if _is_llm_available():
+                        stories = StoryGenerator().generate(report)
+                        export_stories_docx(stories)
+                    return None, None
+                except Exception as e2:
+                    _log.error("Story üretimi hatası: {}", e2)
+                    return None, f"Kullanıcı Hikayesi Üretimi: {e2}"
 
         def gen_bdd():
             try:
                 if _is_llm_available():
                     bdd = BDDGenerator()
                     scenarios = bdd.generate(report)
-                    bdd.write_feature_file(scenarios)
-            except Exception as e: _log.error("BDD üretimi hatası: {}", e)
+                    bdd_buf = bdd.write_feature_file(scenarios, in_memory=True)
+                    return bdd_buf.getvalue(), None
+                return None, None
+            except Exception as e1:
+                try:
+                    if _is_llm_available():
+                        bdd = BDDGenerator()
+                        scenarios = bdd.generate(report)
+                        bdd.write_feature_file(scenarios)
+                    return None, None
+                except Exception as e2:
+                    _log.error("BDD üretimi hatası: {}", e2)
+                    return None, f"BDD Senaryosu Üretimi: {e2}"
 
         def gen_json():
-            try: export_report_json(report)
-            except Exception as e: _log.error("JSON export hatası: {}", e)
-
-        def gen_improvements():
-            if not _is_llm_available():
-                return
             try:
-                _log.info("LLM ile gereksinim iyileştirme toplu başlatılıyor...")
-                improver = RequirementImprover()
-                results = improver.improve_batch(parsed_doc.requirements)
-                report.improvements = [r for r in results if r.get("improved") != r.get("original")]
-                _log.info("Gereksinim iyileştirme tamamlandı | improvements={}", len(report.improvements))
-            except (LLMClientError, ValueError) as exc:
-                _log.warning("Gereksinim iyileştirme başarısız | hata={}", exc)
-                if "pipeline_warnings" not in st.session_state:
-                    st.session_state["pipeline_warnings"] = []
-                st.session_state["pipeline_warnings"].append(f"Gereksinim İyileştirme: {exc}")
+                json_buf = export_report_json(report, in_memory=True)
+                return json_buf.getvalue(), None
+            except Exception as e1:
+                try:
+                    export_report_json(report)
+                    return None, None
+                except Exception as e2:
+                    _log.error("JSON export hatası: {}", e2)
+                    return None, f"JSON Rapor Üretimi: {e2}"
 
-        futures = [
-            executor.submit(gen_srs),
-            executor.submit(gen_backlog),
-            executor.submit(gen_stories),
-            executor.submit(gen_bdd),
-            executor.submit(gen_json),
-            executor.submit(gen_improvements),
-        ]
-        concurrent.futures.wait(futures)
+        futures = {
+            executor.submit(gen_srs): "srs_pdf",
+            executor.submit(gen_backlog): "backlog_xlsx",
+            executor.submit(gen_stories): "user_stories_docx",
+            executor.submit(gen_bdd): "scenarios_feature",
+            executor.submit(gen_json): "analysis_report_json",
+        }
+        
+        warnings_to_add = []
+        for fut in concurrent.futures.as_completed(futures):
+            key = futures[fut]
+            try:
+                val, warning = fut.result()
+                if val is not None:
+                    st.session_state[key] = val
+                if warning is not None:
+                    warnings_to_add.append(warning)
+            except Exception as e:
+                _log.error("İş parçacığı beklenmedik hata ({}): {}", key, e)
+                warnings_to_add.append(f"{key} üretimi beklenmedik hata: {e}")
+
+        if warnings_to_add:
+            if "pipeline_warnings" not in st.session_state:
+                st.session_state["pipeline_warnings"] = []
+            st.session_state["pipeline_warnings"].extend(warnings_to_add)
 
     flush_usage_to_session()
     _log.info("Paralel çıktı üretimi tamamlandı.")

@@ -46,3 +46,14 @@ def get_shared_stanza_pipeline() -> stanza.Pipeline:
         )
         _log.info("Stanza Türkçe pipeline başarıyla yüklendi.")
     return _shared_pipeline
+
+
+def turkish_lower(s: str) -> str:
+    """Türkçe uyumlu küçük harf dönüştürme.
+    İ -> i ve I -> ı dönüşümlerini doğru yapar, ardından Unicode combining-dot işaretlerini temizler.
+    """
+    if not s:
+        return s
+    translation_table = str.maketrans({"I": "ı", "İ": "i"})
+    return s.translate(translation_table).lower().replace("̇", "")
+

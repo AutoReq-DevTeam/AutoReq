@@ -49,6 +49,27 @@ class TestTextPreprocessor:
         doc = preprocessor.process(None)  # type: ignore[arg-type]
         assert len(doc.requirements) == 0
 
+    def test_kvkk_masking(self):
+        """TC Kimlik No ve isim maskeleme doğrulaması (KVKK)."""
+        from core.preprocessor import TextPreprocessor
+        preprocessor = TextPreprocessor()
+        
+        # TC Kimlik No maskeleme testi
+        doc1 = preprocessor.process("Gereksinim sahibinin TC No'su 12345678901 olmalıdır.")
+        assert "[TC_KIMLIK_NO]" in doc1.requirements[0].text
+        assert "12345678901" not in doc1.requirements[0].text
+        
+        # Ünvan ve isim maskeleme testi
+        doc2 = preprocessor.process("Sistem yöneticisi Sayın Ahmet Yılmaz sisteme giriş yapabilmelidir.")
+        assert "[KISI_ADI]" in doc2.requirements[0].text
+        assert "Ahmet Yılmaz" not in doc2.requirements[0].text
+        
+        # Kelime başında olmayan isim maskeleme testi
+        doc3 = preprocessor.process("Geliştirici Mehmet Öztürk veri tabanını güncellemeli.")
+        assert "[KISI_ADI]" in doc3.requirements[0].text
+        assert "Mehmet Öztürk" not in doc3.requirements[0].text
+
+
 
 class TestRequirementClassifier:
     def test_functional_classification(self):

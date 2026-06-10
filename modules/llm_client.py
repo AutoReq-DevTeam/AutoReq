@@ -192,6 +192,8 @@ class LLMClient:
         else:
             self.model_name = model_name or os.getenv("GEMINI_MODEL_NAME", "gemini-2.5-flash")
             self.api_key = api_key or os.getenv("GEMINI_API_KEY")
+            if self.model_name and "/" in self.model_name:
+                self.model_name = self.model_name.split("/")[-1]
 
         self.max_output_tokens = max_output_tokens
         self.temperature = temperature

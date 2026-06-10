@@ -101,7 +101,7 @@ def _format_requirements_block(doc: ParsedDocument) -> str:
         return "(Bu belgede ayrıştırılmış gereksinim yok.)"
     lines: List[str] = []
     for req in doc.requirements:
-        lines.append(f"- [{req.id}] ({req.req_type}) {req.text.strip()}")
+        lines.append(f"- [{req.id}] ({req.req_type}) <requirement_text>{req.text.strip()}</requirement_text>")
     return "\n".join(lines)
 
 

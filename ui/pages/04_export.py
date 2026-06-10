@@ -70,8 +70,56 @@ def _file_meta(path: Path) -> dict:
     return {"size": size_str, "date": mtime}
 
 
-def _export_card(label: str, icon: str, path: Path | None, filename: str, mime: str, missing_msg: str) -> None:
-    if path and path.exists():
+def _export_card(
+    label: str,
+    icon: str,
+    path: Path | None,
+    filename: str,
+    mime: str,
+    missing_msg: str,
+    data: bytes | None = None,
+) -> None:
+    # If in-memory data is provided, use it
+    if data is not None:
+        size_kb = len(data) / 1024
+        size_str = f"{size_kb:.1f} KB" if size_kb < 1024 else f"{size_kb/1024:.2f} MB"
+        mtime = datetime.now().strftime("%d.%m.%Y %H:%M")
+        
+        st.markdown(
+            f"""
+<div class="ar-export-card">
+    <div class="ar-export-card-label">{icon} {label}</div>
+""",
+            unsafe_allow_html=True,
+        )
+        download_button(
+            label=t("export_download_btn", filename=filename),
+            data=data,
+            filename=filename,
+            mime=mime,
+        )
+        st.markdown(
+            f"""
+    <div class="ar-export-meta">
+        <div class="ar-export-meta-item">
+            <span class="ar-export-meta-key">{t("export_size")}</span>
+            <span class="ar-export-meta-val">{size_str}</span>
+        </div>
+        <div class="ar-export-meta-item">
+            <span class="ar-export-meta-key">{t("export_created")}</span>
+            <span class="ar-export-meta-val">{mtime}</span>
+        </div>
+        <div class="ar-export-meta-item">
+            <span class="ar-export-meta-key">{t("export_file")}</span>
+            <span class="ar-export-meta-val">{filename} (In-Memory)</span>
+        </div>
+    </div>
+</div>
+""",
+            unsafe_allow_html=True,
+        )
+    # Otherwise, fall back to disk path check
+    elif path and path.exists():
         meta = _file_meta(path)
         with open(path, "rb") as f:
             file_data = f.read()
@@ -145,6 +193,7 @@ else:
             filename=pdf_path.name if pdf_path else "srs.pdf",
             mime="application/pdf",
             missing_msg=t("export_srs_missing"),
+            data=st.session_state.get("srs_pdf"),
         )
 
         docx_path = generated_dir / "user_stories.docx"
@@ -155,6 +204,7 @@ else:
             filename="user_stories.docx",
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             missing_msg=t("export_stories_missing"),
+            data=st.session_state.get("user_stories_docx"),
         )
 
     with col2:
@@ -166,6 +216,7 @@ else:
             filename="backlog.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             missing_msg=t("export_backlog_missing"),
+            data=st.session_state.get("backlog_xlsx"),
         )
 
         json_path = generated_dir / "analysis_report.json"
@@ -176,4 +227,5 @@ else:
             filename="analysis_report.json",
             mime="application/json",
             missing_msg=t("export_json_missing"),
+            data=st.session_state.get("analysis_report_json"),
         )

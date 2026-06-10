@@ -10,13 +10,14 @@ Hibrit 3 katmanlı mimari:
 import re
 
 from .models import Requirement
+from .nlp_engine import turkish_lower
 
 # Türkçe gereksinim cümlelerinde kullanıcı eylemi bildiren fiil sonekleri.
 # Bu sonekler fonksiyonel gereksinimin açık sinyalidir.
 _FR_VERB_RE = re.compile(
-    r"\b\w+(?:abilmeli|ebilmeli|abilmelidir|ebilmelidir"
-    r"|abilir|ebilir|yapmalı|etmeli|görmeli|almalı|vermeli"
-    r"|oluşturmalı|silmeli|güncellemeli|görüntülemeli)\b",
+    r"\b\w*(?:abilmeli|ebilmeli|abilmelidir|ebilmelidir"
+    r"|abilir|ebilir|yapmalı(?:dır)?|etmeli(?:dir)?|görmeli(?:dir)?|almalı(?:dır)?|vermeli(?:dir)?"
+    r"|oluşturmalı(?:dır)?|silmeli(?:dir)?|güncellemeli(?:dir)?|görüntülemeli(?:dir)?)\b",
     re.IGNORECASE,
 )
 
@@ -141,7 +142,7 @@ class RequirementClassifier:
         if not text:
             return requirement
 
-        text_lower = text.lower()
+        text_lower = turkish_lower(text)
 
         has_nfr_num = any(p.search(text_lower) for p in self.nfr_numeric_patterns)
         has_strong_nfr_kw = self._has_strong_nfr_kw(text_lower)
