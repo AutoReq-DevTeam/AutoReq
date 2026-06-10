@@ -37,7 +37,7 @@ def load_nlp_pipeline():
 nlp_engines = load_nlp_pipeline()
 
 def _is_llm_available() -> bool:
-    return bool(os.getenv("GEMINI_API_KEY") or os.getenv("DEEPSEEK_API_KEY"))
+    return bool(os.getenv("GEMINI_API_KEY") or os.getenv("DEEPSEEK_API_KEY") or os.getenv("OPENROUTER_API_KEY"))
 
 def process_text(raw_text: str, status_ui=None) -> AnalysisReport:
     if status_ui: status_ui.update(label="Stanza ile ön işleme yapılıyor...")

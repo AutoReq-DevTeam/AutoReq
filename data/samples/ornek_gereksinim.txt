@@ -1,0 +1,5 @@
+Sistem giriş yapabilme özelliği hızlı çalışmalıdır.
+Kullanıcı profil bilgilerini güncelleyebilmelidir.
+Admin tüm kullanıcıları yönetebilmelidir.
+Sistem güvenli olmalıdır.
+Kullanıcı şifresini sıfırlayabilmelidir.

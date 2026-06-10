@@ -4,7 +4,7 @@
   "actor_precision": 56.1,
   "actor_recall": 82.2,
   "actor_f1": 66.7,
-  "classification_accuracy": 90.5,
+  "classification_accuracy": 92.1,
   "domain_breakdown": {
     "e-ticaret": {
       "precision": 66.7,
@@ -27,13 +27,13 @@
     "kurumsal": {
       "precision": 72.2,
       "recall": 100.0,
-      "clf_accuracy": 84.6,
+      "clf_accuracy": 100.0,
       "sentences": 13
     },
     "mobil": {
       "precision": 20.0,
       "recall": 42.9,
-      "clf_accuracy": 86.7,
+      "clf_accuracy": 80.0,
       "sentences": 15
     }
   }
