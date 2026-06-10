@@ -316,6 +316,8 @@ class TestPipeline:
         mock_engines, _ = self._make_mock_engines(req)
         monkeypatch.setattr(pm, "nlp_engines", mock_engines)
         monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+        monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+        monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
         self._patch_outputs(monkeypatch, pm)
 
         report = pm.process_text("Test metni.")
@@ -333,6 +335,8 @@ class TestPipeline:
         mock_engines, _ = self._make_mock_engines(req)
         monkeypatch.setattr(pm, "nlp_engines", mock_engines)
         monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+        monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+        monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
         self._patch_outputs(monkeypatch, pm)
 
         pm.process_text("Test metni.")
@@ -350,6 +354,8 @@ class TestPipeline:
         mock_engines, _ = self._make_mock_engines(req)
         monkeypatch.setattr(pm, "nlp_engines", mock_engines)
         monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+        monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+        monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
         self._patch_outputs(monkeypatch, pm)
 
         status_ui = MagicMock()
