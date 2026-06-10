@@ -297,26 +297,22 @@ class TestPipeline:
 
     def test_is_llm_available_with_key(self, monkeypatch):
         import core.pipeline as pm
-        monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+        monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
         assert pm._is_llm_available() is True
 
     def test_is_llm_available_without_key(self, monkeypatch):
         import core.pipeline as pm
-        monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-        monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
         monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
         assert pm._is_llm_available() is False
 
     def test_process_text_no_llm_returns_report(self, monkeypatch):
-        """Without GEMINI_API_KEY, LLM branches are skipped; report fields are empty."""
+        """Without OPENROUTER_API_KEY, LLM branches are skipped; report fields are empty."""
         import core.pipeline as pm
         from core.models import AnalysisReport, Requirement
 
         req = Requirement(id="REQ_001", text="Test cümlesi.")
         mock_engines, _ = self._make_mock_engines(req)
         monkeypatch.setattr(pm, "nlp_engines", mock_engines)
-        monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-        monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
         monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
         self._patch_outputs(monkeypatch, pm)
 
@@ -334,8 +330,6 @@ class TestPipeline:
         req = Requirement(id="REQ_001", text="Test cümlesi.")
         mock_engines, _ = self._make_mock_engines(req)
         monkeypatch.setattr(pm, "nlp_engines", mock_engines)
-        monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-        monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
         monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
         self._patch_outputs(monkeypatch, pm)
 
@@ -353,8 +347,6 @@ class TestPipeline:
         req = Requirement(id="REQ_001", text="Test.")
         mock_engines, _ = self._make_mock_engines(req)
         monkeypatch.setattr(pm, "nlp_engines", mock_engines)
-        monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-        monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
         monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
         self._patch_outputs(monkeypatch, pm)
 
@@ -372,7 +364,7 @@ class TestPipeline:
         req = Requirement(id="REQ_001", text="Test cümlesi.")
         mock_engines, _ = self._make_mock_engines(req)
         monkeypatch.setattr(pm, "nlp_engines", mock_engines)
-        monkeypatch.setenv("GEMINI_API_KEY", "fake-key")
+        monkeypatch.setenv("OPENROUTER_API_KEY", "fake-key")
 
         mock_conflict = MagicMock()
         mock_conflict.return_value.analyze.side_effect = LLMClientError("429")
@@ -400,7 +392,7 @@ class TestPipeline:
         req = Requirement(id="REQ_001", text="Test cümlesi.")
         mock_engines, _ = self._make_mock_engines(req)
         monkeypatch.setattr(pm, "nlp_engines", mock_engines)
-        monkeypatch.setenv("GEMINI_API_KEY", "fake-key")
+        monkeypatch.setenv("OPENROUTER_API_KEY", "fake-key")
 
         conflict = {"req_ids": ["REQ_001"], "conflict_type": "CONTRADICTORY", "reason": "x"}
         gap = {"missing_area": "Auth", "suggestion": "Add 2FA", "severity": "HIGH"}

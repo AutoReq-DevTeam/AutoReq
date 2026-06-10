@@ -150,3 +150,32 @@ Faz 4 kapsamında akademik çıktıların tamamı Türkçe standartlarına uyarl
 - Birim, entegrasyon ve prompt snapshot testlerinin tamamı yeşil durumdadır (**190 passed**).
 - `docs/Makale/article_TR.txt` ve `docs/Makale/sunum_TR.md` dosyaları kullanıma hazır durumdadır.
 - Raporlama ve versiyonlama süreçleri başarıyla tamamlanmıştır.
+
+---
+
+## Faz 5: OpenRouter API Sadeleştirmesi ve Dizin Temizliği (OpenRouter API Simplification & Workspace Cleanup) — TAMAMLANDI
+
+Faz 5 kapsamında boru hattı ve arayüz entegrasyonları sadeleştirilerek sadece OpenRouter API desteği bırakılmış, gereksiz API bağımlılıkları ve test kodları temizlenmiş ve artık kullanılmayan proje dosyaları arşiv klasörüne taşınmıştır.
+
+### Gerçekleştirilen Değişiklikler ve Düzeltmeler
+
+1. **Boru Hattı API Kontrolünün Sadeleştirilmesi (Pipeline API Key Check):**
+   - `core/pipeline.py` içerisindeki `_is_llm_available()` fonksiyonu sadece `os.getenv("OPENROUTER_API_KEY")` durumunu kontrol edecek şekilde güncellendi. Eski `GEMINI_API_KEY` ve `DEEPSEEK_API_KEY` denetimleri kaldırıldı.
+
+2. **Arayüz API Durum Göstergelerinin Sadeleştirilmesi (Sidebar API Status Indicators):**
+   - `app.py` ve `ui/dashboard.py` üzerindeki API durum göstergeleri güncellendi. Sadece `OPENROUTER_API_KEY` anahtarının yüklü olup olmadığı kontrol edilecek şekilde basitleştirildi.
+
+3. **Gereksiz Bağımlılıkların Kaldırılması (Dependency Cleanup):**
+   - `requirements.txt` dosyasından artık yerel olarak çağrılmayan ve doğrudan LLM entegrasyonu bulunmayan `google-genai==1.75.0` kütüphanesi kaldırıldı.
+
+4. **Test Mocks ve Ortam Güncellemeleri (Test Suite Adjustments):**
+   - `tests/test_core.py` ve `tests/integration/test_e2e.py` içindeki tüm `GEMINI_API_KEY` ve `DEEPSEEK_API_KEY` set/delete/mock komutları kaldırılarak testlerin sadece `OPENROUTER_API_KEY` ile çalışması sağlandı.
+   - `tests/test_modules.py` içerisindeki `test_cache_hit` testi güncellenerek `google.genai.Client` mock'laması yerine `openai.OpenAI` client completion yanıtlarını taklit edecek şekilde yeniden yazıldı.
+
+5. **Dizin Temizliği ve Arşivleme (Workspace Cleanup):**
+   - Proje ana dizinindeki eski kararlar ve planlar dosyası (`PLAN.md`) ile eski faz planı (`implementation_plan.md`) `_archive/` klasörüne taşındı.
+   - `docs/AutoReq_pres1.pdf` sunum PDF'i ile `docs/Makale/` altındaki eski İngilizce taslaklar (`article.txt` ve `TheArticle.txt`) `_archive/docs/` ve `_archive/docs/Makale/` dizinlerine taşınarak çalışma alanı gereksiz dosyalardan temizlendi.
+
+### Doğrulama ve Test Sonuçları
+
+- Yapılan sadeleştirmeler sonrasında `pytest` koşturularak önbellek, entegrasyon ve değerlendirme testleri dahil olmak üzere **190 testin tamamının başarıyla geçtiği** doğrulanmıştır (190 passed).

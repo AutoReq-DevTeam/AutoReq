@@ -73,9 +73,8 @@ def render_dashboard() -> tuple[str, bool]:
     st.sidebar.markdown("**Arayüz:** Hazır")
     st.sidebar.markdown("**Testler:** Çalışıyor")
 
-    if os.getenv("GEMINI_API_KEY") or os.getenv("DEEPSEEK_API_KEY"):
-        provider = "Gemini" if os.getenv("GEMINI_API_KEY") else "DeepSeek"
-        st.sidebar.markdown(f"✅ **API Key:** OK ({provider})")
+    if os.getenv("OPENROUTER_API_KEY"):
+        st.sidebar.markdown("✅ **API Key:** OK (OpenRouter)")
     else:
         st.sidebar.warning("❌ API Key tanımsız — LLM analizi devre dışı")
 

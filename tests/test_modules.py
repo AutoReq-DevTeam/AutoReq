@@ -147,27 +147,32 @@ class TestGapAnalyzer:
 class TestLLMClient:
     def test_cache_hit(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Aynı prompt ile ikinci chat çağrısı API'ye gitmeden önbellekten dönmeli."""
-        monkeypatch.setenv("GEMINI_API_KEY", "test-cache-key")
+        monkeypatch.setenv("OPENROUTER_API_KEY", "test-cache-key")
 
         mock_response = MagicMock()
-        mock_response.text = '{"cached": false}'
-        mock_um = MagicMock()
-        mock_um.prompt_token_count = 100
-        mock_um.candidates_token_count = 50
-        mock_response.usage_metadata = mock_um
+        mock_choice = MagicMock()
+        mock_choice.message.content = '{"cached": false}'
+        mock_response.choices = [mock_choice]
+        
+        mock_usage = MagicMock()
+        mock_usage.prompt_tokens = 100
+        mock_usage.completion_tokens = 50
+        mock_response.usage = mock_usage
+        
+        mock_response.model_dump.return_value = {"id": "mock_response"}
 
-        with patch("google.genai.Client") as mock_client_cls:
+        with patch("openai.OpenAI") as mock_openai_cls:
             mock_client = MagicMock()
-            mock_client.models.generate_content.return_value = mock_response
-            mock_client_cls.return_value = mock_client
+            mock_client.chat.completions.create.return_value = mock_response
+            mock_openai_cls.return_value = mock_client
 
             isolated = LLMPromptCache(default_ttl_seconds=3600)
-            client = LLMClient(provider="gemini", prompt_cache=isolated)
+            client = LLMClient(prompt_cache=isolated)
 
             first = client.chat("system prompt", "user prompt")
             second = client.chat("system prompt", "user prompt")
 
-            assert mock_client.models.generate_content.call_count == 1
+            assert mock_client.chat.completions.create.call_count == 1
             assert first.content == second.content
             assert first.raw["usage_metadata"]["input_tokens"] == 100
             assert first.raw["usage_metadata"]["output_tokens"] == 50

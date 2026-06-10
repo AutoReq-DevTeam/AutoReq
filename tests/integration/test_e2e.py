@@ -38,8 +38,6 @@ def _run_pipeline(text, monkeypatch):
     """Call process_text() with output generators mocked (no filesystem side-effects)."""
     import core.pipeline as pm
 
-    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-    monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
     monkeypatch.setattr(pm, "generate_srs", MagicMock())
     monkeypatch.setattr(pm, "export_backlog_xlsx", MagicMock())

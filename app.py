@@ -1387,10 +1387,6 @@ gap_count = st.session_state.get("gap_count", 0)
 
 if os.getenv("OPENROUTER_API_KEY"):
     api_label, api_color = t("api_active_openrouter"), "var(--color-success)"
-elif os.getenv("DEEPSEEK_API_KEY"):
-    api_label, api_color = t("api_active_deepseek"), "var(--color-success)"
-elif os.getenv("GEMINI_API_KEY"):
-    api_label, api_color = t("api_active_gemini"), "var(--color-success)"
 else:
     api_label, api_color = t("api_undefined"), "var(--color-danger)"
 
