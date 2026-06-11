@@ -14,86 +14,24 @@ from core.ner import EntityRecognizer
 from core.classifier import RequirementClassifier
 from core.models import Requirement
 
-# === GROUND TRUTH ===
-# Her tuple: (cümle, beklenen_aktörler, beklenen_tip, domain)
-# Aktörler: set — en az biri bulunmalı (recall), fazladan bulunan precision'ı düşürür
+# === LOAD GROUND TRUTH ===
+def load_ground_truth():
+    import os
+    json_path = os.path.join(os.path.dirname(__file__), "../data/evaluation/dev_corpus.json")
+    if not os.path.exists(json_path):
+        json_path = "data/evaluation/dev_corpus.json"
+        
+    with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    
+    return [
+        (item["text"], set(item["expected_actors"]), item["expected_type"], item["domain"])
+        for item in data
+    ]
 
-GROUND_TRUTH = [
-    # ── 01 E-TİCARET (13) ──
-    ("Kullanıcı sepetine ürün ekleyebilmeli ve ödeme adımına geçebilmelidir.", {"kullanıcı"}, "FUNCTIONAL", "e-ticaret"),
-    ("Ödeme sayfasında kullanıcı oturumu zorunlu olmamalı; misafir kullanıcı da ödeme yapabilmelidir.", {"kullanıcı", "misafir kullanıcı"}, "FUNCTIONAL", "e-ticaret"),
-    ("Ödeme sayfasına erişim yalnızca kayıtlı ve giriş yapmış kullanıcılara açık olmalıdır.", {"kullanıcı"}, "FUNCTIONAL", "e-ticaret"),
-    ("Sistem, stokta olmayan ürünleri sepete eklenmesine izin vermemelidir.", set(), "FUNCTIONAL", "e-ticaret"),
-    ("Sistem, stokta olmayan ürünler sepete eklenebilmeli; ancak ödeme sırasında uyarı gösterilmelidir.", set(), "FUNCTIONAL", "e-ticaret"),
-    ("Kullanıcı, siparişini tamamlamadan önce adres bilgisini girmek zorunda olmamalıdır.", {"kullanıcı"}, "FUNCTIONAL", "e-ticaret"),
-    ("Her sipariş için geçerli bir teslimat adresi zorunlu tutulmalıdır.", set(), "FUNCTIONAL", "e-ticaret"),
-    ("İndirim kuponu yalnızca bir kez kullanılabilmelidir.", set(), "FUNCTIONAL", "e-ticaret"),
-    ("Aynı kupon kodu birden fazla siparişe uygulanabilmelidir.", set(), "FUNCTIONAL", "e-ticaret"),
-    ("Kredi kartı bilgileri sunucuda saklanmamalı; yalnızca tokenize hali tutulmalıdır.", set(), "NON_FUNCTIONAL", "e-ticaret"),
-    ("Hızlı ödeme için kart bilgileri kullanıcı onayıyla kaydedilebilmelidir.", {"kullanıcı"}, "FUNCTIONAL", "e-ticaret"),
-    ("Sistem, sipariş tamamlandıktan sonra stok miktarını otomatik güncellenmelidir.", set(), "FUNCTIONAL", "e-ticaret"),
-    ("Stok güncellemesi yalnızca kargo firmasi teslimatı onayladıktan sonra yapılmalıdır.", {"kargo firması"}, "FUNCTIONAL", "e-ticaret"),
+GROUND_TRUTH = load_ground_truth()
 
-    # ── 02 BANKACILIK (10) ──
-    ("Müşteri mobil uygulama üzerinden hesap bakiyesini görüntüleyebilmelidir.", {"müşteri"}, "FUNCTIONAL", "bankacılık"),
-    ("Müşteri EFT ve havale işlemi gerçekleştirebilmelidir.", {"müşteri"}, "FUNCTIONAL", "bankacılık"),
-    ("Müşteri kredi kartı ekstresi PDF olarak indirilebilmelidir.", {"müşteri"}, "FUNCTIONAL", "bankacılık"),
-    ("Müşteri döviz alım satım işlemi yapabilmelidir.", {"müşteri"}, "FUNCTIONAL", "bankacılık"),
-    ("Yatırım fonu alım satımı mobil uygulama üzerinden gerçekleştirilebilmelidir.", set(), "FUNCTIONAL", "bankacılık"),
-    ("Müşteri şube randevusu oluşturabilmelidir.", {"müşteri"}, "FUNCTIONAL", "bankacılık"),
-    ("Müşteri destek hattını uygulama içinden arayabilmelidir.", {"müşteri"}, "FUNCTIONAL", "bankacılık"),
-    ("Hesap hareketleri son 1 yıla ait olacak şekilde listelenebilmelidir.", set(), "FUNCTIONAL", "bankacılık"),
-    ("Müşteri IBAN ile para transferi yapabilmelidir.", {"müşteri"}, "FUNCTIONAL", "bankacılık"),
-    ("Bildirim tercihleri uygulama içinden yönetilebilmelidir.", set(), "FUNCTIONAL", "bankacılık"),
-
-    # ── 03 EĞİTİM / MUĞLAK (12) ──
-    ("Sistem hızlı olmalıdır.", set(), "NON_FUNCTIONAL", "eğitim"),
-    ("Öğrenciler sistemi kolayca kullanabilmelidir.", {"öğrenci"}, "NON_FUNCTIONAL", "eğitim"),
-    ("Platform güvenli olmalıdır.", set(), "NON_FUNCTIONAL", "eğitim"),
-    ("İçerikler kaliteli sunulmalıdır.", set(), "NON_FUNCTIONAL", "eğitim"),
-    ("Sistem her zaman erişilebilir olmalıdır.", set(), "NON_FUNCTIONAL", "eğitim"),
-    ("Bildirimler zamanında gönderilmelidir.", set(), "NON_FUNCTIONAL", "eğitim"),
-    ("Öğretmen raporları düzenli paylaşabilmelidir.", {"öğretmen"}, "FUNCTIONAL", "eğitim"),
-    ("Sistem yüksek trafiği kaldırabilmelidir.", set(), "NON_FUNCTIONAL", "eğitim"),
-    ("Arayüz kullanıcı dostu tasarlanmalıdır.", set(), "NON_FUNCTIONAL", "eğitim"),
-    ("Veri güvenli saklanmalıdır.", set(), "NON_FUNCTIONAL", "eğitim"),
-    ("Sistem ölçeklenebilir olmalıdır.", set(), "NON_FUNCTIONAL", "eğitim"),
-    ("Uygulama farklı cihazlarda düzgün çalışmalıdır.", set(), "NON_FUNCTIONAL", "eğitim"),
-
-    # ── 04 KURUMSAL PORTAL (13) ──
-    ("Çalışan kendi izin taleplerini sisteme girebilmelidir.", {"çalışan"}, "FUNCTIONAL", "kurumsal"),
-    ("Yönetici, ekibindeki çalışanların izin taleplerini onaylayabilmeli veya reddedebilmelidir.", {"yönetici"}, "FUNCTIONAL", "kurumsal"),
-    ("İK uzmanı, tüm departmanlardaki izin süreçlerini raporlayabilmelidir.", {"ik uzmanı"}, "FUNCTIONAL", "kurumsal"),
-    ("Sistem yöneticisi kullanıcı yetki matrisini güncelleyebilmelidir.", {"sistem yöneticisi"}, "FUNCTIONAL", "kurumsal"),
-    ("Çalışan bordro bilgilerini görüntüleyebilmeli; yalnızca kendi bilgilerine erişebilmelidir.", {"çalışan"}, "FUNCTIONAL", "kurumsal"),
-    ("İK uzmanı, çalışan özlük dosyasına belge ekleyebilmelidir.", {"ik uzmanı"}, "FUNCTIONAL", "kurumsal"),
-    ("Yönetici, ekibinin performans değerlendirme formlarını doldurabilmelidir.", {"yönetici"}, "FUNCTIONAL", "kurumsal"),
-    ("Çalışan, kendi performans değerlendirme sonuçlarını görüntüleyebilmelidir.", {"çalışan"}, "FUNCTIONAL", "kurumsal"),
-    ("Sistem yöneticisi denetim loglarını inceleyebilmelidir.", {"sistem yöneticisi"}, "FUNCTIONAL", "kurumsal"),
-    ("Finans müdürü, departman bazlı bütçe raporlarını Excel olarak dışa aktarabilmelidir.", {"finans müdürü"}, "FUNCTIONAL", "kurumsal"),
-    ("İK uzmanı, işe alım süreçlerini sistemde takip edebilmelidir.", {"ik uzmanı"}, "FUNCTIONAL", "kurumsal"),
-    ("Aday, iş başvurusunu portal üzerinden gerçekleştirebilmelidir.", {"aday"}, "FUNCTIONAL", "kurumsal"),
-    ("Yönetici, departmanına yeni çalışan ataması yapabilmelidir.", {"yönetici"}, "FUNCTIONAL", "kurumsal"),
-
-    # ── 05 MOBİL APP / NFR AĞIRLIKLI (15) ──
-    ("Uygulama, Android 10 ve üzeri ile iOS 15 ve üzeri sürümlerde çalışmalıdır.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Uygulama açılış süresi soğuk başlatmada 3 saniyeyi geçmemelidir.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Sayfa geçişleri 500 milisaniyenin altında tamamlanmalıdır.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Uygulama, 10.000 eş zamanlı kullanıcıyı desteklemelidir.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Çevrimdışı modda son 7 günlük veri önbellekten erişilebilir olmalıdır.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Uygulama batarya tüketimi günde 2 saat aktif kullanımda %5'i geçmemelidir.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Tüm ağ iletişimi TLS 1.3 protokolüyle şifrelenmelidir.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Kullanıcı oturumu 30 dakika hareketsizlikte otomatik sonlandırılmalıdır.", {"kullanıcı"}, "NON_FUNCTIONAL", "mobil"),
-    ("Biyometrik doğrulama (parmak izi, yüz tanıma) desteklenmelidir.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Uygulama %99,9 SLA hedefini karşılamalıdır.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Crash oranı aylık aktif kullanıcı başına %0,1'in altında tutulmalıdır.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Erişilebilirlik standartları (WCAG 2.1 AA) uyumlu olunmalıdır.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Kişisel veriler KVKK ve GDPR gerekliliklerine uygun şekilde işlenmelidir.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Uygulama boyutu 50 MB'ı geçmemelidir.", set(), "NON_FUNCTIONAL", "mobil"),
-    ("Push bildirim iletim süresi 5 saniyeyi geçmemelidir.", set(), "NON_FUNCTIONAL", "mobil"),
-]
-
-assert len(GROUND_TRUTH) == 63, f"Beklenen 63 cümle, bulunan {len(GROUND_TRUTH)}"
+assert len(GROUND_TRUTH) >= 63, f"Beklenen en az 63 cümle, bulunan {len(GROUND_TRUTH)}"
 
 
 def _norm(s: str) -> str:
@@ -188,7 +126,7 @@ def evaluate():
     # === JSON export ===
     results = {
         "corpus": "development",
-        "total_sentences": 63,
+        "total_sentences": len(GROUND_TRUTH),
         "actor_precision": round(precision, 1),
         "actor_recall": round(recall, 1),
         "actor_f1": round(f1, 1),

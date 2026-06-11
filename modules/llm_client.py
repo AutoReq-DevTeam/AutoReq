@@ -249,7 +249,84 @@ class LLMClient:
             _accumulate_streamlit_session_usage(usage_meta)
             return llm_response
         except Exception as exc:
-            raise LLMClientError(f"OpenRouter çağrısı başarısız: {exc}") from exc
+            gemini_key = os.getenv("GEMINI_API_KEY")
+            if gemini_key:
+                logger.warning(f"OpenRouter call failed: {exc}. Retrying directly with Google Gemini API...")
+                try:
+                    import openai
+                    direct_client = openai.OpenAI(
+                        api_key=gemini_key,
+                        base_url="https://generativelanguage.googleapis.com/v1beta/"
+                    )
+                    
+                    # Convert model name (e.g., google/gemini-2.5-flash -> gemini-2.5-flash)
+                    model_to_use = self.model_name
+                    if "/" in model_to_use:
+                        model_to_use = model_to_use.split("/")[-1]
+                    if model_to_use == "deepseek-chat":
+                        model_to_use = "gemini-2.5-flash"
+                        
+                    response = direct_client.chat.completions.create(
+                        model=model_to_use,
+                        messages=messages,
+                        max_tokens=self.max_output_tokens,
+                        temperature=self.temperature,
+                    )
+                    text = response.choices[0].message.content or ""
+                    inp = response.usage.prompt_tokens if response.usage else 0
+                    out = response.usage.completion_tokens if response.usage else 0
+                    usage_meta = _build_usage_metadata(inp, out)
+                    
+                    raw = {
+                        "provider": "google-direct",
+                        "response": response.model_dump(),
+                        "usage_metadata": usage_meta,
+                        "usage": usage_meta,
+                    }
+                    llm_response = LLMResponse(content=text, raw=raw)
+                    self._prompt_cache.set(key, llm_response)
+                    _accumulate_streamlit_session_usage(usage_meta)
+                    return llm_response
+                except Exception as gemini_exc:
+                    deepseek_key = os.getenv("DEEPSEEK_API_KEY")
+                    if deepseek_key:
+                        logger.warning(f"Gemini call failed: {gemini_exc}. Retrying directly with DeepSeek API...")
+                        try:
+                            direct_client = openai.OpenAI(
+                                api_key=deepseek_key,
+                                base_url="https://api.deepseek.com"
+                            )
+                            response = direct_client.chat.completions.create(
+                                model="deepseek-chat",
+                                messages=messages,
+                                max_tokens=self.max_output_tokens,
+                                temperature=self.temperature,
+                            )
+                            text = response.choices[0].message.content or ""
+                            inp = response.usage.prompt_tokens if response.usage else 0
+                            out = response.usage.completion_tokens if response.usage else 0
+                            usage_meta = _build_usage_metadata(inp, out)
+                            
+                            raw = {
+                                "provider": "deepseek-direct",
+                                "response": response.model_dump(),
+                                "usage_metadata": usage_meta,
+                                "usage": usage_meta,
+                            }
+                            llm_response = LLMResponse(content=text, raw=raw)
+                            self._prompt_cache.set(key, llm_response)
+                            _accumulate_streamlit_session_usage(usage_meta)
+                            return llm_response
+                        except Exception as ds_exc:
+                            raise LLMClientError(
+                                f"All calls failed. OpenRouter: {exc}. Gemini: {gemini_exc}. DeepSeek: {ds_exc}"
+                            ) from ds_exc
+                    else:
+                        raise LLMClientError(
+                            f"Both OpenRouter and Gemini direct calls failed. OpenRouter: {exc}. Gemini: {gemini_exc}"
+                        ) from gemini_exc
+            else:
+                raise LLMClientError(f"OpenRouter çağrısı başarısız: {exc}") from exc
 
 
 __all__ = ["LLMClient", "LLMClientError", "LLMResponse", "set_thread_session_id", "get_thread_session_id"]

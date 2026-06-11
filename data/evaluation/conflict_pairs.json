@@ -1,0 +1,818 @@
+{
+  "requirements": [
+    {
+      "id": "REQ_001",
+      "text": "Kullanıcı sepetine ürün ekleyebilmeli ve ödeme adımına geçebilmelidir."
+    },
+    {
+      "id": "REQ_002",
+      "text": "Ödeme sayfasında kullanıcı oturumu zorunlu olmamalı; misafir kullanıcı da ödeme yapabilmelidir."
+    },
+    {
+      "id": "REQ_003",
+      "text": "Ödeme sayfasına erişim yalnızca kayıtlı ve giriş yapmış kullanıcılara açık olmalıdır."
+    },
+    {
+      "id": "REQ_004",
+      "text": "Sistem, stokta olmayan ürünleri sepete eklenmesine izin vermemelidir."
+    },
+    {
+      "id": "REQ_005",
+      "text": "Sistem, stokta olmayan ürünler sepete eklenebilmeli; ancak ödeme sırasında uyarı gösterilmelidir."
+    },
+    {
+      "id": "REQ_006",
+      "text": "Kullanıcı, siparişini tamamlamadan önce adres bilgisini girmek zorunda olmamalıdır."
+    },
+    {
+      "id": "REQ_007",
+      "text": "Her sipariş için geçerli bir teslimat adresi zorunlu tutulmalıdır."
+    },
+    {
+      "id": "REQ_008",
+      "text": "İndirim kuponu yalnızca bir kez kullanılabilmelidir."
+    },
+    {
+      "id": "REQ_009",
+      "text": "Aynı kupon kodu birden fazla siparişe uygulanabilmelidir."
+    },
+    {
+      "id": "REQ_010",
+      "text": "Kredi kartı bilgileri sunucuda saklanmamalı; yalnızca tokenize hali tutulmalıdır."
+    },
+    {
+      "id": "REQ_011",
+      "text": "Hızlı ödeme için kart bilgileri kullanıcı onayıyla kaydedilebilmelidir."
+    },
+    {
+      "id": "REQ_012",
+      "text": "Sistem, sipariş tamamlandıktan sonra stok miktarını otomatik güncellenmelidir."
+    },
+    {
+      "id": "REQ_013",
+      "text": "Stok güncellemesi yalnızca kargo firmasi teslimatı onayladıktan sonra yapılmalıdır."
+    },
+    {
+      "id": "REQ_014",
+      "text": "Müşteri mobil uygulama üzerinden hesap bakiyesini görüntüleyebilmelidir."
+    },
+    {
+      "id": "REQ_015",
+      "text": "Müşteri EFT ve havale işlemi gerçekleştirebilmelidir."
+    },
+    {
+      "id": "REQ_016",
+      "text": "Müşteri kredi kartı ekstresi PDF olarak indirilebilmelidir."
+    },
+    {
+      "id": "REQ_017",
+      "text": "Müşteri döviz alım satım işlemi yapabilmelidir."
+    },
+    {
+      "id": "REQ_018",
+      "text": "Yatırım fonu alım satımı mobil uygulama üzerinden gerçekleştirilebilmelidir."
+    },
+    {
+      "id": "REQ_019",
+      "text": "Müşteri şube randevusu oluşturabilmelidir."
+    },
+    {
+      "id": "REQ_020",
+      "text": "Müşteri destek hattını uygulama içinden arayabilmelidir."
+    },
+    {
+      "id": "REQ_021",
+      "text": "Hesap hareketleri son 1 yıla ait olacak şekilde listelenebilmelidir."
+    },
+    {
+      "id": "REQ_022",
+      "text": "Müşteri IBAN ile para transferi yapabilmelidir."
+    },
+    {
+      "id": "REQ_023",
+      "text": "Bildirim tercihleri uygulama içinden yönetilebilmelidir."
+    },
+    {
+      "id": "REQ_024",
+      "text": "Sistem hızlı olmalıdır."
+    },
+    {
+      "id": "REQ_025",
+      "text": "Öğrenciler sistemi kolayca kullanabilmelidir."
+    },
+    {
+      "id": "REQ_026",
+      "text": "Platform güvenli olmalıdır."
+    },
+    {
+      "id": "REQ_027",
+      "text": "İçerikler kaliteli sunulmalıdır."
+    },
+    {
+      "id": "REQ_028",
+      "text": "Sistem her zaman erişilebilir olmalıdır."
+    },
+    {
+      "id": "REQ_029",
+      "text": "Bildirimler zamanında gönderilmelidir."
+    },
+    {
+      "id": "REQ_030",
+      "text": "Öğretmen raporları düzenli paylaşabilmelidir."
+    },
+    {
+      "id": "REQ_031",
+      "text": "Sistem yüksek trafiği kaldırabilmelidir."
+    },
+    {
+      "id": "REQ_032",
+      "text": "Arayüz kullanıcı dostu tasarlanmalıdır."
+    },
+    {
+      "id": "REQ_033",
+      "text": "Veri güvenli saklanmalıdır."
+    },
+    {
+      "id": "REQ_034",
+      "text": "Sistem ölçeklenebilir olmalıdır."
+    },
+    {
+      "id": "REQ_035",
+      "text": "Uygulama farklı cihazlarda düzgün çalışmalıdır."
+    },
+    {
+      "id": "REQ_036",
+      "text": "Çalışan kendi izin taleplerini sisteme girebilmelidir."
+    },
+    {
+      "id": "REQ_037",
+      "text": "Yönetici, ekibindeki çalışanların izin taleplerini onaylayabilmeli veya reddedebilmelidir."
+    },
+    {
+      "id": "REQ_038",
+      "text": "İK uzmanı, tüm departmanlardaki izin süreçlerini raporlayabilmelidir."
+    },
+    {
+      "id": "REQ_039",
+      "text": "Sistem yöneticisi kullanıcı yetki matrisini güncelleyebilmelidir."
+    },
+    {
+      "id": "REQ_040",
+      "text": "Çalışan bordro bilgilerini görüntüleyebilmeli; yalnızca kendi bilgilerine erişebilmelidir."
+    },
+    {
+      "id": "REQ_041",
+      "text": "İK uzmanı, çalışan özlük dosyasına belge ekleyebilmelidir."
+    },
+    {
+      "id": "REQ_042",
+      "text": "Yönetici, ekibinin performans değerlendirme formlarını doldurabilmelidir."
+    },
+    {
+      "id": "REQ_043",
+      "text": "Çalışan, kendi performans değerlendirme sonuçlarını görüntüleyebilmelidir."
+    },
+    {
+      "id": "REQ_044",
+      "text": "Sistem yöneticisi denetim loglarını inceleyebilmelidir."
+    },
+    {
+      "id": "REQ_045",
+      "text": "Finans müdürü, departman bazlı bütçe raporlarını Excel olarak dışa aktarabilmelidir."
+    },
+    {
+      "id": "REQ_046",
+      "text": "İK uzmanı, işe alım süreçlerini sistemde takip edebilmelidir."
+    },
+    {
+      "id": "REQ_047",
+      "text": "Aday, iş başvurusunu portal üzerinden gerçekleştirebilmelidir."
+    },
+    {
+      "id": "REQ_048",
+      "text": "Yönetici, departmanına yeni çalışan ataması yapabilmelidir."
+    },
+    {
+      "id": "REQ_049",
+      "text": "Uygulama, Android 10 ve üzeri ile iOS 15 ve üzeri sürümlerde çalışmalıdır."
+    },
+    {
+      "id": "REQ_050",
+      "text": "Uygulama açılış süresi soğuk başlatmada 3 saniyeyi geçmemelidir."
+    },
+    {
+      "id": "REQ_051",
+      "text": "Sayfa geçişleri 500 milisaniyenin altında tamamlanmalıdır."
+    },
+    {
+      "id": "REQ_052",
+      "text": "Uygulama, 10.000 eş zamanlı kullanıcıyı desteklemelidir."
+    },
+    {
+      "id": "REQ_053",
+      "text": "Çevrimdışı modda son 7 günlük veri önbellekten erişilebilir olmalıdır."
+    },
+    {
+      "id": "REQ_054",
+      "text": "Uygulama batarya tüketimi günde 2 saat aktif kullanımda %5'i geçmemelidir."
+    },
+    {
+      "id": "REQ_055",
+      "text": "Tüm ağ iletişimi TLS 1.3 protokolüyle şifrelenmelidir."
+    },
+    {
+      "id": "REQ_056",
+      "text": "Kullanıcı oturumu 30 dakika hareketsizlikte otomatik sonlandırılmalıdır."
+    },
+    {
+      "id": "REQ_057",
+      "text": "Biyometrik doğrulama (parmak izi, yüz tanıma) desteklenmelidir."
+    },
+    {
+      "id": "REQ_058",
+      "text": "Uygulama %99,9 SLA hedefini karşılamalıdır."
+    },
+    {
+      "id": "REQ_059",
+      "text": "Crash oranı aylık aktif kullanıcı başına %0,1'in altında tutulmalıdır."
+    },
+    {
+      "id": "REQ_060",
+      "text": "Erişilebilirlik standartları (WCAG 2.1 AA) uyumlu olunmalıdır."
+    },
+    {
+      "id": "REQ_061",
+      "text": "Kişisel veriler KVKK ve GDPR gerekliliklerine uygun şekilde işlenmelidir."
+    },
+    {
+      "id": "REQ_062",
+      "text": "Uygulama boyutu 50 MB'ı geçmemelidir."
+    },
+    {
+      "id": "REQ_063",
+      "text": "Push bildirim iletim süresi 5 saniyeyi geçmemelidir."
+    },
+    {
+      "id": "REQ_064",
+      "text": "Sistem, tüm kullanıcıların profil bilgilerini değiştirmesine izin vermelidir."
+    },
+    {
+      "id": "REQ_065",
+      "text": "Sistem, yalnızca yöneticilerin kullanıcı profil bilgilerini değiştirmesine izin vermelidir."
+    },
+    {
+      "id": "REQ_066",
+      "text": "Veritabanı sorguları 1 saniyeden kısa sürede tamamlanmalıdır."
+    },
+    {
+      "id": "REQ_067",
+      "text": "Veritabanı sorguları, veri hacmi ne olursa olsun 50 milisaniyeden kısa sürede tamamlanmalıdır."
+    },
+    {
+      "id": "REQ_068",
+      "text": "Sistem, kullanıcı girişlerini her zaman büyük harfe dönüştürmelidir."
+    },
+    {
+      "id": "REQ_069",
+      "text": "Sistem, kullanıcı girişlerini olduğu gibi saklamalıdır."
+    },
+    {
+      "id": "REQ_070",
+      "text": "Tüm siparişler anında işlenmelidir."
+    },
+    {
+      "id": "REQ_071",
+      "text": "Siparişler, her gün gece yarısı toplu olarak işlenmelidir."
+    },
+    {
+      "id": "REQ_072",
+      "text": "Sistem, kullanıcı şifrelerini açık metin olarak saklamalıdır."
+    },
+    {
+      "id": "REQ_073",
+      "text": "Sistem, kullanıcı şifrelerini şifrelenmiş olarak saklamalıdır."
+    },
+    {
+      "id": "REQ_074",
+      "text": "Kullanıcılar, sistemdeki tüm raporlara erişebilmelidir."
+    },
+    {
+      "id": "REQ_075",
+      "text": "Kullanıcılar, yalnızca kendi oluşturdukları raporlara erişebilmelidir."
+    },
+    {
+      "id": "REQ_076",
+      "text": "Sistem, aynı anda en fazla 100 aktif kullanıcıyı desteklemelidir."
+    },
+    {
+      "id": "REQ_077",
+      "text": "Sistem, aynı anda 1000'den fazla aktif kullanıcıyı sorunsuz bir şekilde desteklemelidir."
+    },
+    {
+      "id": "REQ_078",
+      "text": "Tüm veri yedeklemeleri haftalık olarak yapılmalıdır."
+    },
+    {
+      "id": "REQ_079",
+      "text": "Veri yedeklemeleri günlük olarak yapılmalıdır."
+    },
+    {
+      "id": "REQ_080",
+      "text": "Sistem, kullanıcıların e-posta adreslerini doğrulamamalıdır."
+    },
+    {
+      "id": "REQ_081",
+      "text": "Sistem, kullanıcı kayıtlarında e-posta adreslerinin geçerliliğini kontrol etmelidir."
+    },
+    {
+      "id": "REQ_082",
+      "text": "Misafir kullanıcılar, ürün fiyatlarını görebilmelidir."
+    },
+    {
+      "id": "REQ_083",
+      "text": "Misafir kullanıcılar, ürün fiyatlarını göremez, yalnızca kayıtlı kullanıcılar görebilir."
+    },
+    {
+      "id": "REQ_084",
+      "text": "Sistem, tüm hata mesajlarını İngilizce olarak göstermelidir."
+    },
+    {
+      "id": "REQ_085",
+      "text": "Sistem, kullanıcının tercih ettiği dile göre hata mesajlarını göstermelidir."
+    },
+    {
+      "id": "REQ_086",
+      "text": "Veri tabanı, en az 1 TB depolama alanına sahip olmalıdır."
+    },
+    {
+      "id": "REQ_087",
+      "text": "Veri tabanı, 500 GB'ı geçmeyecek şekilde optimize edilmelidir."
+    },
+    {
+      "id": "REQ_088",
+      "text": "Sistem, kullanıcı oturumlarını 30 dakika sonra otomatik olarak sonlandırmalıdır."
+    },
+    {
+      "id": "REQ_089",
+      "text": "Sistem, kullanıcı oturumlarını süresiz olarak açık tutmalıdır."
+    },
+    {
+      "id": "REQ_090",
+      "text": "Tüm kullanıcılar, sistem ayarlarını değiştirebilmelidir."
+    },
+    {
+      "id": "REQ_091",
+      "text": "Yalnızca sistem yöneticileri, sistem ayarlarını değiştirebilir."
+    },
+    {
+      "id": "REQ_092",
+      "text": "Sistem, her zaman çevrimiçi olmalıdır."
+    },
+    {
+      "id": "REQ_093",
+      "text": "Sistem, haftada bir kez bakım için 4 saat kapalı kalmalıdır."
+    },
+    {
+      "id": "REQ_094",
+      "text": "Sistem, kullanıcı arayüzünde her zaman koyu tema kullanmalıdır."
+    },
+    {
+      "id": "REQ_095",
+      "text": "Kullanıcılar, açık ve koyu tema arasında seçim yapabilmelidir."
+    },
+    {
+      "id": "REQ_096",
+      "text": "Sistem, tüm raporları PDF formatında dışa aktarmalıdır."
+    },
+    {
+      "id": "REQ_097",
+      "text": "Sistem, raporları CSV ve Excel formatlarında dışa aktarma seçeneği sunmalıdır."
+    },
+    {
+      "id": "REQ_098",
+      "text": "Sistem, kullanıcıların şifrelerini en az 8 karakter uzunluğunda olmasını zorunlu kılmalıdır."
+    },
+    {
+      "id": "REQ_099",
+      "text": "Sistem, kullanıcı şifreleri için minimum uzunluk kısıtlaması uygulamamalıdır."
+    },
+    {
+      "id": "REQ_100",
+      "text": "Sistem, tüm kullanıcı verilerini Avrupa Birliği sunucularında saklamalıdır."
+    },
+    {
+      "id": "REQ_101",
+      "text": "Sistem, kullanıcı verilerini coğrafi olarak en yakın sunucuda saklamalıdır."
+    },
+    {
+      "id": "REQ_102",
+      "text": "Sistem, her 5 dakikada bir otomatik olarak kaydedilmelidir."
+    },
+    {
+      "id": "REQ_103",
+      "text": "Kullanıcılar, verilerini manuel olarak kaydetmelidir."
+    },
+    {
+      "id": "REQ_104",
+      "text": "Sistem, tüm kullanıcıların anonim olarak yorum yapmasına izin vermelidir."
+    },
+    {
+      "id": "REQ_105",
+      "text": "Sistem, yorum yapmadan önce kullanıcıların kimliklerini doğrulamalıdır."
+    },
+    {
+      "id": "REQ_106",
+      "text": "Sistem, 7/24 teknik destek sağlamalıdır."
+    },
+    {
+      "id": "REQ_107",
+      "text": "Teknik destek, yalnızca hafta içi mesai saatlerinde sağlanacaktır."
+    },
+    {
+      "id": "REQ_108",
+      "text": "Sistem, tüm e-posta bildirimlerini anında göndermelidir."
+    },
+    {
+      "id": "REQ_109",
+      "text": "Sistem, e-posta bildirimlerini günde bir kez toplu olarak göndermelidir."
+    },
+    {
+      "id": "REQ_110",
+      "text": "Sistem, kullanıcıların hesaplarını kendilerinin silmesine izin vermelidir."
+    },
+    {
+      "id": "REQ_111",
+      "text": "Kullanıcı hesapları, yalnızca yöneticiler tarafından silinebilir."
+    },
+    {
+      "id": "REQ_112",
+      "text": "Sistem, tüm verileri şifrelemelidir."
+    },
+    {
+      "id": "REQ_113",
+      "text": "Sistem, yalnızca hassas verileri şifrelemelidir."
+    },
+    {
+      "id": "REQ_114",
+      "text": "Sistem, 100 milisaniyeden daha kısa sürede yanıt vermelidir."
+    },
+    {
+      "id": "REQ_115",
+      "text": "Sistem, yoğun yük altında bile 500 milisaniyeden daha kısa sürede yanıt vermelidir."
+    },
+    {
+      "id": "REQ_116",
+      "text": "Sistem, tüm kullanıcıların profil resimlerini yüklemesine izin vermelidir."
+    },
+    {
+      "id": "REQ_117",
+      "text": "Sistem, profil resimlerini yalnızca onaylı kullanıcıların yüklemesine izin vermelidir."
+    },
+    {
+      "id": "REQ_118",
+      "text": "Sistem, tüm log kayıtlarını süresiz olarak saklamalıdır."
+    },
+    {
+      "id": "REQ_119",
+      "text": "Sistem, log kayıtlarını 90 gün sonra otomatik olarak silmelidir."
+    },
+    {
+      "id": "REQ_120",
+      "text": "Sistem, tüm kullanıcıların kendi verilerini dışa aktarmasına izin vermelidir."
+    },
+    {
+      "id": "REQ_121",
+      "text": "Sistem, veri dışa aktarma özelliğini yalnızca yöneticilere sunmalıdır."
+    },
+    {
+      "id": "REQ_122",
+      "text": "Sistem, tüm kullanıcı arayüzü metinlerini dinamik olarak çevirmelidir."
+    },
+    {
+      "id": "REQ_123",
+      "text": "Sistem, yalnızca İngilizce ve Türkçe dillerini desteklemelidir."
+    },
+    {
+      "id": "REQ_124",
+      "text": "Sistem, tüm kullanıcıların aynı anda 5 dosya yüklemesine izin vermelidir."
+    },
+    {
+      "id": "REQ_125",
+      "text": "Sistem, aynı anda yalnızca tek bir dosya yüklemesine izin vermelidir."
+    },
+    {
+      "id": "REQ_126",
+      "text": "Sistem, tüm kullanıcıların şifrelerini her 30 günde bir değiştirmesini zorunlu kılmalıdır."
+    },
+    {
+      "id": "REQ_127",
+      "text": "Sistem, şifre değiştirme sıklığı konusunda herhangi bir kısıtlama getirmemelidir."
+    },
+    {
+      "id": "REQ_128",
+      "text": "Sistem, tüm kullanıcıların e-posta adreslerini herkese açık olarak göstermelidir."
+    },
+    {
+      "id": "REQ_129",
+      "text": "Sistem, kullanıcıların e-posta adreslerini gizli tutmalıdır."
+    },
+    {
+      "id": "REQ_130",
+      "text": "Sistem, tüm veri girişlerini gerçek zamanlı olarak doğrulamalıdır."
+    },
+    {
+      "id": "REQ_131",
+      "text": "Sistem, veri girişlerini form gönderildikten sonra doğrulamalıdır."
+    },
+    {
+      "id": "REQ_132",
+      "text": "Sistem, tüm kullanıcıların kendi verilerini düzenlemesine izin vermelidir."
+    },
+    {
+      "id": "REQ_133",
+      "text": "Sistem, kullanıcı verilerini yalnızca yöneticilerin düzenlemesine izin vermelidir."
+    },
+    {
+      "id": "REQ_134",
+      "text": "Sistem, tüm bildirimleri anında göndermelidir."
+    },
+    {
+      "id": "REQ_135",
+      "text": "Sistem, bildirimleri günde bir kez özet olarak göndermelidir."
+    },
+    {
+      "id": "REQ_136",
+      "text": "Sistem, tüm kullanıcıların kendi profillerini silmesine izin vermelidir."
+    },
+    {
+      "id": "REQ_137",
+      "text": "Sistem, kullanıcı profillerini yalnızca yöneticilerin silmesine izin vermelidir."
+    },
+    {
+      "id": "REQ_138",
+      "text": "Sistem, tüm kullanıcıların aynı anda 100 MB'a kadar dosya yüklemesine izin vermelidir."
+    },
+    {
+      "id": "REQ_139",
+      "text": "Sistem, dosya yükleme boyutunu 10 MB ile sınırlamalıdır."
+    },
+    {
+      "id": "REQ_140",
+      "text": "Sistem, tüm kullanıcıların şifrelerini en az 12 karakter uzunluğunda olmasını zorunlu kılmalıdır."
+    },
+    {
+      "id": "REQ_141",
+      "text": "Sistem, şifreler için minimum 6 karakter uzunluğunu kabul etmelidir."
+    },
+    {
+      "id": "REQ_142",
+      "text": "Sistem, tüm kullanıcıların kendi e-posta adreslerini değiştirmesine izin vermelidir."
+    },
+    {
+      "id": "REQ_143",
+      "text": "Sistem, e-posta adresi değişikliklerini yalnızca yöneticilerin onaylamasına izin vermelidir."
+    },
+    {
+      "id": "REQ_144",
+      "text": "Sistem, tüm veri tabanı işlemlerini asenkron olarak gerçekleştirmelidir."
+    },
+    {
+      "id": "REQ_145",
+      "text": "Sistem, kritik veri tabanı işlemlerini senkron olarak gerçekleştirmelidir."
+    },
+    {
+      "id": "REQ_146",
+      "text": "Sistem, tüm kullanıcıların kendi rollerini değiştirmesine izin vermelidir."
+    },
+    {
+      "id": "REQ_147",
+      "text": "Sistem, kullanıcı rollerini yalnızca yöneticilerin değiştirmesine izin vermelidir."
+    },
+    {
+      "id": "REQ_148",
+      "text": "Sistem, tüm kullanıcıların kendi hesaplarını dondurmasına izin vermelidir."
+    },
+    {
+      "id": "REQ_149",
+      "text": "Sistem, hesap dondurma işlemini yalnızca destek ekibinin yapmasına izin vermelidir."
+    },
+    {
+      "id": "REQ_150",
+      "text": "Sistem, tüm kullanıcıların kendi bildirim ayarlarını özelleştirmesine izin vermelidir."
+    },
+    {
+      "id": "REQ_151",
+      "text": "Sistem, bildirim ayarlarını merkezi olarak yönetmeli ve kullanıcıların değiştirmesine izin vermemelidir."
+    },
+    {
+      "id": "REQ_152",
+      "text": "Sistem, tüm kullanıcıların kendi şifrelerini sıfırlamasına izin vermelidir."
+    },
+    {
+      "id": "REQ_153",
+      "text": "Sistem, şifre sıfırlama taleplerini yalnızca yöneticilerin onaylamasına izin vermelidir."
+    }
+  ],
+  "expected_conflicts": [
+    [
+      "REQ_002",
+      "REQ_003"
+    ],
+    [
+      "REQ_004",
+      "REQ_005"
+    ],
+    [
+      "REQ_006",
+      "REQ_007"
+    ],
+    [
+      "REQ_008",
+      "REQ_009"
+    ],
+    [
+      "REQ_012",
+      "REQ_013"
+    ],
+    [
+      "REQ_064",
+      "REQ_065"
+    ],
+    [
+      "REQ_066",
+      "REQ_067"
+    ],
+    [
+      "REQ_068",
+      "REQ_069"
+    ],
+    [
+      "REQ_070",
+      "REQ_071"
+    ],
+    [
+      "REQ_072",
+      "REQ_073"
+    ],
+    [
+      "REQ_074",
+      "REQ_075"
+    ],
+    [
+      "REQ_076",
+      "REQ_077"
+    ],
+    [
+      "REQ_078",
+      "REQ_079"
+    ],
+    [
+      "REQ_080",
+      "REQ_081"
+    ],
+    [
+      "REQ_082",
+      "REQ_083"
+    ],
+    [
+      "REQ_084",
+      "REQ_085"
+    ],
+    [
+      "REQ_086",
+      "REQ_087"
+    ],
+    [
+      "REQ_088",
+      "REQ_089"
+    ],
+    [
+      "REQ_090",
+      "REQ_091"
+    ],
+    [
+      "REQ_092",
+      "REQ_093"
+    ],
+    [
+      "REQ_094",
+      "REQ_095"
+    ],
+    [
+      "REQ_096",
+      "REQ_097"
+    ],
+    [
+      "REQ_098",
+      "REQ_099"
+    ],
+    [
+      "REQ_100",
+      "REQ_101"
+    ],
+    [
+      "REQ_102",
+      "REQ_103"
+    ],
+    [
+      "REQ_104",
+      "REQ_105"
+    ],
+    [
+      "REQ_106",
+      "REQ_107"
+    ],
+    [
+      "REQ_108",
+      "REQ_109"
+    ],
+    [
+      "REQ_110",
+      "REQ_111"
+    ],
+    [
+      "REQ_112",
+      "REQ_113"
+    ],
+    [
+      "REQ_114",
+      "REQ_115"
+    ],
+    [
+      "REQ_116",
+      "REQ_117"
+    ],
+    [
+      "REQ_118",
+      "REQ_119"
+    ],
+    [
+      "REQ_120",
+      "REQ_121"
+    ],
+    [
+      "REQ_122",
+      "REQ_123"
+    ],
+    [
+      "REQ_124",
+      "REQ_125"
+    ],
+    [
+      "REQ_126",
+      "REQ_127"
+    ],
+    [
+      "REQ_128",
+      "REQ_129"
+    ],
+    [
+      "REQ_130",
+      "REQ_131"
+    ],
+    [
+      "REQ_132",
+      "REQ_133"
+    ],
+    [
+      "REQ_134",
+      "REQ_135"
+    ],
+    [
+      "REQ_136",
+      "REQ_137"
+    ],
+    [
+      "REQ_138",
+      "REQ_139"
+    ],
+    [
+      "REQ_140",
+      "REQ_141"
+    ],
+    [
+      "REQ_142",
+      "REQ_143"
+    ],
+    [
+      "REQ_144",
+      "REQ_145"
+    ],
+    [
+      "REQ_146",
+      "REQ_147"
+    ],
+    [
+      "REQ_148",
+      "REQ_149"
+    ],
+    [
+      "REQ_150",
+      "REQ_151"
+    ],
+    [
+      "REQ_152",
+      "REQ_153"
+    ]
+  ]
+}

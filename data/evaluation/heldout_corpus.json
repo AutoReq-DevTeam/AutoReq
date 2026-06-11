@@ -1,0 +1,746 @@
+[
+  {
+    "text": "Hasta randevu almadan önce TC kimlik numarasını doğrulatmalıdır.",
+    "expected_actors": [
+      "hasta"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Doktor, hastanın tıbbi geçmişini görüntüleyebilmelidir.",
+    "expected_actors": [
+      "doktor"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Hemşire, hasta yatak başı gözlem formunu doldurabilmelidir.",
+    "expected_actors": [
+      "hemşire"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Eczacı, reçetedeki ilaçları hasta adına karşılayabilmelidir.",
+    "expected_actors": [
+      "eczacı"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Laborant, test sonuçlarını sisteme girebilmelidir.",
+    "expected_actors": [
+      "laborant"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Diyetisyen, hastaya özel beslenme planı oluşturabilmelidir.",
+    "expected_actors": [
+      "diyetisyen"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Fizyoterapist, tedavi seanslarını planlayabilmelidir.",
+    "expected_actors": [
+      "fizyoterapist"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Hasta yakını, hastanın durumunu çevrimiçi takip edebilmelidir.",
+    "expected_actors": [
+      "hasta yakını"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Acil servis triaj hemşiresi hastaları önceliklendirmelidir.",
+    "expected_actors": [
+      "hemşire"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Radyolog, görüntüleme sonuçlarını PACS sistemine yükleyebilmelidir.",
+    "expected_actors": [
+      "radyolog"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Başhekim, klinik bazlı doluluk oranlarını raporlayabilmelidir.",
+    "expected_actors": [
+      "başhekim"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Hastane yöneticisi, personel nöbet çizelgesini düzenleyebilmelidir.",
+    "expected_actors": [
+      "yönetici"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Tıbbi sekreter, hasta dosyasını arşivleyebilmelidir.",
+    "expected_actors": [
+      "sekreter"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Hasta, faturasını online ödeyebilmelidir.",
+    "expected_actors": [
+      "hasta"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Doktor, e-reçete yazabilmeli ve eczaneye iletebilmelidir.",
+    "expected_actors": [
+      "doktor"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Hasta verilerinin yedeklenmesi günde en az iki kez yapılmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, eş zamanlı 500 poliklinik kaydını işleyebilmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Tıbbi kayıtlar KVKK kapsamında şifrelenmiş olarak saklanmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Acil çağrı bildirimleri 2 saniye içinde ilgili ekibe ulaşmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Laboratuvar sonuçları otomatik olarak doktorun ekranına düşmelidir.",
+    "expected_actors": [
+      "doktor"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sistem %99,5 uptime hedefini sağlamalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Hasta taburcu işlemi ortalama 15 dakikayı geçmemelidir.",
+    "expected_actors": [
+      "hasta"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Ameliyathane doluluk oranı anlık olarak izlenebilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Eczane stok seviyesi kritik eşiğin altına düştüğünde otomatik uyarı verilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "İlaç etkileşim kontrolü reçete yazılmadan önce otomatik gerçekleştirilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Hasta memnuniyet anketi taburculuk sonrası 24 saat içinde gönderilmelidir.",
+    "expected_actors": [
+      "hasta"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Doktor, ameliyat notlarını sesli komutla dikte edebilmelidir.",
+    "expected_actors": [
+      "doktor"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sigorta şirketi entegrasyonu üzerinden hasta provizyon sorgulama yapılabilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Teletıp görüşmeleri uçtan uca şifrelenmiş video altyapısı üzerinden gerçekleştirilmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Kan bankası envanter takibi FIFO prensibiyle yönetilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, sürücünün hız sabitleyiciyi etkinleştirmesine izin vermelidir.",
+    "expected_actors": [
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Otonom sürüş sistemi, trafik ışıklarını doğru bir şekilde algılamalı ve yorumlamalıdır.",
+    "expected_actors": [
+      "otonom sürüş sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Gösterge paneli, aracın mevcut hızını dijital olarak göstermelidir.",
+    "expected_actors": [
+      "gösterge paneli"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Şerit takip asistanı, aracın şerit dışına çıkmasını engellemek için direksiyon müdahalesi yapmalıdır.",
+    "expected_actors": [
+      "şerit takip asistanı"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Fren sistemi, acil durumlarda otomatik olarak devreye girmelidir.",
+    "expected_actors": [
+      "fren sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Kullanıcı, infotainment sistemi üzerinden navigasyon hedefini belirleyebilmelidir.",
+    "expected_actors": [
+      "kullanıcı",
+      "infotainment sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Radar sensörü, öndeki araçların mesafesini ve hızını sürekli olarak izlemelidir.",
+    "expected_actors": [
+      "radar sensörü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Park asistanı, uygun park yerlerini otomatik olarak tespit etmelidir.",
+    "expected_actors": [
+      "park asistanı"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Araç içi kamera, sürücünün dikkatini dağıtan davranışları algılamalıdır.",
+    "expected_actors": [
+      "araç içi kamera",
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, lastik basıncı düşük olduğunda sürücüyü uyarmalıdır.",
+    "expected_actors": [
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Otonom sürüş sistemi, yaya geçitlerini algılamalı ve yayalara yol vermelidir.",
+    "expected_actors": [
+      "otonom sürüş sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Gösterge paneli, motor arıza ışığını açıkça göstermelidir.",
+    "expected_actors": [
+      "gösterge paneli"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Şerit takip asistanı, şerit çizgilerini 50 milisaniye içinde algılamalıdır.",
+    "expected_actors": [
+      "şerit takip asistanı"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Fren sistemi, 100 km/s hızdan 0 km/s hıza 3 saniyeden kısa sürede durabilmelidir.",
+    "expected_actors": [
+      "fren sistemi"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Infotainment sistemi, açılışta 5 saniyeden daha kısa sürede kullanıma hazır olmalıdır.",
+    "expected_actors": [
+      "infotainment sistemi"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Radar sensörü, 200 metreye kadar olan mesafedeki nesneleri %99 doğrulukla algılamalıdır.",
+    "expected_actors": [
+      "radar sensörü"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, -30°C ile +85°C arasındaki sıcaklıklarda sorunsuz çalışmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Yazılım güncellemeleri, araç çalışır durumdayken güvenli bir şekilde yapılabilmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, siber saldırılara karşı dayanıklı olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Kullanıcı arayüzü, sezgisel ve kolay anlaşılır olmalıdır.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, 100.000 saatlik çalışma süresi boyunca ortalama hata süresi 1 saati geçmemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Otonom sürüş sistemi, 5G bağlantısı kesildiğinde güvenli bir şekilde manuel moda geçmelidir.",
+    "expected_actors": [
+      "otonom sürüş sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Gösterge paneli, yakıt seviyesini %1 doğrulukla göstermelidir.",
+    "expected_actors": [
+      "gösterge paneli"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Sürücü, direksiyon simidindeki düğmeler aracılığıyla sesli komut sistemini etkinleştirebilmelidir.",
+    "expected_actors": [
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Infotainment sistemi, Apple CarPlay ve Android Auto ile uyumlu olmalıdır.",
+    "expected_actors": [
+      "infotainment sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Araç, çarpışma anında hava yastıklarını 30 milisaniye içinde açmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, araç içi sıcaklığı otomatik olarak ayarlayabilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Şerit takip asistanı, gece ve gündüz koşullarında eşit derecede performans göstermelidir.",
+    "expected_actors": [
+      "şerit takip asistanı"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Otonom sürüş sistemi, ani şerit değişikliklerini güvenli bir şekilde gerçekleştirmelidir.",
+    "expected_actors": [
+      "otonom sürüş sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Kullanıcı, araç ayarlarını mobil uygulama üzerinden uzaktan kontrol edebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Fren sistemi, ıslak zeminde %90'ın üzerinde frenleme verimliliği sağlamalıdır.",
+    "expected_actors": [
+      "fren sistemi"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Gösterge paneli, tüm uyarı mesajlarını Türkçe olarak görüntülemelidir.",
+    "expected_actors": [
+      "gösterge paneli"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, araç içi sensörlerden gelen verileri gerçek zamanlı olarak işlemelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Radar sensörü, yağmurlu hava koşullarında bile doğru algılama yapabilmelidir.",
+    "expected_actors": [
+      "radar sensörü"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Sürücü, geri görüş kamerasını vites geri konumuna alındığında otomatik olarak etkinleştirebilmelidir.",
+    "expected_actors": [
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Infotainment sistemi, 1080p çözünürlükte video oynatabilmelidir.",
+    "expected_actors": [
+      "infotainment sistemi"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Otonom sürüş sistemi, trafik sıkışıklığında dur-kalk özelliğini kullanabilmelidir.",
+    "expected_actors": [
+      "otonom sürüş sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, aracın konumunu GPS üzerinden %5 metre doğrulukla belirlemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Gösterge paneli, sürücünün kişisel tercihlerine göre özelleştirilebilmelidir.",
+    "expected_actors": [
+      "gösterge paneli",
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Şerit takip asistanı, 60 km/s üzerindeki hızlarda aktif olmalıdır.",
+    "expected_actors": [
+      "şerit takip asistanı"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Fren sistemi, aşırı ısınmaya karşı koruma mekanizmasına sahip olmalıdır.",
+    "expected_actors": [
+      "fren sistemi"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Kullanıcı, Bluetooth üzerinden telefonunu infotainment sistemine bağlayabilmelidir.",
+    "expected_actors": [
+      "kullanıcı",
+      "infotainment sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, araç içi ağdaki tüm iletişimleri şifrelemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Radar sensörü, motosiklet gibi küçük nesneleri de algılayabilmelidir.",
+    "expected_actors": [
+      "radar sensörü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Otonom sürüş sistemi, yol işaretlerini 95% doğrulukla tanımalıdır.",
+    "expected_actors": [
+      "otonom sürüş sistemi"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Gösterge paneli, yakıt tüketimini anlık olarak göstermelidir.",
+    "expected_actors": [
+      "gösterge paneli"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sürücü, farları otomatik olarak açıp kapatma özelliğini kullanabilmelidir.",
+    "expected_actors": [
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Infotainment sistemi, sesli komutları %90 doğrulukla anlamalıdır.",
+    "expected_actors": [
+      "infotainment sistemi"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, araç arızalarını uzaktan teşhis edebilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Şerit takip asistanı, virajlarda da şerit takibini sürdürebilmelidir.",
+    "expected_actors": [
+      "şerit takip asistanı"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Fren sistemi, ABS ve ESP gibi güvenlik özelliklerini içermelidir.",
+    "expected_actors": [
+      "fren sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Kullanıcı, koltuk ısıtma ayarlarını dokunmatik ekran üzerinden yapabilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, 100 ms'den daha kısa sürede sensör verilerini işleyebilmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Radar sensörü, 0.5 metreye kadar olan mesafedeki engelleri algılamalıdır.",
+    "expected_actors": [
+      "radar sensörü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Otonom sürüş sistemi, acil durum frenlemesini 200 milisaniye içinde başlatmalıdır.",
+    "expected_actors": [
+      "otonom sürüş sistemi"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Gösterge paneli, dış hava sıcaklığını göstermelidir.",
+    "expected_actors": [
+      "gösterge paneli"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sürücü, dikiz aynalarını elektrikli olarak ayarlayabilmelidir.",
+    "expected_actors": [
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Infotainment sistemi, yazılım güncellemelerini OTA (Over-The-Air) yoluyla alabilmelidir.",
+    "expected_actors": [
+      "infotainment sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, araç içi ağda 100 Mbit/s veri transfer hızı sağlamalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Şerit takip asistanı, sürücünün müdahalesi olmadan 30 saniyeden fazla aktif kalmamalıdır.",
+    "expected_actors": [
+      "şerit takip asistanı",
+      "sürücü"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Fren sistemi, disklerin aşınma durumunu izlemeli ve sürücüyü uyarmalıdır.",
+    "expected_actors": [
+      "fren sistemi",
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Kullanıcı, araç içi Wi-Fi hotspot'unu etkinleştirebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, 12V araç aküsünün voltajını sürekli olarak izlemelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Radar sensörü, farklı hava koşullarında (kar, sis) performansını korumalıdır.",
+    "expected_actors": [
+      "radar sensörü"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Otonom sürüş sistemi, kavşaklarda diğer araçlarla güvenli bir şekilde etkileşim kurmalıdır.",
+    "expected_actors": [
+      "otonom sürüş sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Gösterge paneli, ortalama yakıt tüketimini göstermelidir.",
+    "expected_actors": [
+      "gösterge paneli"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sürücü, direksiyon ısıtma özelliğini açıp kapatabilmelidir.",
+    "expected_actors": [
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Infotainment sistemi, 64 GB dahili depolama alanına sahip olmalıdır.",
+    "expected_actors": [
+      "infotainment sistemi"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, araç içi sensörlerden gelen verileri 10 Hz frekansında güncellemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Şerit takip asistanı, sürücünün direksiyon müdahalesiyle kolayca devre dışı bırakılabilmelidir.",
+    "expected_actors": [
+      "şerit takip asistanı",
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Fren sistemi, yokuş kalkış desteği sağlamalıdır.",
+    "expected_actors": [
+      "fren sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Kullanıcı, araç içi ambiyans aydınlatmasını kişiselleştirebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, araç içi hava kalitesini izlemeli ve sürücüyü bilgilendirmelidir.",
+    "expected_actors": [
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Radar sensörü, 300 metreye kadar olan mesafedeki araçları algılayabilmelidir.",
+    "expected_actors": [
+      "radar sensörü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Otonom sürüş sistemi, acil durum şerit değiştirme manevralarını güvenli bir şekilde yapabilmelidir.",
+    "expected_actors": [
+      "otonom sürüş sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Gösterge paneli, motor devir sayısını analog veya dijital olarak göstermelidir.",
+    "expected_actors": [
+      "gösterge paneli"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sürücü, sürüş modlarını (Eco, Sport, Normal) seçebilmelidir.",
+    "expected_actors": [
+      "sürücü"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Infotainment sistemi, 4K çözünürlüklü haritaları desteklemelidir.",
+    "expected_actors": [
+      "infotainment sistemi"
+    ],
+    "expected_type": "NON_FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, araç içi sensör verilerini bulut tabanlı bir platforma güvenli bir şekilde iletmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Şerit takip asistanı, yol yapım alanlarında geçici şerit çizgilerini tanıyabilmelidir.",
+    "expected_actors": [
+      "şerit takip asistanı"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Fren sistemi, rejeneratif frenleme özelliğine sahip olmalıdır.",
+    "expected_actors": [
+      "fren sistemi"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Kullanıcı, araç içi uygulamaları uygulama mağazasından indirebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL"
+  },
+  {
+    "text": "Sistem, araç içi mikrofonlardan gelen sesli komutları 200 milisaniye içinde işlemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL"
+  }
+]

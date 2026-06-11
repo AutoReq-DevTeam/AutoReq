@@ -1,11 +1,11 @@
 {
-  "ground_truth_pairs": 5,
-  "found_pairs": 6,
-  "tp": 5,
-  "fp": 1,
-  "fn": 0,
-  "detection_rate": 100.0,
-  "false_positive_rate": 16.7,
-  "precision": 83.3,
-  "recall": 100.0
+  "ground_truth_pairs": 50,
+  "found_pairs": 52,
+  "tp": 49,
+  "fp": 3,
+  "fn": 1,
+  "detection_rate": 98.0,
+  "false_positive_rate": 5.8,
+  "precision": 94.2,
+  "recall": 98.0
 }

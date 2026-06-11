@@ -1,0 +1,1807 @@
+[
+  {
+    "text": "Kullanıcı sepetine ürün ekleyebilmeli ve ödeme adımına geçebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "Ödeme sayfasında kullanıcı oturumu zorunlu olmamalı; misafir kullanıcı da ödeme yapabilmelidir.",
+    "expected_actors": [
+      "misafir kullanıcı",
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "Ödeme sayfasına erişim yalnızca kayıtlı ve giriş yapmış kullanıcılara açık olmalıdır.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "Sistem, stokta olmayan ürünleri sepete eklenmesine izin vermemelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "Sistem, stokta olmayan ürünler sepete eklenebilmeli; ancak ödeme sırasında uyarı gösterilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "Kullanıcı, siparişini tamamlamadan önce adres bilgisini girmek zorunda olmamalıdır.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "Her sipariş için geçerli bir teslimat adresi zorunlu tutulmalıdır.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "İndirim kuponu yalnızca bir kez kullanılabilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "Aynı kupon kodu birden fazla siparişe uygulanabilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "Kredi kartı bilgileri sunucuda saklanmamalı; yalnızca tokenize hali tutulmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "Hızlı ödeme için kart bilgileri kullanıcı onayıyla kaydedilebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "Sistem, sipariş tamamlandıktan sonra stok miktarını otomatik güncellenmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "Stok güncellemesi yalnızca kargo firmasi teslimatı onayladıktan sonra yapılmalıdır.",
+    "expected_actors": [
+      "kargo firması"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "e-ticaret"
+  },
+  {
+    "text": "Müşteri mobil uygulama üzerinden hesap bakiyesini görüntüleyebilmelidir.",
+    "expected_actors": [
+      "müşteri"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "bankacılık"
+  },
+  {
+    "text": "Müşteri EFT ve havale işlemi gerçekleştirebilmelidir.",
+    "expected_actors": [
+      "müşteri"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "bankacılık"
+  },
+  {
+    "text": "Müşteri kredi kartı ekstresi PDF olarak indirilebilmelidir.",
+    "expected_actors": [
+      "müşteri"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "bankacılık"
+  },
+  {
+    "text": "Müşteri döviz alım satım işlemi yapabilmelidir.",
+    "expected_actors": [
+      "müşteri"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "bankacılık"
+  },
+  {
+    "text": "Yatırım fonu alım satımı mobil uygulama üzerinden gerçekleştirilebilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL",
+    "domain": "bankacılık"
+  },
+  {
+    "text": "Müşteri şube randevusu oluşturabilmelidir.",
+    "expected_actors": [
+      "müşteri"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "bankacılık"
+  },
+  {
+    "text": "Müşteri destek hattını uygulama içinden arayabilmelidir.",
+    "expected_actors": [
+      "müşteri"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "bankacılık"
+  },
+  {
+    "text": "Hesap hareketleri son 1 yıla ait olacak şekilde listelenebilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL",
+    "domain": "bankacılık"
+  },
+  {
+    "text": "Müşteri IBAN ile para transferi yapabilmelidir.",
+    "expected_actors": [
+      "müşteri"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "bankacılık"
+  },
+  {
+    "text": "Bildirim tercihleri uygulama içinden yönetilebilmelidir.",
+    "expected_actors": [],
+    "expected_type": "FUNCTIONAL",
+    "domain": "bankacılık"
+  },
+  {
+    "text": "Sistem hızlı olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "eğitim"
+  },
+  {
+    "text": "Öğrenciler sistemi kolayca kullanabilmelidir.",
+    "expected_actors": [
+      "öğrenci"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "eğitim"
+  },
+  {
+    "text": "Platform güvenli olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "eğitim"
+  },
+  {
+    "text": "İçerikler kaliteli sunulmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "eğitim"
+  },
+  {
+    "text": "Sistem her zaman erişilebilir olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "eğitim"
+  },
+  {
+    "text": "Bildirimler zamanında gönderilmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "eğitim"
+  },
+  {
+    "text": "Öğretmen raporları düzenli paylaşabilmelidir.",
+    "expected_actors": [
+      "öğretmen"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "eğitim"
+  },
+  {
+    "text": "Sistem yüksek trafiği kaldırabilmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "eğitim"
+  },
+  {
+    "text": "Arayüz kullanıcı dostu tasarlanmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "eğitim"
+  },
+  {
+    "text": "Veri güvenli saklanmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "eğitim"
+  },
+  {
+    "text": "Sistem ölçeklenebilir olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "eğitim"
+  },
+  {
+    "text": "Uygulama farklı cihazlarda düzgün çalışmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "eğitim"
+  },
+  {
+    "text": "Çalışan kendi izin taleplerini sisteme girebilmelidir.",
+    "expected_actors": [
+      "çalışan"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "Yönetici, ekibindeki çalışanların izin taleplerini onaylayabilmeli veya reddedebilmelidir.",
+    "expected_actors": [
+      "yönetici"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "İK uzmanı, tüm departmanlardaki izin süreçlerini raporlayabilmelidir.",
+    "expected_actors": [
+      "ik uzmanı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "Sistem yöneticisi kullanıcı yetki matrisini güncelleyebilmelidir.",
+    "expected_actors": [
+      "sistem yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "Çalışan bordro bilgilerini görüntüleyebilmeli; yalnızca kendi bilgilerine erişebilmelidir.",
+    "expected_actors": [
+      "çalışan"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "İK uzmanı, çalışan özlük dosyasına belge ekleyebilmelidir.",
+    "expected_actors": [
+      "ik uzmanı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "Yönetici, ekibinin performans değerlendirme formlarını doldurabilmelidir.",
+    "expected_actors": [
+      "yönetici"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "Çalışan, kendi performans değerlendirme sonuçlarını görüntüleyebilmelidir.",
+    "expected_actors": [
+      "çalışan"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "Sistem yöneticisi denetim loglarını inceleyebilmelidir.",
+    "expected_actors": [
+      "sistem yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "Finans müdürü, departman bazlı bütçe raporlarını Excel olarak dışa aktarabilmelidir.",
+    "expected_actors": [
+      "finans müdürü"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "İK uzmanı, işe alım süreçlerini sistemde takip edebilmelidir.",
+    "expected_actors": [
+      "ik uzmanı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "Aday, iş başvurusunu portal üzerinden gerçekleştirebilmelidir.",
+    "expected_actors": [
+      "aday"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "Yönetici, departmanına yeni çalışan ataması yapabilmelidir.",
+    "expected_actors": [
+      "yönetici"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "kurumsal"
+  },
+  {
+    "text": "Uygulama, Android 10 ve üzeri ile iOS 15 ve üzeri sürümlerde çalışmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Uygulama açılış süresi soğuk başlatmada 3 saniyeyi geçmemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Sayfa geçişleri 500 milisaniyenin altında tamamlanmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Uygulama, 10.000 eş zamanlı kullanıcıyı desteklemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Çevrimdışı modda son 7 günlük veri önbellekten erişilebilir olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Uygulama batarya tüketimi günde 2 saat aktif kullanımda %5'i geçmemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Tüm ağ iletişimi TLS 1.3 protokolüyle şifrelenmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Kullanıcı oturumu 30 dakika hareketsizlikte otomatik sonlandırılmalıdır.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Biyometrik doğrulama (parmak izi, yüz tanıma) desteklenmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Uygulama %99,9 SLA hedefini karşılamalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Crash oranı aylık aktif kullanıcı başına %0,1'in altında tutulmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Erişilebilirlik standartları (WCAG 2.1 AA) uyumlu olunmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Kişisel veriler KVKK ve GDPR gerekliliklerine uygun şekilde işlenmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Uygulama boyutu 50 MB'ı geçmemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Push bildirim iletim süresi 5 saniyeyi geçmemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "mobil"
+  },
+  {
+    "text": "Akıllı termostat, ortam sıcaklığını 0.5°C hassasiyetle ölçebilmelidir.",
+    "expected_actors": [
+      "akıllı termostat"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Kullanıcı, mobil uygulama üzerinden akıllı aydınlatma sistemini açıp kapatabilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, bağlı tüm IoT cihazlarının anlık durumunu görüntüleyebilmelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Akıllı kilit, yetkili kullanıcıların parmak iziyle kapıyı açmasına izin vermelidir.",
+    "expected_actors": [
+      "akıllı kilit",
+      "yetkili kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem yöneticisi, yeni bir IoT cihazını sisteme kaydedebilmelidir.",
+    "expected_actors": [
+      "sistem yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Akıllı sulama sistemi, hava durumu verilerine göre sulama programını otomatik olarak ayarlamalıdır.",
+    "expected_actors": [
+      "akıllı sulama sistemi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Kullanıcı, akıllı prizlerin enerji tüketimini gerçek zamanlı olarak izleyebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, belirlenen eşik değerler aşıldığında kullanıcılara bildirim göndermelidir.",
+    "expected_actors": [
+      "sistem",
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Akıllı güvenlik kamerası, hareket algıladığında video kaydını başlatmalıdır.",
+    "expected_actors": [
+      "akıllı güvenlik kamerası"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Tenant yöneticisi, kiracıların IoT cihazlarına erişim yetkilerini yönetebilmelidir.",
+    "expected_actors": [
+      "tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Akıllı buzdolabı, eksik gıda maddelerini otomatik olarak tespit edip sipariş listesine eklemelidir.",
+    "expected_actors": [
+      "akıllı buzdolabı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Kullanıcı, senaryolar oluşturarak birden fazla IoT cihazını aynı anda kontrol edebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, cihazların pil seviyelerini izlemeli ve düşük pil uyarısı vermelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Akıllı kapı zili, ziyaretçinin görüntüsünü mobil uygulamaya aktarmalıdır.",
+    "expected_actors": [
+      "akıllı kapı zili"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, IoT cihazlarından gelen verileri bulut tabanlı bir platformda depolamalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Akıllı fırın, önceden ayarlanmış tariflere göre pişirme programını başlatabilmelidir.",
+    "expected_actors": [
+      "akıllı fırın"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Kullanıcı, IoT cihazlarının geçmiş veri kayıtlarını grafiksel olarak görüntüleyebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, cihazlar arasındaki iletişimi güvenli bir şekilde sağlamalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Akıllı perde, gün doğumu ve gün batımı saatlerine göre otomatik olarak açılıp kapanmalıdır.",
+    "expected_actors": [
+      "akıllı perde"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem yöneticisi, cihaz yazılımlarını uzaktan güncelleyebilmelidir.",
+    "expected_actors": [
+      "sistem yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Akıllı çamaşır makinesi, enerji tasarrufu modunda çalışabilmelidir.",
+    "expected_actors": [
+      "akıllı çamaşır makinesi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Kullanıcı, belirli bir cihazın çalışma geçmişini filtreleyerek inceleyebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, cihaz arızalarını tespit edip ilgili birimlere otomatik olarak bildirim göndermelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Akıllı kahve makinesi, sabahları belirli bir saatte kahve demlemeye başlamalıdır.",
+    "expected_actors": [
+      "akıllı kahve makinesi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, farklı marka ve modellerdeki IoT cihazlarıyla entegre olabilmelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Akıllı sensörler, ortamdaki gaz kaçağını algıladığında alarm vermelidir.",
+    "expected_actors": [
+      "akıllı sensörler"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Kullanıcı, cihazların konum bilgilerini harita üzerinde görüntüleyebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, cihazların enerji tüketimini optimize etmek için öneriler sunmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Akıllı evcil hayvan besleyici, belirli aralıklarla mama dağıtmalıdır.",
+    "expected_actors": [
+      "akıllı evcil hayvan besleyici"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, cihazların çevrimdışı kalması durumunda kullanıcılara uyarı göndermelidir.",
+    "expected_actors": [
+      "sistem",
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, 1000'den fazla eşzamanlı bağlantıyı kesintisiz olarak desteklemelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Mobil uygulama, 3 saniye içinde açılmalıdır.",
+    "expected_actors": [
+      "mobil uygulama"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, %99.9 oranında erişilebilir olmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Veri iletimi, endüstri standardı şifreleme protokolleri kullanılarak güvence altına alınmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, cihazlardan gelen verileri 100 milisaniye içinde işleyebilmelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Kullanıcı arayüzü, farklı ekran boyutlarına ve çözünürlüklerine uyumlu olmalıdır.",
+    "expected_actors": [
+      "kullanıcı arayüzü"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, yetkisiz erişime karşı güçlü kimlik doğrulama mekanizmaları sağlamalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Cihaz yazılımları, uzaktan güncellenebilir olmalıdır.",
+    "expected_actors": [
+      "cihaz yazılımları"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, veri kaybını önlemek için düzenli yedeklemeler yapmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Mobil uygulama, düşük bant genişliğine sahip ağlarda bile sorunsuz çalışmalıdır.",
+    "expected_actors": [
+      "mobil uygulama"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, ölçeklenebilir bir mimariye sahip olmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Cihazlar, 5 yıla kadar pil ömrü sunmalıdır.",
+    "expected_actors": [
+      "cihazlar"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, uluslararası güvenlik standartlarına uygun olmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Veri depolama, GDPR uyumlu olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, 7/24 izlenebilir ve yönetilebilir olmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Kullanıcı arayüzü, sezgisel ve kolay anlaşılır olmalıdır.",
+    "expected_actors": [
+      "kullanıcı arayüzü"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, farklı dilleri desteklemelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Cihazlar, zorlu çevresel koşullara dayanıklı olmalıdır.",
+    "expected_actors": [
+      "cihazlar"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, hata durumlarında otomatik kurtarma yeteneğine sahip olmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "API'ler, üçüncü taraf entegrasyonlarına izin verecek şekilde belgelenmelidir.",
+    "expected_actors": [
+      "API'ler"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, enerji tüketimini minimize edecek şekilde tasarlanmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Veri analizi modülü, büyük veri setlerini hızlı bir şekilde işleyebilmelidir.",
+    "expected_actors": [
+      "veri analizi modülü"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, siber saldırılara karşı dirençli olmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Cihazlar, düşük güç tüketimi modunda çalışabilmelidir.",
+    "expected_actors": [
+      "cihazlar"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, yeni cihaz türlerini kolayca entegre edebilmelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Kullanıcı verileri, anonimleştirilerek analiz edilmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, farklı ağ protokollerini desteklemelidir (örn. Zigbee, Z-Wave, Wi-Fi).",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Mobil uygulama, hem iOS hem de Android platformlarında çalışmalıdır.",
+    "expected_actors": [
+      "mobil uygulama"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, 100.000'den fazla cihazı yönetebilmelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Veri aktarımı, gecikme süresi 50 milisaniyenin altında olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Sistem, felaket kurtarma planlarına sahip olmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "iot"
+  },
+  {
+    "text": "Kullanıcı, abonelik planını istediği zaman yükseltebilmeli veya düşürebilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, yeni bir kullanıcı kaydı yapıldığında otomatik olarak hoş geldin e-postası göndermelidir.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, kendi tenant'ına ait kullanıcıları yönetebilmelidir (ekleme, silme, düzenleme).",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, farklı cihazlarda (masaüstü, mobil) duyarlı bir arayüz sunmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, kullanıcı verilerini endüstri standardı şifreleme yöntemleriyle korumalıdır.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, faturalandırma geçmişini ve ödeme bilgilerini görüntüleyebilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, aylık kullanım raporlarını otomatik olarak oluşturup tenant yöneticisine e-posta ile göndermelidir.",
+    "expected_actors": [
+      "Sistem",
+      "tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, %99.9 çalışma süresi garantisi vermelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, şifresini unuttuğunda güvenli bir şekilde sıfırlayabilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, API entegrasyonları için açık ve iyi belgelenmiş bir API sunmalıdır.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Veritabanı yedeklemeleri günlük olarak otomatik yapılmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, kendi tenant'ına özel ayarları (örneğin, logo, renk şeması) özelleştirebilmelidir.",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, farklı dillerde (Türkçe, İngilizce) kullanılabilir olmalıdır.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, aboneliğini iptal ettiğinde verileri belirli bir süre sonra silinmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, 5000 eşzamanlı kullanıcıyı sorunsuz bir şekilde destekleyebilmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, kredi kartı ödemelerini güvenli bir ödeme ağ geçidi üzerinden işlemelidir.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, iki faktörlü kimlik doğrulama (2FA) özelliğini etkinleştirebilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, performans düşüşlerini önlemek için otomatik ölçeklendirme yeteneğine sahip olmalıdır.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, kullanıcı rollerini ve izinlerini tanımlayabilmelidir.",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, erişilebilirlik standartlarına (WCAG 2.1) uygun olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, destek taleplerini uygulama içinden oluşturabilmeli ve takip edebilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, tüm kullanıcı eylemlerini denetim günlüklerine kaydetmelidir.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Veri aktarımı SSL/TLS protokolleri kullanılarak şifrelenmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, kendi tenant'ına ait kullanım istatistiklerini görüntüleyebilmelidir.",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, 3 saniyeden daha kısa sürede yanıt vermelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, e-posta bildirim ayarlarını yönetebilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, farklı zaman dilimlerini desteklemelidir.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, yeni abonelik planları oluşturabilmeli ve mevcutları düzenleyebilmelidir.",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, tarayıcı uyumluluğunu sağlamalıdır (Chrome, Firefox, Safari, Edge).",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, uygulama içinden yardım dokümanlarına erişebilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, GDPR ve KVKK gibi veri gizliliği düzenlemelerine uygun olmalıdır.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, faturalandırma bilgilerini güncelleyebilmelidir.",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, güvenlik açıkları için düzenli olarak taranmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, profil bilgilerini (ad, soyad, e-posta) güncelleyebilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, kullanıcı oturumlarını belirli bir süre sonra otomatik olarak sonlandırmalıdır.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, abonelik iptal taleplerini onaylayabilmeli veya reddedebilmelidir.",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, hata durumlarında kullanıcıya anlaşılır hata mesajları göstermelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, farklı ödeme yöntemleri (kredi kartı, banka havalesi) arasından seçim yapabilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, yeni özellikler eklendiğinde geriye dönük uyumluluğu sağlamalıdır.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, kullanıcıların oturumlarını sonlandırabilmelidir.",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, düşük bant genişliğine sahip ağlarda bile kullanılabilir olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, abonelik yenileme hatırlatıcıları alabilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, tüm logları merkezi bir log yönetim sistemine göndermelidir.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, kendi tenant'ına özel alan adlarını (custom domains) yapılandırabilmelidir.",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, 7/24 teknik destek sunmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, uygulama içinden geri bildirim gönderebilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, kullanıcı verilerini coğrafi olarak belirli bir bölgede saklamalıdır.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, kullanıcıların erişim günlüklerini inceleyebilmelidir.",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, yeni sürümler için otomatik güncelleme mekanizmasına sahip olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, abonelik planı değişikliklerinin etkilerini önceden görebilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, yetkisiz erişim denemelerini tespit etmeli ve engellemelidir.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, kullanıcı davetlerini e-posta ile gönderebilmelidir.",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, farklı para birimlerini desteklemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, abonelik planı detaylarını (özellikler, fiyat) karşılaştırabilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, tüm hassas verileri maskeleyerek veya şifreleyerek görüntülemelidir.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, kullanıcıların hesaplarını askıya alabilmeli veya yeniden etkinleştirebilmelidir.",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Uygulama, üçüncü taraf entegrasyonları için güvenli kimlik doğrulama yöntemleri sunmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Kullanıcı, abonelik planı yükseltmelerinde otomatik indirimlerden faydalanabilmelidir.",
+    "expected_actors": [
+      "Kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Sistem, felaket kurtarma planına sahip olmalı ve düzenli olarak test edilmelidir.",
+    "expected_actors": [
+      "Sistem"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Tenant yöneticisi, faturalandırma döngüsünü ve ödeme tarihlerini yapılandırabilmelidir.",
+    "expected_actors": [
+      "Tenant yöneticisi"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "saas"
+  },
+  {
+    "text": "Oyuncu, oyun içi mağazadan sanal para birimi kullanarak eşya satın alabilmelidir.",
+    "expected_actors": [
+      "oyuncu"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Sistem, oyuncunun ilerlemesini otomatik olarak kaydetmelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, 1080p çözünürlükte akıcı bir şekilde çalışmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Kullanıcı, oyun ayarlarını kişiselleştirebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun sunucusu, aynı anda en az 100.000 oyuncuyu destekleyebilmelidir.",
+    "expected_actors": [
+      "oyun sunucusu"
+    ],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyuncu, diğer oyuncularla sohbet edebilmelidir.",
+    "expected_actors": [
+      "oyuncu"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Sistem, hile yapan oyuncuları tespit edip cezalandırmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, 5 saniyeden kısa sürede yüklenmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Kullanıcı, farklı oyun modları arasında geçiş yapabilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, düşük gecikme süresiyle (latency) çalışmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyuncu, görevleri tamamlayarak deneyim puanı kazanabilmelidir.",
+    "expected_actors": [
+      "oyuncu"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Sistem, oyuncunun envanterini yönetmelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, çeşitli dilleri desteklemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Kullanıcı, oyun içi bildirimleri alıp görüntüleyebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, farklı platformlarda (PC, konsol, mobil) çalışabilmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyuncu, karakterini özelleştirebilmelidir.",
+    "expected_actors": [
+      "oyuncu"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Sistem, oyuncu sıralamalarını güncel tutmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, veri güvenliğini sağlamalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Kullanıcı, arkadaş listesini yönetebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, erişilebilirlik seçenekleri sunmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyuncu, oyun içi etkinliklere katılabilmelidir.",
+    "expected_actors": [
+      "oyuncu"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Sistem, oyuncu istatistiklerini takip etmelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, düzenli olarak güncellemeler almalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Kullanıcı, oyun içi satın alımları güvenli bir şekilde gerçekleştirebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, minimum sistem gereksinimlerini karşılamalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyuncu, loncalara veya klanlara katılabilmelidir.",
+    "expected_actors": [
+      "oyuncu"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Sistem, oyun içi ekonomiyi dengelemelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, kullanıcı gizliliğini korumalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Kullanıcı, oyun içi başarımları görüntüleyebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, farklı kontrol şemalarını desteklemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyuncu, oyun içi haritayı kullanabilmelidir.",
+    "expected_actors": [
+      "oyuncu"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Sistem, oyuncu geri bildirimlerini toplayabilmelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, kesintisiz bir oyun deneyimi sunmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Kullanıcı, oyun içi öğreticileri (tutorial) takip edebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, farklı ağ koşullarına uyum sağlayabilmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyuncu, oyun içi görevleri kabul edip tamamlayabilmelidir.",
+    "expected_actors": [
+      "oyuncu"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Sistem, oyun içi ödülleri dağıtmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, kullanıcı arayüzü (UI) sezgisel olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Kullanıcı, oyun içi ses ayarlarını değiştirebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, üçüncü taraf entegrasyonlarını desteklemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyuncu, oyun içi eşyaları takas edebilmelidir.",
+    "expected_actors": [
+      "oyuncu"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Sistem, oyun içi hileleri engellemelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, düşük bellek tüketimine sahip olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Kullanıcı, oyun içi topluluk forumlarına erişebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, farklı ekran boyutlarına uyum sağlayabilmelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyuncu, oyun içi yeteneklerini geliştirebilmelidir.",
+    "expected_actors": [
+      "oyuncu"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Sistem, oyun içi etkinlikleri planlayıp duyurmalıdır.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, kararlı bir şekilde çalışmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Kullanıcı, oyun içi satın alma geçmişini görüntüleyebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, kolayca güncellenebilir bir yapıya sahip olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyuncu, oyun içi liderlik tablolarını görüntüleyebilmelidir.",
+    "expected_actors": [
+      "oyuncu"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Sistem, oyuncu hesaplarını güvenli bir şekilde yönetmelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, kullanıcı dostu bir arayüze sahip olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Kullanıcı, oyun içi raporlama sistemini kullanabilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, farklı giriş cihazlarını desteklemelidir.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyuncu, oyun içi başarımları kilitleyebilmelidir.",
+    "expected_actors": [
+      "oyuncu"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Sistem, oyun içi bildirimleri zamanında göndermelidir.",
+    "expected_actors": [
+      "sistem"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, yüksek performanslı grafikler sunmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Kullanıcı, oyun içi yardım menüsüne erişebilmelidir.",
+    "expected_actors": [
+      "kullanıcı"
+    ],
+    "expected_type": "FUNCTIONAL",
+    "domain": "oyun"
+  },
+  {
+    "text": "Oyun, hızlı yanıt sürelerine sahip olmalıdır.",
+    "expected_actors": [],
+    "expected_type": "NON_FUNCTIONAL",
+    "domain": "oyun"
+  }
+]

@@ -1,40 +1,58 @@
 {
   "corpus": "development",
-  "total_sentences": 63,
-  "actor_precision": 36.7,
-  "actor_recall": 73.3,
-  "actor_f1": 48.9,
-  "classification_accuracy": 93.7,
+  "total_sentences": 244,
+  "actor_precision": 63.7,
+  "actor_recall": 41.6,
+  "actor_f1": 50.3,
+  "classification_accuracy": 87.3,
   "domain_breakdown": {
     "e-ticaret": {
-      "precision": 25.0,
-      "recall": 42.9,
+      "precision": 83.3,
+      "recall": 71.4,
       "clf_accuracy": 100.0,
       "sentences": 13
     },
     "bankacılık": {
-      "precision": 70.0,
+      "precision": 100.0,
       "recall": 100.0,
       "clf_accuracy": 100.0,
       "sentences": 10
     },
     "eğitim": {
-      "precision": 20.0,
+      "precision": 100.0,
       "recall": 100.0,
       "clf_accuracy": 83.3,
       "sentences": 12
     },
     "kurumsal": {
-      "precision": 83.3,
-      "recall": 76.9,
+      "precision": 100.0,
+      "recall": 100.0,
       "clf_accuracy": 100.0,
       "sentences": 13
     },
     "mobil": {
-      "precision": 0.0,
+      "precision": 0,
       "recall": 0.0,
       "clf_accuracy": 86.7,
       "sentences": 15
+    },
+    "iot": {
+      "precision": 43.5,
+      "recall": 16.7,
+      "clf_accuracy": 85.2,
+      "sentences": 61
+    },
+    "saas": {
+      "precision": 42.9,
+      "recall": 32.6,
+      "clf_accuracy": 86.7,
+      "sentences": 60
+    },
+    "oyun": {
+      "precision": 74.1,
+      "recall": 54.1,
+      "clf_accuracy": 83.3,
+      "sentences": 60
     }
   }
 }

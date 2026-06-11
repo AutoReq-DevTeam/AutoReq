@@ -10,41 +10,24 @@ from core.ner import EntityRecognizer
 from core.classifier import RequirementClassifier
 from core.models import Requirement
 
-# === GROUND TRUTH — HEALTHCARE HELD-OUT (30 cümle) ===
-GROUND_TRUTH = [
-    ("Hasta randevu almadan önce TC kimlik numarasını doğrulatmalıdır.", {"hasta"}, "FUNCTIONAL"),
-    ("Doktor, hastanın tıbbi geçmişini görüntüleyebilmelidir.", {"doktor"}, "FUNCTIONAL"),
-    ("Hemşire, hasta yatak başı gözlem formunu doldurabilmelidir.", {"hemşire"}, "FUNCTIONAL"),
-    ("Eczacı, reçetedeki ilaçları hasta adına karşılayabilmelidir.", {"eczacı"}, "FUNCTIONAL"),
-    ("Laborant, test sonuçlarını sisteme girebilmelidir.", {"laborant"}, "FUNCTIONAL"),
-    ("Diyetisyen, hastaya özel beslenme planı oluşturabilmelidir.", {"diyetisyen"}, "FUNCTIONAL"),
-    ("Fizyoterapist, tedavi seanslarını planlayabilmelidir.", {"fizyoterapist"}, "FUNCTIONAL"),
-    ("Hasta yakını, hastanın durumunu çevrimiçi takip edebilmelidir.", {"hasta yakını"}, "FUNCTIONAL"),
-    ("Acil servis triaj hemşiresi hastaları önceliklendirmelidir.", {"hemşire"}, "FUNCTIONAL"),
-    ("Radyolog, görüntüleme sonuçlarını PACS sistemine yükleyebilmelidir.", {"radyolog"}, "FUNCTIONAL"),
-    ("Başhekim, klinik bazlı doluluk oranlarını raporlayabilmelidir.", {"başhekim"}, "FUNCTIONAL"),
-    ("Hastane yöneticisi, personel nöbet çizelgesini düzenleyebilmelidir.", {"yönetici"}, "FUNCTIONAL"),
-    ("Tıbbi sekreter, hasta dosyasını arşivleyebilmelidir.", {"sekreter"}, "FUNCTIONAL"),
-    ("Hasta, faturasını online ödeyebilmelidir.", {"hasta"}, "FUNCTIONAL"),
-    ("Doktor, e-reçete yazabilmeli ve eczaneye iletebilmelidir.", {"doktor"}, "FUNCTIONAL"),
-    ("Hasta verilerinin yedeklenmesi günde en az iki kez yapılmalıdır.", set(), "NON_FUNCTIONAL"),
-    ("Sistem, eş zamanlı 500 poliklinik kaydını işleyebilmelidir.", set(), "NON_FUNCTIONAL"),
-    ("Tıbbi kayıtlar KVKK kapsamında şifrelenmiş olarak saklanmalıdır.", set(), "NON_FUNCTIONAL"),
-    ("Acil çağrı bildirimleri 2 saniye içinde ilgili ekibe ulaşmalıdır.", set(), "NON_FUNCTIONAL"),
-    ("Laboratuvar sonuçları otomatik olarak doktorun ekranına düşmelidir.", {"doktor"}, "FUNCTIONAL"),
-    ("Sistem %99,5 uptime hedefini sağlamalıdır.", set(), "NON_FUNCTIONAL"),
-    ("Hasta taburcu işlemi ortalama 15 dakikayı geçmemelidir.", {"hasta"}, "NON_FUNCTIONAL"),
-    ("Ameliyathane doluluk oranı anlık olarak izlenebilmelidir.", set(), "FUNCTIONAL"),
-    ("Eczane stok seviyesi kritik eşiğin altına düştüğünde otomatik uyarı verilmelidir.", set(), "FUNCTIONAL"),
-    ("İlaç etkileşim kontrolü reçete yazılmadan önce otomatik gerçekleştirilmelidir.", set(), "FUNCTIONAL"),
-    ("Hasta memnuniyet anketi taburculuk sonrası 24 saat içinde gönderilmelidir.", {"hasta"}, "FUNCTIONAL"),
-    ("Doktor, ameliyat notlarını sesli komutla dikte edebilmelidir.", {"doktor"}, "FUNCTIONAL"),
-    ("Sigorta şirketi entegrasyonu üzerinden hasta provizyon sorgulama yapılabilmelidir.", set(), "FUNCTIONAL"),
-    ("Teletıp görüşmeleri uçtan uca şifrelenmiş video altyapısı üzerinden gerçekleştirilmelidir.", set(), "NON_FUNCTIONAL"),
-    ("Kan bankası envanter takibi FIFO prensibiyle yönetilmelidir.", set(), "FUNCTIONAL"),
-]
+# === LOAD GROUND TRUTH ===
+def load_ground_truth():
+    import os
+    json_path = os.path.join(os.path.dirname(__file__), "../data/evaluation/heldout_corpus.json")
+    if not os.path.exists(json_path):
+        json_path = "data/evaluation/heldout_corpus.json"
+        
+    with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    
+    return [
+        (item["text"], set(item["expected_actors"]), item["expected_type"])
+        for item in data
+    ]
 
-assert len(GROUND_TRUTH) == 30, f"Beklenen 30, bulunan {len(GROUND_TRUTH)}"
+GROUND_TRUTH = load_ground_truth()
+
+assert len(GROUND_TRUTH) >= 30, f"Beklenen en az 30 cümle, bulunan {len(GROUND_TRUTH)}"
 
 
 def _norm(s: str) -> str:
@@ -59,7 +42,7 @@ def evaluate():
     clf_correct = clf_total = 0
 
     print("=" * 80)
-    print("HEALTHCARE HELD-OUT CORPUS — 30 cümle (generalization)")
+    print(f"HEALTHCARE HELD-OUT CORPUS — {len(GROUND_TRUTH)} cümle (generalization)")
     print("=" * 80)
 
     for i, (text, expected_actors, expected_type) in enumerate(GROUND_TRUTH, 1):
@@ -105,7 +88,7 @@ def evaluate():
 
     results = {
         "corpus": "healthcare_heldout",
-        "total_sentences": 30,
+        "total_sentences": len(GROUND_TRUTH),
         "actor_precision": round(precision, 1),
         "actor_recall": round(recall, 1),
         "actor_f1": round(f1, 1),

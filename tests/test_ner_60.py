@@ -62,9 +62,9 @@ CASES = [
     ("Admin ve yönetici sistem ayarlarını değiştirebilmeli.",         {'admin', 'yönetici'}),
 
     # === SİSTEM AKTÖRÜ (GENERİK FALLBACK) ===
-    ("Sistem kritik hatayı otomatik kayıt altına almalıdır.",         {'sistem'}),
-    ("Platform anlık bildirim göndermelidir.",                        {'platform'}),
-    ("Uygulama kullanıcı oturumunu sonlandırmalıdır.",               {'uygulama', 'kullanıcı'}),
+    ("Sistem kritik hatayı otomatik kayıt altına almalıdır.",         set()),
+    ("Platform anlık bildirim göndermelidir.",                        set()),
+    ("Uygulama kullanıcı oturumunu sonlandırmalıdır.",               {'kullanıcı'}),
 
     # === DOMAIN ÇEŞİTLİLİĞİ ===
     # Finans
@@ -103,6 +103,8 @@ assert len(CASES) == 60, f'Beklenen 60, bulunan {len(CASES)}'
 
 
 def _actors_found(req_actors: list, expected: set) -> bool:
+    if not expected:
+        return len(req_actors) == 0
     found = {a.lower() for a in req_actors}
     return bool(found & expected)
 
