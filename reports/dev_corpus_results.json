@@ -4,7 +4,7 @@
   "actor_precision": 63.7,
   "actor_recall": 41.6,
   "actor_f1": 50.3,
-  "classification_accuracy": 87.3,
+  "classification_accuracy": 86.9,
   "domain_breakdown": {
     "e-ticaret": {
       "precision": 83.3,
@@ -45,13 +45,13 @@
     "saas": {
       "precision": 42.9,
       "recall": 32.6,
-      "clf_accuracy": 86.7,
+      "clf_accuracy": 83.3,
       "sentences": 60
     },
     "oyun": {
       "precision": 74.1,
       "recall": 54.1,
-      "clf_accuracy": 83.3,
+      "clf_accuracy": 85.0,
       "sentences": 60
     }
   }

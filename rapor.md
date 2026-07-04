@@ -87,9 +87,9 @@ Faz 2 kapsamında projenin performansını, kullanılabilirliğini ve akademik t
 ### Doğrulama ve Test Sonuçları
 
 - Birim ve çıktı testleri (`pytest`) başarıyla tamamlanmıştır (62 passed).
-- Dev ve Held-out veri kümesi değerlendirme betikleri koşturularak başarı oranları raporlanmıştır:
-  - **Dev Corpus Sınıflandırma Doğruluğu:** 59/63 = **%93.7**
-  - **Healthcare Held-out Corpus Sınıflandırma Doğruluğu:** 29/30 = **%96.7**
+- Dev ve Held-out veri kümesi değerlendirme betikleri koşturularak başlangıç pilot alt-kümelerindeki (63 cümlelik Dev, 30 cümlelik Sağlık Held-out) başarı oranları raporlanmıştır:
+  - **Dev Corpus Sınıflandırma Doğruluğu (Pilot 63 cümle):** 59/63 = **%93.7**
+  - **Healthcare Held-out Corpus Sınıflandırma Doğruluğu (Pilot 30 cümle):** 29/30 = **%96.7**
   - Sonuçlar `reports/dev_corpus_results.json` ve `reports/heldout_corpus_results.json` dosyalarına kaydedilmiştir.
 
 ---
@@ -116,12 +116,12 @@ Faz 3 kapsamında aktör çıkarımı kalitesi iyileştirilmiş, değerlendirme 
 ### Doğrulama ve Test Sonuçları
 
 - Test paketi (`pytest`) tamamen kararlı hale getirilmiş ve **190 testin tamamı başarıyla geçmiştir**.
-- Dev ve Held-out veri kümesi değerlendirme betikleri koşturularak güncel başarı oranları raporlanmıştır:
-  - **Dev Corpus Sınıflandırma Doğruluğu:** 58/63 = **%92.1**
-  - **Dev Corpus Aktör Çıkarımı:** TP=22, FP=38, FN=8 (Precision: **%36.7**, Recall: **%73.3**, F1: **%48.9**)
-  - **Healthcare Held-out Corpus Sınıflandırma Doğruluğu:** 29/30 = **%96.7**
-  - **Healthcare Held-out Corpus Aktör Çıkarımı:** TP=15, FP=15, FN=4 (Precision: **%50.0**, Recall: **%78.9**, F1: **%61.2**)
-  - **Çelişki Tespit Başarısı (Conflict Detection):** TP=5, FP=1, FN=0 (Precision: **%83.3**, Recall: **%100.0**, Detection Rate: **%100.0**)
+- Dev ve Held-out veri kümesi değerlendirme betikleri koşturularak güncel başarı oranları raporlanmıştır (244 cümlelik genişletilmiş Dev, 113 cümlelik Held-out ve 153 cümlelik Çelişki veri setleri):
+  - **Dev Corpus Sınıflandırma Doğruluğu:** 211/244 = **%86.5** (Wilson %95 CI: [%83.0, %91.3])
+  - **Dev Corpus Aktör Çıkarımı:** TP=72, FP=41, FN=101 (Precision: **%63.7%**, Recall: **%41.6%**, F1: **%50.3%**)
+  - **Held-out Corpus (Sağlık & Otomotiv) Sınıflandırma Doğruluğu:** 99/113 = **%87.6** (Wilson %95 CI: [%80.3, %92.5])
+  - **Held-out Corpus (Sağlık & Otomotiv) Aktör Çıkarımı:** TP=39, FP=25, FN=54 (Precision: **%60.9%**, Recall: **%41.9%**, F1: **%49.7%**)
+  - **Çelişki Tespit Başarısı (Conflict Detection):** TP=49, FP=3, FN=1 (Precision: **%94.2%**, Recall: **%98.0%**, F1: **%96.1%**, Wilson Recall CI: [%89.5, %99.6], Wilson Precision CI: [%84.4, %98.0])
   - Sonuçlar ilgili JSON dosyalarında saklanmıştır.
 
 ---

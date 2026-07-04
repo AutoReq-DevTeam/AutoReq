@@ -58,32 +58,32 @@ Tek geçişten 4 artefakt: ISO 29148 SRS (PDF/DOCX) · User Story · Gherkin · 
 
 ---
 
-## Kanıt — Geliştirme Korpusu (63 Cümle / 5 Alan)
+## Kanıt — Geliştirme Korpusu (244 Cümle / 8 Alan)
 
 | Ölçüt | Sonuç |
 |---|---|
-| Aktör — Precision | %36.7 |
-| Aktör — Recall | %73.3 |
-| Aktör — F1 Skoru | %48.9 |
-| FR/NFR Sınıflandırma Doğruluğu | %92.1 |
-| Çelişki Tespiti (Recall) | %100.0 (TP: 5, FN: 0) |
-| Çelişki Tespiti Kesinlik (Precision) | %83.3 (FP: 1) |
-| Yanlış Pozitif Oranı (FPR) | %16.7 |
+| Aktör — Precision | %63.7 |
+| Aktör — Recall | %41.6 |
+| Aktör — F1 Skoru | %50.3 |
+| FR/NFR Sınıflandırma Doğruluğu | %86.5 |
+| Çelişki Tespiti (Recall) | %98.0 (TP: 49, FN: 1) |
+| Çelişki Tespiti Kesinlik (Precision) | %94.2 (FP: 3) |
+| Yanlış Pozitif Oranı (FPR) | %5.8 |
 
 ---
 
-## Kanıt — Genelleme (Sağlık, 30 Cümle Held-out)
+## Kanıt — Genelleme (Sağlık & Otomotiv, 113 Cümle Held-out)
 
-Geliştirme ve optimizasyon süreçleri dışında tutuldu; sistem bu alanı ilk kez testte gördü.
+Geliştirme ve optimizasyon süreçleri dışında tutuldu; sistem bu alanları ilk kez testte gördü.
 
 | Ölçüt | Sonuç |
 |---|---|
-| FR/NFR Doğruluğu | %96.7 |
-| Aktör Precision | %50.0 |
-| Aktör Recall | %78.9 |
-| Aktör F1 Skoru | %61.2 |
+| FR/NFR Doğruluğu | %87.6 |
+| Aktör Precision | %60.9 |
+| Aktör Recall | %41.9 |
+| Aktör F1 Skoru | %49.7 |
 
-KVKK uyumluluğu · SLA hedefleri · tıbbi veri şifreleme gibi alana özgü NFR örüntüleri başarıyla yakalandı.
+KVKK uyumluluğu · SLA hedefleri · otonom sürüş kısıtları gibi alana özgü NFR örüntüleri başarıyla yakalandı.
 
 ---
 
@@ -114,7 +114,7 @@ Gereksinim hataları, yazılım projelerinin başarısızlığında başlıca ne
 
 Sistem üç katmandan oluşur: Stanza tabanlı önişleme (cümle bölme, Türkçe küçük harfe dönüştürme, KVKK maskeleme, aktör/iş nesnesi çıkarımı, FR/NFR etiketleme); Gemini 2.5 Flash üzerinden paralel çalışan üç LLM modülü (ConflictDetector, GapAnalyzer, RequirementImprover); ve **ISO/IEC/IEEE 29148** uyumlu SRS, kullanıcı hikâyeleri, Gherkin BDD senaryoları ile ürün backlog'unu tek geçişte üreten üretim katmanı.
 
-Beş alanı kapsayan 63 cümlelik geliştirme korpusunda **%92.1 FR/NFR doğruluğu**, aktör çıkarımında **%36.7 precision / %73.3 recall** ve **%100 çelişki tespiti** (%83.3 kesinlik, TP=5, FP=1) elde edilmiştir. Ayrı tutulan 30 cümlelik sağlık korpusunda FR/NFR doğruluğu **%96.7**'ye, aktör duyarlılığı ise **%78.9**'a (%50.0 kesinlik) ulaşmıştır.
+Sekiz alanı kapsayan 244 cümlelik geliştirme korpusunda **%86.5 FR/NFR doğruluğu**, aktör çıkarımında **%63.7 precision / %41.6 recall** ve **%98.0 çelişki tespiti** (%94.2 kesinlik, TP=49, FP=3) elde edilmiştir. Ayrı tutulan 113 cümlelik sağlık ve otonom sürüş korpusunda FR/NFR doğruluğu **%87.6**'ya, aktör F1 skoru ise **%49.7**'ye ulaşmıştır.
 
 ---
 

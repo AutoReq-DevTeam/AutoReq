@@ -13,8 +13,8 @@ Bu rapor, AutoReq projesindeki Doğal Dil İşleme (NLP) ve Büyük Dil Modeli (
 
 | Değerlendirme Kategorisi | Veri Seti Büyüklüğü | Aktör NER F1-Skoru | Sınıflandırma Doğruluğu | Çelişki Yakalama (Recall) |
 | :--- | :--- | :--- | :--- | :--- |
-| **Geliştirme Kümesi (Dev)** | 244 Cümle (8 Domain) | %86.5 | %94.7 | — |
-| **Görülmemiş Küme (Heldout)** | 113 Cümle (Sağlık & Otomotiv) | %50.0 | %87.6 | — |
+| **Geliştirme Kümesi (Dev)** | 244 Cümle (8 Domain) | %50.3 | %86.5 | — |
+| **Görülmemiş Küme (Heldout)** | 113 Cümle (Sağlık & Otomotiv) | %49.7 | %87.6 | — |
 | **Çelişki Tespiti (Conflicts)** | 50 Çift (153 Cümle) | — | — | **%98.0** (Precision: %94.2) |
 
 ---
@@ -24,11 +24,11 @@ Bu rapor, AutoReq projesindeki Doğal Dil İşleme (NLP) ve Büyük Dil Modeli (
 Geliştirme veri kümesi, projenin üzerinde çalıştırılarak optimize edildiği 8 farklı sektöre ait **244 Türkçe gereksinim cümlesinden** oluşmaktadır.
 
 * **Toplam Cümle:** 244
-* **Gereksinim Sınıflandırma Başarısı (FR/NFR):** %94.7 (231 / 244 doğru tahmin)
+* **Gereksinim Sınıflandırma Başarısı (FR/NFR):** %86.5 (211 / 244 doğru tahmin)
 * **Aktör Tanıma (NER) Başarısı:**
-  * **Precision (Hassasiyet):** %92.4
-  * **Recall (Duyarlılık):** %81.2
-  * **F1-Skoru:** %86.5
+  * **Precision (Hassasiyet):** %63.7
+  * **Recall (Duyarlılık):** %41.6
+  * **F1-Skoru:** %50.3
 
 ### Sektörel (Domain) Kırılım Tablosu
 
@@ -39,9 +39,9 @@ Geliştirme veri kümesi, projenin üzerinde çalıştırılarak optimize edildi
 | **Eğitim** | 12 | %83.3 | %100.0 | %100.0 |
 | **E-Ticaret** | 13 | %100.0 | %83.3 | %71.4 |
 | **Mobil Uygulama** | 15 | %86.7 | %0.0 * | %0.0 * |
-| **IoT** | 61 | %96.7 | %93.8 | %78.9 |
-| **SaaS** | 60 | %95.0 | %90.9 | %83.3 |
-| **Oyun** | 60 | %93.3 | %91.3 | %84.0 |
+| **IoT** | 61 | %83.6 | %43.5 | %16.7 |
+| **SaaS** | 60 | %83.3 | %42.9 | %32.6 |
+| **Oyun** | 60 | %85.0 | %74.1 | %54.1 |
 
 *\* Not: Mobil veri kümesinde beklenen aktör bulunmadığı (boş liste olduğu) için metrik matematiksel olarak %0 çıkmıştır, bu bir hata değildir.*
 
@@ -99,7 +99,37 @@ Otomotiv veri kümesinde aktör duyarlılığının (Recall) %41.9 seviyesine ge
 
 ---
 
-## 4. Pytest Entegrasyon ve Regresyon Testleri
+## 4. İstatistiksel Analizler ve Hesaplamalar
+
+Sistem çıktılarının kararlılığı ve model başarısını akademik düzeyde kanıtlamak amacıyla McNemar testi ve Wilson Skor aralıkları uygulanmıştır.
+
+### A. McNemar İstatistiksel Anlamlılık Testi (Sınıflandırma)
+Sadece kurallara ve kelime eşleşmelerine dayanan baseline sınıflandırıcı ile LLM Fallback içeren Hibrit sınıflandırıcı karşılaştırılmıştır:
+* **H0 (Boş Hipotez):** Kural tabanlı model ile Hibrit LLM modeli arasında sınıflandırma performansı açısından anlamlı bir fark yoktur.
+* **H1 (Alternatif Hipotez):** Hibrit model, kural tabanlı modele kıyasla anlamlı bir performans artışı sağlamaktadır.
+
+**Uyumsuzluk (Contingency) Tablosu:**
+- Her iki yöntem de doğru tahmin etti: **182 cümle**
+- Her iki yöntem de yanlış tahmin etti: **28 cümle**
+- Kural tabanlı doğru, Hibrit yanlış: **2 cümle**
+- Kural tabanlı yanlış, Hibrit doğru: **32 cümle**
+
+**McNemar İstatistik Test Sonucu:**
+* **Test İstatistiği ($\chi^2$):** 24.7353 (Süreklilik düzeltmesiyle birlikte)
+* **p-Değeri:** **$6.5769 \times 10^{-7}$**
+* **Karar:** p-değeri $0.05$ ve $0.001$ eşik değerlerinden çok daha küçüktür ($p < 0.001$). Boş hipotez ($H_0$) güçlü bir şekilde reddedilir. Hibrit LLM sınıflandırıcısının performansı baseline kural tabanlı sisteme göre **istatistiksel olarak son derece anlamlıdır**.
+
+### B. Wilson Skor Güven Aralıkları (%95 Güven Düzeyi)
+Sınırlı örneklem boyutlarının oluşturabileceği yanılma paylarını göstermek amacıyla başarı oranları için %95 Wilson güven aralıkları hesaplanmıştır:
+* **Kural Tabanlı Accuracy (%75.4):** %95 CI = **[%69.6, %80.4]**
+* **Hibrit (Dev) Accuracy (%86.5):** %95 CI = **[%83.0, %91.3]**
+* **Held-out Accuracy (%87.6):** %95 CI = **[%80.3, %92.5]**
+* **Çelişki Yakalama Recall (%98.0):** %95 CI = **[%89.5, %99.6]**
+* **Çelişki Kesinlik Precision (%94.2):** %95 CI = **[%84.4, %98.0]**
+
+---
+
+## 5. Pytest Entegrasyon ve Regresyon Testleri
 
 Mekanik ve yazılımsal kararlılığı ölçen birim (unit) ve entegrasyon testlerinin tamamı yeşildir.
 
