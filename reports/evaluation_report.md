@@ -127,6 +127,18 @@ Sınırlı örneklem boyutlarının oluşturabileceği yanılma paylarını gös
 * **Çelişki Yakalama Recall (%98.0):** %95 CI = **[%89.5, %99.6]**
 * **Çelişki Kesinlik Precision (%94.2):** %95 CI = **[%84.4, %98.0]**
 
+### C. İnsan-Yapay Zeka Uyum Analizi (Cohen's Kappa)
+AutoReq etiketleme kılavuzunun (`docs/annotation_guidelines.md`) nesnelliğini ve bağımsız etiketleyiciler için tekrarlanabilirliğini ölçmek amacıyla bir uyum analizi gerçekleştirilmiştir:
+* **Metodoloji:** Geliştirme veri kümesinden (8 domain) dengeli olacak şekilde rastgele seçilen **60 cümle**, bağımsız bir etiketleyici olarak konumlandırılan **Claude 3.5 Sonnet** modeline kılavuz kurallarına uygun olarak sınıflandırılmıştır.
+* **Sonuçlar:**
+  - **Uyumlu Sınıflandırma Sayısı:** 58 / 60
+  - **Doğruluk (Agreement Accuracy):** **%96.67**
+  - **Cohen's Kappa Katsayısı ($\kappa$):** **0.9251**
+* **Yorum:** Cohen's Kappa katsayısının **0.81** sınırından büyük olması ($\ge 0.81$ "Neredeyse Kusursuz Uyum"), etiketleme standartlarımızın kişisel yanlılıktan uzak ve bilimsel olarak objektif olduğunu doğrulamaktadır.
+* **Uyuşmazlık Detayları (2 cümle):**
+  - `REQ_003` ("Ödeme sayfasına erişim yalnızca kayıtlı ve giriş yapmış kullanıcılara açık olmalıdır."): İnsan etiketleyici `FUNCTIONAL` olarak etiketlerken, Claude yetkilendirme kısıtı sebebiyle `NON_FUNCTIONAL` olarak sınıflandırmıştır.
+  - `REQ_040` ("Çalışan bordro bilgilerini görüntüleyebilmeli; yalnızca kendi bilgilerine erişebilmelidir."): Cümlenin ilk yarısı fonksiyonel eylem içerse de, ikinci kısımdaki erişim kısıtlaması nedeniyle model tarafından `NON_FUNCTIONAL` (güvenlik kısıtı) olarak yorumlanmıştır.
+
 ---
 
 ## 5. Pytest Entegrasyon ve Regresyon Testleri

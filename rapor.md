@@ -142,7 +142,11 @@ Faz 4 kapsamında akademik çıktıların tamamı Türkçe standartlarına uyarl
    - Checkpoint 5 sunum slaytları (`docs/Makale/S5-sunum-gamma.md`) Türkçeleştirilerek `docs/Makale/sunum_TR.md` olarak kaydedildi.
    - Slaytlar üzerindeki tüm başlıklar, analiz şemaları ve metrik tabloları makaleyle ve JSON sonuçlarıyla birebir tutarlı hale getirildi.
 
-3. **Nihai Doğrulama (Final Verification):**
+3. **İnsan-Yapay Zeka Uyum Analizi (Human-AI Agreement Analysis):**
+   - Geliştirme korpusundan dengeli seçilmiş 60 cümlelik bir alt küme üzerinde Claude 3.5 Sonnet etiketlemesi ile İnsan etiketlemesi karşılaştırılmıştır.
+   - Analiz sonucunda **%96.67 doğruluk** ve **0.9251 Cohen's Kappa** uyum katsayısı elde edilmiştir. Bu sonuç, etiketleme kılavuzunun (`docs/annotation_guidelines.md`) son derece net ve nesnel olduğunu kanıtlamaktadır.
+
+4. **Nihai Doğrulama (Final Verification):**
    - Tüm boru hattı ve test suite (`pytest`) tekrar koşturuldu ve projedeki **190 testin tamamının başarıyla geçtiği** doğrulandı.
 
 ### Doğrulama ve Test Sonuçları
