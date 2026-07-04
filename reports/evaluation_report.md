@@ -129,7 +129,7 @@ Sınırlı örneklem boyutlarının oluşturabileceği yanılma paylarını gös
 
 ### C. İnsan-Yapay Zeka Uyum Analizi (Cohen's Kappa)
 AutoReq etiketleme kılavuzunun (`docs/annotation_guidelines.md`) nesnelliğini ve bağımsız etiketleyiciler için tekrarlanabilirliğini ölçmek amacıyla bir uyum analizi gerçekleştirilmiştir:
-* **Metodoloji:** Geliştirme veri kümesinden (8 domain) dengeli olacak şekilde rastgele seçilen **60 cümle**, bağımsız bir etiketleyici olarak konumlandırılan **Claude 3.5 Sonnet** modeline kılavuz kurallarına uygun olarak sınıflandırılmıştır.
+* **Metodoloji:** Geliştirme veri kümesinden (8 domain) dengeli olacak şekilde rastgele seçilen **60 cümle**, bağımsız bir etiketleyici olarak konumlandırılan **Sonnet 5 (medium)** modeline kılavuz kurallarına uygun olarak sınıflandırılmıştır.
 * **Sonuçlar:**
   - **Uyumlu Sınıflandırma Sayısı:** 58 / 60
   - **Doğruluk (Agreement Accuracy):** **%96.67**

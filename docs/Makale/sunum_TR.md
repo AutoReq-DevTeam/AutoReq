@@ -101,7 +101,7 @@ LLM katmanı mantıksal analiz için vazgeçilmezdir; oluşan ek gecikme tekil b
 ## Kanıt — Uyum Analizi (Human-AI Agreement)
 
 - **Amaç:** Etiketleme kılavuzunun nesnelliğini ve tekrarlanabilirliğini doğrulamak
-- **Yöntem:** Dev corpus'tan 8 alanı dengeli temsil eden **60 cümle**, bağımsız **Claude 3.5 Sonnet** tarafından sınıflandırıldı
+- **Yöntem:** Dev corpus'tan 8 alanı dengeli temsil eden **60 cümle**, bağımsız **Sonnet 5 (medium)** tarafından sınıflandırıldı
 - **Uyum Doğruluğu (Agreement):** **%96.67** (58 / 60 cümle birebir eşleşti)
 - **Cohen's Kappa Katsayısı ($\kappa$):** **0.9251** ("Neredeyse Kusursuz Uyum")
 - **Yorum:** Çıkan skor $\ge 0.81$ olduğu için kılavuz standartlarının kişisel yanlılıktan uzak, nesnel ve bilimsel olarak objektif olduğu kanıtlanmıştır.
