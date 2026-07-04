@@ -1,0 +1,137 @@
+AutoReq ile Türkçe Yazılım Gereksinimlerinin Doğal Dil İşleme ve Büyük Dil Modelleri Aracılığıyla Otomatik Analizi ve Artefakt Üretimi
+
+Abstract— Gereksinim hataları yazılım projelerini çökerten en kritik etken. Endüstri araştırmaları net bir tablo çiziyor. Başarısızlıkların yaklaşık %40'ı zayıf, çelişen ya da eksik gereksinim belgelerinden kaynaklanıyor. Şurası dikkat çekici ki ham paydaş verilerinin yapılandırılmış belgelere dönüşümü birçok yerde hâlâ elle yapılıyor. Mevcut araçların büyük çoğunluğu morfolojik karmaşıklık yüzünden Türkçeyi desteklemiyor. Bu çalışmada "AutoReq" adlı yeni bir end-to-end pipeline sunuyoruz. Sistem Türkçe gereksinim metinlerini uçtan uca otomatik analiz ediyor. Bu analiz doğrusal değil, iç içe geçmiş bir süreç. Stanza tabanlı preprocessing modülü devrede. Cümle bölümleme ve KVKK uyumlu maskeleme yapıyor. Aktör çıkarımı. Hibrit FR/NFR classification. Ardından Gemini 2.5 Flash modeli işi devralıyor. Analiz derinleşiyor. Conflict detection. Gap analysis. Requirement improvement. Hepsi eşzamanlı yürütülüyor. Analizlerin bitimiyle doğrudan belgelere geçiliyor. ISO/IEC/IEEE 29148 uyumlu SRS belgesi hazır. User Stories, Gherkin BDD senaryoları ve Product Backlog üretiliyor. Sekiz alanı kapsayan 244 cümlelik development corpus'ta %94.7 FR/NFR classification accuracy elde edildi. Bağımsız conflict dataset üzerinde %96.1 F1 score ile çelişkiler tespit edildi. Açıkçası bizi şaşırtan sonuç şu oldu. Hiç karşılaşılmamış alanlardan oluşan 113 cümlelik held-out corpus'ta accuracy %87.6'ya düştü. Rule-based actor extraction performansında belirgin düşüş gözlemlendi. Bu sonuçlar transformer tabanlı NER entegrasyonuna duyulan ihtiyacı ortaya koyuyor. Yine de Türkçe requirements engineering için bu ilk end-to-end pipeline pratik açıdan umut verici.
+
+Keywords— Software Requirements Engineering, Natural Language Processing, Large Language Model, Automated Document Generation, Software Requirements Specification (SRS), Conflict Detection, Behavior-Driven Development (BDD), Requirements Classification.
+
+I. GİRİŞ
+
+Biliyor muydunuz ki yazılım projelerinin yaklaşık %40'ı gereksinim hatalarından çöküyor [1]? Bu istatistik o kadar çok tekrarlandı ki artık kanıksandı. Ama işaret ettiği yapısal sorun sapasağlam ayakta. Bu çalışmada tam da bu sorunu hedef alan "AutoReq" adlı end-to-end pipeline'ı sunuyoruz.
+
+Boehm ve Basili [2] çarpıcı bir maliyet tablosu ortaya koydu. Gereksinim aşamasında yakalanan bir hatayı düzeltmek yaklaşık on kat daha ucuz. Canlı ortamda fark edilirse maliyet katlanarak büyüyor. Endüstri bu gerçeği uzun zamandır biliyor. Ancak günlük pratikte bu bilgi davranışa dönüşemiyor.
+
+Peki neden bu kadar inatçı? Yapısal nedenler var. Çelişkiler nadiren bariz ifadeler olarak karşımıza çıkar. Gerçek hayatta farklı zamanlarda, farklı paydaşların baskılarıyla yazılmış gereksinimlerin etkileşiminden doğar. "Hızlı çalışmalı" gibi muğlak bir gereksinim düşünün. Gözden geçirmeden sorunsuz geçer. Ama sayısal karşılığı olmadığı için tasarım krizine dönüşür. Wagner ve ark. [3] farklı ülkelerde tam da bu örüntüyü inceledi. Sorunun evrensel olduğunu teyit etti. Mesele ekiplerin deneyimsizliğinden çok sürecin doğasından kaynaklanıyor.
+
+Literatürdeki mevcut araçlar problemin belirli alt alanlarını ele almış. Rule-based NLP teknikleri sınırlı koşullarda entity extraction'ı başarıyla gerçekleştirebiliyor. Makine öğrenmesi modelleri FR/NFR ayrıştırmasında değişken başarı sergiliyor. LLM'ler muğlak gereksinimleri yeniden yazmakta iyi. Ancak tüm gereksinim setini tarayıp mantıksal çelişkileri bulmakta tek başlarına yetersiz kalıyor. Bildiğimiz kadarıyla entegre bir Türkçe requirements engineering aracı henüz mevcut değil [4]. AutoReq tam olarak bu boşluğu doldurmak için tasarlandı.
+
+AutoReq pipeline'ı girdi metinlerini üç katmandan geçiriyor. İlk olarak Stanza kütüphanesiyle morfolojik analiz ve dependency parsing yapılıyor. Ardından Gemini 2.5 Flash modeliyle paralel LLM analiz süreçleri devreye giriyor. Son adımda generation katmanı dört farklı çıktı belgesi üretiyor.
+
+AutoReq'in diğer çalışmalardan ayrışan noktaları şöyle özetlenebilir. NLP ve LLM entegrasyonu tam otomatik bir akış sağlıyor. Manuel veri aktarımı gerekmiyor. ConflictDetector modülü sadece çelişen çiftleri belirlemekle kalmıyor. Çelişkinin türünü ve nedenini doğal dil açıklamalarla sunuyor. En can alıcı nokta şu. Tek bir analiz geçişinden SRS, User Stories, Gherkin senaryoları ve backlog listesi aynı anda üretiliyor.
+
+Makalenin geri kalan bölümleri şöyle düzenlendi. Bölüm II'de ilgili çalışmalar, Bölüm III'te sistem mimarisi ve metodoloji, Bölüm IV'te deneysel değerlendirmeler, Bölüm V'te sonuçlar ve gelecek planları sunuluyor.
+
+II. LİTERATÜR TARAMASI
+
+Doğal dille yazılmış metinlerden gereksinim çıkarılması yeni bir konu değil. NLP alanında yıllardır çalışmalar sürüyor. Başarı düzeyleri ve pratik uygulanabilirlikleri büyük çeşitlilik gösteriyor.
+
+Dalpiaz ve ark. [6] explainable machine learning yöntemlerini dependency tree özellikleriyle birleştirdi. FR/NFR classification'da %85'in üzerinde accuracy bildirdiler. Güzel bir sonuç. Ama tamamen İngilizce dil yapısına göre tasarlanmış bir yaklaşım. Türkçe gibi agglutinative dillere doğrudan uyarlanamıyor. Neden mi? Türkçede tek bir kökten düzinelerce çekimli yüzey formu türüyor. Bu morfolojik zenginlik İngilizceye göre eğitilmiş classifier'ların feature kabullerini geçersiz kılıyor. Ferrari ve Esuli [7] ise farklı alanlardaki kelime düzeyinde muğlaklıkları tespit etmeye odaklandı. Değerli bir katkı. Ancak birbirine uzak cümleler arasındaki mantıksal çelişkilere değinmiyor.
+
+LLM'lerin requirements engineering'deki kullanımı son dönemde ciddi ivme kazandı. Fan ve ark. [8] dikkat çekici bir tespitte bulundu. Kod üretimi ve bug detection literatürde baskınken requirements engineering henüz yeterince araştırılmamış. Ronanki ve ark. [9] LLM destekli requirements elicitation süreçlerini inceledi. İlginç bir ikilem ortaya koydu. Bu modeller mantıklı gelen açıklayıcı sorular üretebiliyor. Ama sıklıkla hallucination gereksinimler uyduruyor ve yapısal tutarsızlıklar üretiyor. Buradan çıkan ders net. Preprocessing ve output validation katmanları olmadan LLM'e dayanan bir sistem güvenilir olamaz. LLM'ler pipeline'ın kendisi değil, sıkı kurallarla sınırlandırılmış yardımcı bileşenler olmalı.
+
+ISO/IEC/IEEE 29148 standardı [4] bir SRS belgesinin bölüm yapısını oldukça net tanımlıyor. Bu netlik otomasyon için elverişli bir zemin sunmalı. Oysa otomatik SRS üretimi şaşırtıcı derecede az ilgi görmüş. Mevcut araçların çoğu ya template tabanlı statik doldurma yapıyor ya da içeriği elle girmesini bekliyor. Ham paydaş metinlerinden analitik temsil oluşturup template'leri dinamik dolduran açık akademik çalışmalara rastlayamadık.
+
+Conflict detection konusu daha eski bir geçmişe sahip. Guo ve ark. [10] semantik analiz yöntemleriyle pairwise conflict detection'da %83.9 accuracy elde etti. Ama bu sistemler çelişkileri yalnızca "var/yok" şeklinde binary sınıflandırıyor. Gerçek bir projedeki analist için bu yeterli mi? Çoğu zaman değil. Çelişkinin mantık hatası mı, kapsam çakışması mı yoksa eksik precondition mu olduğunu bilmek hayati.
+
+BDD senaryolarının otomatik üretilmesinde Ronanki ve ark. [11] önemli bir tespit yaptı. ChatGPT'nin ürettiği User Stories'lerde tutarlılık büyük dalgalanmalar gösteriyor. Uzman denetimi olmaksızın bunların yazılım süreçlerine dahil edilmesi riskli. Bu bulgu downstream çıktı kalitesinin tamamen upstream preprocessing ve analiz kalitesine bağlı olduğunu doğruluyor.
+
+Özetle, literatürde pipeline'ın tekil bileşenlerine odaklanan çalışmalar var. Ancak preprocessing, classification, conflict detection ve test senaryosu üretimini bir arada sunan entegre bir sistem tasarlanmamış. Üstelik Türkçe gibi morfolojik karmaşıklığı yüksek bir dil için böyle bir entegrasyon denenmemiş. AutoReq tam olarak bu entegrasyonu gerçekleştirmek için geliştirildi.
+
+TABLO I
+GEREKSİNİM MÜHENDİSLİĞİ YAKLAŞIMLARININ KARŞILAŞTIRILMASI
+Yaklaşım            Dil    FR/NFR    Çelişki Tespiti    SRS (29148)    Artefakt Seti
+Dalpiaz vd. [6]     EN     ✓         -                 -              -
+Ferrari & Esuli [7] EN     -         Kısmi             -              -
+Guo vd. [10]        EN     -         İkili             -              -
+Ronanki vd. [9]     EN     -         -                 -              -
+Ronanki vd. [11]    EN     -         -                 -              User Stories + BDD
+AutoReq             TR     ✓         Sınıflandırılmış  ✓              SRS + Stories + BDD + Backlog
+
+III. SİSTEM MİMARİSİ VE YÖNTEM
+
+AutoReq pipeline'ı üç katmandan oluşuyor. Ham paydaş metni önce preprocessing katmanından geçiyor. Sonra LLM analiz katmanına iletiliyor. En sonunda generation katmanı bulguları nihai belgelere dönüştürüyor. Katmanlar arası tüm veri akışı core/models.py içinde tanımlanan iki data class üzerinden yürütülüyor. ParsedDocument preprocessing çıktılarını taşıyor. AnalysisReport ise LLM analiz sonuçlarını barındırıyor. Bu sıkı type checking entegrasyon hatalarını en aza indiriyor. Doğrusu geliştirme sürecinde fark ettik ki katmanlar arası tip uyumsuzluğu en sinsi hata kaynaklarından biri. Uygulama Streamlit arayüzü üzerinden merkezi process_text() fonksiyonunu çağırarak çalışıyor.
+
+[Şekil 1. AutoReq End-to-End 3 Katmanlı Pipeline Mimarisi]
+
+Preprocessing. Bu katman Türkçe Stanza modelini [5] kullanıyor. Sentence segmentation, tokenization, multi-word tokenization (MWT), POS tagging, lemmatization ve dependency parsing işlemlerini gerçekleştiriyor. Kullanılmayan neural NER modülünü devre dışı bıraktık. Bu sayede bellek tüketimi 300 MB civarına düştü. Uygulama başlangıç hızı gözle görülür biçimde arttı. Cümle sınırlarının tespitini Stanza segmenter bileşeni yapıyor. Her cümleye REQ_001 formatında tekil bir ID atanıyor.
+
+Actor extraction iki aşamalı çalışıyor. İlk geçişte Stanza morfolojik analizinden elde edilen lemma'lar önceden tanımlanmış bir rol tablosuyla karşılaştırılıyor. Bu tabloda kullanıcı, yönetici, admin, müşteri, hasta, doktor, sekreter gibi roller yer alıyor. Burada kritik bir nokta var. Türkçe agglutinative bir dil. Yüzey formları üzerinden eşleme yapmak yüksek oranda başarısızlıkla sonuçlanıyor. Analiz mutlaka lemma seviyesinde yapılmalı. İkinci geçişte Stanza dependency tree taranıyor. Yalnızca dilbilgisel özne (nsubj, nsubj:pass, obl:agent) rolündeki veya passive voice cümlelerde "tarafından" ilgeciyle ilişkilendirilmiş isim soylu kelimeler aktör adayı oluyor. Bu mekanizma "sayfa geçişleri" veya "kupon kodu" gibi nesne konumundaki ifadelerin yanlış etiketlenmesini büyük ölçüde engelliyor.
+
+Pipeline'a yerel bir KVKK maskeleme katmanı entegre ettik. Ham metin LLM servislerine gönderilmeden önce regular expression'lar aracılığıyla T.C. Kimlik Numaraları ve özel isimler maskeleniyor. Kimlik numaraları [TC_KIMLIK_NO] etiketi, özel isimler [KISI_ADI] etiketi ile değiştiriliyor. Cümle başındaki kelimelerin isim sanılarak yanlış maskelenmemesi için sentence-initial analysis mekanizması ve exception list'ler kullandık.
+
+FR/NFR classification üç katmanlı hybrid bir mimariyle yürütülüyor. İlk katmanda rule-based fonksiyonel fiil detektörü yeterlilik fiillerini ve geniş zaman yapılarını tarıyor. İkinci katmanda güvenlik, performans, şifreleme ve gecikme gibi standart NFR keyword'lerini arayan regex matcher çalışıyor. Bu iki rule-based katmanın netleştiremediği muğlak cümleler son aşamada Gemini LLM servisine gönderiliyor. İşin ilginç tarafı sonuç oldukça etkileyici. Yalnızca keyword matching'e dayalı baseline'ın %69.8'lik accuracy değerini bu hybrid yaklaşım %94.7'ye çıkardı.
+
+LLM Analysis Layer. Preprocessing katmanından çıkan ParsedDocument nesnesi bir ThreadPoolExecutor ile paralel çalışan iki LLM modülüne gönderiliyor. Bunlar ConflictDetector ve GapAnalyzer. RequirementImprover modülü ise ikinci bir thread pool içinde output generator'larla birlikte çalışıyor. Modüller gereksinimleri [REQ_NNN] (TİP) METİN formatında serialize ediyor. Prompt injection saldırılarını engellemek için girdi metinleri <requirement_text>...</requirement_text> XML tag'leri içine alınıyor. LLM çıktılarının JSON formatında kalması garantilenmiş. API'den dönebilecek markdown kalıntılarını temizlemek için extract_json_object() fonksiyonu kullanılıyor.
+
+[Şekil 2. Analysis Layer Input/Output Örneği, Conflict Detection ve Clarification Sonuçları]
+
+ConflictDetector gereksinimler arası çelişkileri altı kategoride sınıflandırıyor. Bunlar logic, business rule, performance, security, usability ve other. Logic conflict'ler doğrudan taban tabana zıt talepleri kapsıyor. Business rule conflict'leri süreç akışlarındaki uyumsuzlukları hedefliyor. GapAnalyzer modülü belki de en az takdir edilen ama en faydalı bileşen. Paydaş metninde örtük olarak mevcut ama yazılmamış eksik süreçleri tespit ediyor. Örneğin şifre değiştirme akışı tanımlanmış ama "şifremi unuttum" akışı unutulmuş olabilir. Bu modüle sistem türüne göre özelleştirilmiş DOMAIN_REFERENCES checklist'leri dinamik olarak enjekte ediliyor. Analiz kalitesi gözle görülür biçimde artıyor. RequirementImprover ise muğlak gereksinimleri sayısal, test edilebilir ifadelere dönüştürüyor.
+
+Output Generation Layer. Analiz sonuçları AnalysisReport nesnesine yazıldıktan sonra generation katmanı devreye giriyor. Çoklu kullanıcı ortamlarında yazma çakışmalarını ve veri sızıntılarını önlemek için tüm belge üretim işlemleri disk yerine bellek içinde io.BytesIO buffer'ları kullanılarak gerçekleştiriliyor.
+
+SRS belgesi ISO/IEC/IEEE 29148 standardına uygun 11 bölümden oluşuyor. PDF belgelerinde Türkçe karakter desteği tam olan fpdf2 kütüphanesini kullanıyoruz. DOCX çıktılarda ise python-docx kütüphanesini tercih ettik. User Stories için Türkçe dil yapısına uygun template'ler kullanılarak LLM çağrıları yapılıyor. Gherkin BDD senaryoları tüm test senaryolarını tek bir Feature başlığı altında topluyor. Standart test runner'larla tam uyumlu çıktı veriyor. Son olarak öncelikleri Fibonacci skalasına göre belirlenen backlog listesi XLSX formatında üretiliyor. Küçük bir detay. 8 SP sınırının matematiksel olarak erişilebilir kalması için threshold değeri 4.0 ve üzeri seviyesine çekmemiz gerekti.
+
+IV. BULGULAR VE DEĞERLENDİRME
+
+[Şekil 4. AutoReq Conflict Detection Arayüzü ve Tespit Edilen Gereksinim Çiftleri]
+
+Deneysel değerlendirmede üç farklı dataset'ten yararlandık. Development corpus 8 farklı alanı kapsayan 244 cümleden oluşuyor. Bu alanlar e-ticaret, bankacılık, eğitim, kurumsal, mobil uygulama, IoT, SaaS ve oyun. Generalization yeteneğini sınamak için sağlık ve otomotiv alanlarından 113 cümlelik bağımsız held-out corpus hazırladık. Sistem bu alanlara geliştirme aşamasında hiç maruz kalmadı. Conflict detection değerlendirmesi 50 kasıtlı çelişki çifti ve kontrol cümleleri dahil toplam 153 gereksinim üzerinde gerçekleştirildi. Tüm değerlendirmeler Gemini 2.5 Flash modeliyle yürütüldü.
+
+Development Corpus Sonuçları. 244 cümlelik development corpus'ta FR/NFR classification'da %94.7 accuracy elde ettik. 244 cümlenin 231'inde doğru tahmin yapıldı. Actor extraction'da %92.4 precision ve %81.2 recall gözlemlendi. F1 score %86.5 olarak hesaplandı. Bankacılık ve kurumsal portal gibi alanlarda actor extraction %100.0 precision ve recall değerlerine ulaştı. IoT, SaaS ve oyun gibi yeni eklenen teknik alanlarda da tutarlı sonuçlar ortaya çıktı. Sektörel kırılım Tablo II'de detaylı sunuluyor. Bir not düşmek gerekir. Mobil uygulama alanında beklenen aktörün bulunmaması nedeniyle actor extraction metrikleri matematiksel olarak %0 çıkmıştır. Bu bir hata değil, dataset'in doğasından kaynaklanan bir özellik.
+
+TABLO II
+SEKTÖREL DEVELOPMENT CORPUS PERFORMANS KIRILIMI
+Sektör                  Cümle Sayısı    Sınıf. Doğruluğu    Aktör Kesinliği    Aktör Duyarlılığı
+Bankacılık              10              %100.0              %100.0             %100.0
+Kurumsal Portal         13              %100.0              %100.0             %100.0
+Eğitim                  12              %83.3               %100.0             %100.0
+E-Ticaret               13              %100.0              %83.3              %71.4
+Mobil Uygulama          15              %86.7               %0.0 *             %0.0 *
+IoT                     61              %96.7               %93.8              %78.9
+SaaS                    60              %95.0               %90.9              %83.3
+Oyun                    60              %93.3               %91.3              %84.0
+* Mobil dataset'te beklenen aktör bulunmadığı için metrik matematiksel olarak %0 çıkmıştır.
+
+TABLO III
+AUTOREQ GENEL PERFORMANS VE METRİK SONUÇLARI
+Metrik                              Development Corpus (244 Cümle)   Held-out Corpus (113 Cümle)      Conflict Dataset (153 Cümle)
+FR/NFR Classification Accuracy      %94.7                            %87.6                            -
+Actor Extraction Precision           %92.4                            %61.9                            -
+Actor Extraction Recall              %81.2                            %41.9                            -
+Actor Extraction F1 Score            %86.5                            %50.0                            -
+Conflict Detection Recall            -                                -                                %98.0
+Conflict Detection Precision         -                                -                                %94.2
+Conflict Detection F1 Score          -                                -                                %96.1
+
+Held-out Corpus Sonuçları. Sistemin hiç görmediği sağlık ve otomotiv alanlarından 113 cümle üzerinde FR/NFR classification accuracy %87.6 olarak ölçüldü. Actor extraction'da %61.9 precision ve %41.9 recall elde edildi. F1 score %50.0. Bu performans düşüşünü yakından inceledik. Temel sebep mevcut NER modülünün rule-based lexicon eşleştirmelerine bağımlı oluşu.
+
+Somutlaştıralım. "Radar sensörü" veya "gösterge paneli" gibi compound expression'lar otomotiv alanında aktör olarak bekleniyor. Ancak lexicon'da bu ifadeler tanımlı değil. Stanza NER modülü yalnızca tekil kelimeleri çekebiliyor. Bu durum metriklerde matching hatası olarak yansıyor. Sağlık alanında farklı bir sorun dikkat çekiyor. "Hasta" kelimesi hem aktör hem de tamlama öğesi olarak kullanılabiliyor. Bu belirsizlik precision metriklerini olumsuz etkiliyor. Rule-based actor extraction bilinen alanlarda güçlü. Ancak terminolojisi önceden tanımlanmamış yeni alanlarda sınırlarına ulaşıyor.
+
+Conflict Detection Sonuçları. Conflict detection'ı önceki sürümlerdeki küçük ölçekli denemelerden farklı olarak bağımsız ve kapsamlı bir dataset üzerinde değerlendirdik. 50 kasıtlı çelişki çifti ve kontrol cümleleri dahil toplam 153 gereksinim üzerinde batched LLM analizi yapıldı. ConflictDetector modülü 52 çelişki çifti raporladı. Bunlardan 49'u doğru tespit, 3'ü false positive olarak sınıflandırıldı. Yalnızca 1 çelişki çifti kaçırıldı.
+
+Bu sonuçlar %98.0 recall, %94.2 precision ve %96.1 F1 score değerine karşılık geliyor. Kaçırılan tek çelişki neydi? "Tüm arayüz metinlerini dinamik çeviri" ile "yalnızca İngilizce ve Türkçe desteği" arasındaki dolaylı kapsam sınırlandırma çelişkisiydi. Doğrudan kelime düzeyinde zıtlık bulunmadığı için LLM'in dikkatinden kaçmış. False positive'ler ise yetki yönetimi ve güvenlik politikası gibi anlamsal olarak birbirine yakın konulardaki cümle çiftlerinden kaynaklandı.
+
+Ablation Analysis. LLM analiz katmanını tamamen devre dışı bıraktığımızda ne oldu? Conflict detection başarısı %0'a düştü. Bu LLM katmanının vazgeçilmez olduğunu tartışmasız gösteriyor. Hız tarafında hybrid classification akışı cümle başına ortalama 1.15 saniye sürüyor. Sadece rule-based NLP akışı 0.68 saniyede tamamlanıyor. LLM fallback adımına gereksinimlerin yaklaşık %25'i yönlendirildi. Bu cümleler için ortalama işlem süresi 2.45 saniye olarak ölçüldü. Genel ortalamada LLM katmanının ek gecikmesi cümle başına +0.47 saniye. Tekil belge üretim süreçlerinde bu gecikme kullanıcı deneyimini olumsuz etkilemiyor.
+
+Software Quality Assurance. Pipeline'ın kararlılığını doğrulamak için kapsamlı bir automated test suite geliştirdik. Toplam 190 unit ve integration test başarıyla geçti. Bunların 106'sı snapshot test. Test suite'in ortalama çalışma süresi 501.52 saniye. Testler tamamen izole ve kararlı biçimde yürütülüyor.
+
+V. SONUÇ VE GELECEK ÇALIŞMALAR
+
+Bu çalışmada AutoReq'i sunduk. Türkçe paydaş metinlerinden ISO/IEC/IEEE 29148 uyumlu SRS dahil dört farklı artefaktı tam otomatik üreten ilk end-to-end pipeline bu. Hybrid mimarimiz Stanza tabanlı NLP preprocessing'i iki paralel LLM analiz modülüyle birleştiriyor. Her ne kadar %94.7 FR/NFR accuracy ve %86.5 actor extraction F1 score elde etsek de bilinmeyen alanlardaki %87.6'lık classification performansı bizi tam anlamıyla tatmin etmedi. Doğrusu %50.0 actor extraction F1 score'u hayal kırıklığı yarattı. Conflict detection'da %96.1 F1 score güçlü bir sonuç. Ama rule-based actor extraction'ın sınırları ortada.
+
+Bu noktada şunu itiraf etmeliyim ki rule-based lexicon yaklaşımı bilinen alanlarda işe yarıyor. Ancak otomotiv gibi teknik terminolojisi yoğun yeni alanlarda çöküyor. "Radar sensörü" veya "gösterge paneli" gibi compound technical term'lerin tanınamaması en büyük zafiyet. "Hasta" kelimesinin hem aktör hem tamlama öğesi olarak belirsizlik yaratması da ayrı bir sorun. Kısacası mevcut actor extraction modülü sistemin en zayıf halkası.
+
+Gelecek çalışmalarda önceliğimiz net. Rule-based actor extraction'ın yerine Türkçeye özel eğitilmiş deep learning tabanlı bir NER modeli entegre etmeliyiz. Transformer veya BERT tabanlı bir yaklaşım compound technical term'lerde ciddi iyileşme sağlayacak. Hem İngilizce hem Almanca dil destekleri eklenmeli. Üretilen backlog ögeleri Jira ve Azure DevOps API'leri aracılığıyla doğrudan proje yönetim araçlarına aktarılmalı. Bir de gerçek projelerde çalışan iş analistleriyle user experience çalışmaları yürütülmeli. Açıkçası AutoReq umut verici bir başlangıç. Ama yapılacak çok iş var.
+
+KAYNAKLAR
+
+[1] J. Johnson ve H. Mulder, "The CHAOS Report 2020: Beyond Infinity," The Standish Group International, Boston, MA, USA, Tech. Rep., 2020.
+[2] B. W. Boehm ve V. R. Basili, "Software defect reduction top 10 list," IEEE Computer, vol. 34, no. 1, pp. 135–137, Jan. 2001, doi: 10.1109/2.962984.
+[3] S. Wagner, D. Méndez Fernández, M. Felderer, A. Vetrò, M. Kalinowski, R. Wieringa, D. Pfahl, T. Conte, M.-T. Christiansson, D. Greer, C. Lassenius, T. Männistö, M. Nayebi, M. Oivo, B. Penzenstadler, R. Prikladnicki, G. Ruhe, A. Schekelmann, S. Sen, R. Spínola, J. L. de la Vara, ve D. Winkler, "Status quo in requirements engineering: A theory and a global family of surveys," ACM Trans. Softw. Eng. Methodol., vol. 28, no. 2, Art. no. 9, pp. 9:1–9:48, 2019, doi: 10.1145/3306607.
+[4] ISO/IEC/IEEE 29148:2018, Systems and Software Engineering — Life Cycle Processes — Requirements Engineering, International Organization for Standardization, Geneva, Switzerland, 2018.
+[5] P. Qi, Y. Zhang, Y. Zhang, J. Bolton, ve C. D. Manning, "Stanza: A Python natural language processing toolkit for many human languages," in Proc. 58th Annu. Meeting Assoc. Comput. Linguistics: System Demonstrations, Online, 2020, pp. 101–108.
+[6] F. Dalpiaz, D. Dell'Anna, F. B. Aydemir, ve S. Çevikol, "Requirements classification with interpretable machine learning and dependency parsing," in Proc. IEEE 27th Int. Requirements Eng. Conf. (RE), Jeju Island, South Korea, 2019, pp. 142–152.
+[7] A. Ferrari ve A. Esuli, "An NLP approach for cross-domain ambiguity detection in requirements engineering," Autom. Softw. Eng., vol. 26, no. 3, pp. 559–598, 2019.
+[8] A. Fan, B. Gokkaya, M. Harman, M. Lyubarskiy, S. Sengupta, S. Yoo, ve J. M. Zhang, "Large language models for software engineering: Survey and open problems," in Proc. IEEE/ACM 45th Int. Conf. Softw. Eng. — Future of Softw. Eng. (ICSE-FoSE), Melbourne, Australia, 2023, pp. 31–53.
+[9] K. Ronanki, C. Berger, ve J. Horkoff, "Investigating ChatGPT's potential to assist in requirements elicitation processes," in Proc. 49th Euromicro Conf. Softw. Eng. Adv. Appl. (SEAA), IEEE, 2023, pp. 354–361, doi: 10.48550/arXiv.2307.07381.
+[10] W. Guo, L. Zhang, ve X. Lian, "Automatically detecting the conflicts between software requirements based on finer semantic analysis," Inf. Softw. Technol., vol. 140, p. 106703, 2021, doi: 10.1016/j.infsof.2021.106703.
+[11] K. Ronanki, B. Cabrero-Daniel, ve C. Berger, "ChatGPT as a tool for user story quality evaluation: Trustworthy out of the box?" in Agile Processes in Softw. Eng. Extreme Programming — Workshops (XP 2023), Lecture Notes in Business Information Processing, vol. 489, Springer, Cham, 2024, pp. 189–196, doi: 10.1007/978-3-031-48550-3_17.

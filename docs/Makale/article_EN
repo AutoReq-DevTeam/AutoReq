@@ -1,0 +1,138 @@
+
+
+Abstract— Requirement errors are one of the most critical factor that crashes software projects. Industry research draws a clear picture. Approximately 40% of failures stem from weak, conflicting, or missing requirement documents. It is remarkable that the transformation of raw stakeholder data into structured documents is still done manually in many places. The vast majority of existing tools do not support Turkish because of its morphological complexity. In this study, we present a new end-to-end pipeline called "AutoReq". The system automatically analyzes Turkish requirement texts from end to end. This analysis is a non-linear, nested process. The Stanza-based preprocessing module is active. It performs sentence segmentation and KVKK-compliant masking, actor and business object, Hybrid FR/NFR classification. Then, the Gemini 2.5 Flash model takes over. The analysis deepens. Conflict detection. Gap analysis. Requirement improvement. The system runs all of these simultaneously. As soon as the analyses finish, it moves directly to the documents. The ISO/IEC/IEEE 29148 compliant SRS document is ready. It generates User Stories, Gherkin BDD scenarios, and the Product Backlog. We obtained a 94.7% FR/NFR classification accuracy on the 244-sentence development corpus covering eight domains. Contradictions were detected on an independent conflict dataset with a 96.1% F1 score. Honestly, the result that surprised us was this. The accuracy dropped to 87.6% in the 113-sentence held-out corpus consisting of fields that have never been encountered before. A significant drop in rule-based actor extraction performance was observed. These results reveal the need for transformer-based NER integration. Still, this first end-to-end pipeline for Turkish requirements engineering is promising from a practical standpoint.
+
+Keywords— Software Requirements Engineering, Natural Language Processing, Large Language Model, Automated Document Generation, Software Requirements Specification (SRS), Conflict Detection, Behavior-Driven Development (BDD), Requirements Classification.
+
+I. Introduction
+
+Did you know that about 40% of software projects fail because of requirement errors [1]? This statistic has been repeated so many times that it is now taken for granted. But the structural problem it points to is still standing strong. In this study, we present an end-to-end pipeline called "AutoReq" that targets exactly this problem.
+
+Boehm and Basili [2] presented a striking cost table. Fixing a bug caught at the requirements stage is about ten times cheaper. The cost grows exponentially if it is caught in a live environment. The industry has known this for a long time. But in daily practice, this knowledge fails to turn into action.
+
+Well, why is it so stubborn? There are structural reasons. Contradictions rarely appear as obvious statements. Conflict arises in real life from the interaction of requirements written at different times, under pressure from different stakeholders. Consider a vague requirement like "It should work fast." It passes review without any issues. But since it has no numerical equivalent, it turns into a design crisis. Wagner et al. [3] examined exactly this pattern in different countries. They confirmed that the problem is universal. The issue stems more from the nature of the process than from the inexperience of the teams.
+
+The existing tools in the literature have addressed specific subfields of the problem. Rule-based NLP techniques can successfully perform entity extraction under limited conditions. Machine learning models show variable success in FR/NFR classification. LLMs are good at rewriting vague requirements. However, they fall short on their own when it comes to scanning the entire requirement set and finding logical contradictions. As far as we know, there is no integrated Turkish requirements engineering tool yet [4]. AutoReq was designed to fill exactly this gap.
+
+AutoReq pipeline passes input texts through three layers. First, morphological analysis and dependency parsing are performed using the Stanza library. Then parallel LLM analysis processes using the Gemini 2.5 Flash model kick in. In the final step, the generation layer produces four different output documents.
+
+The points that set AutoReq apart from other works can be summarized as follows. NLP and LLM integration provides a fully automated workflow. Manual data transfer is not required. The ConflictDetector module does not only identify conflicting pairs. It presents the type and reason of the contradiction with natural language explanations. The most striking point is this: from a single analysis pass, SRS, User Stories, Gherkin scenarios, and a backlog list are all produced at the same time.
+
+The rest of the article is organized as follows. Section II presents related work, Section III presents the system architecture and methodology, Section IV presents experimental evaluations, and Section V presents conclusions and future plans.
+
+II.  Literature Review
+
+Extracting requirements from natural language texts is not a new topic. Studies in the field of NLP have been ongoing for years. Success levels and practical applicability vary widely.
+
+Dalpiaz et al. [6] combined explainable machine learning methods with dependency tree features. They reported over 85% accuracy in FR/NFR classification. A nice result. But an approach designed entirely according to English language structure. Because it can't be directly adapted to agglutinative languages like Turkish. Why? Dozens of inflected surface forms derive from a single root in Turkish. This morphological richness invalidates the feature assumptions of classifiers trained on English. Ferrari and Esuli [7] focused on detecting word-level ambiguities in different domains. A valuable contribution. But it doesn't address the logical contradictions between sentences that are far apart from each other.
+
+The use of LLMs in requirements engineering has gained significant momentum in recent times. Fan et al. [8] made a notable observation. While code generation and bug detection dominate the literature, requirements engineering has not yet been studied enough. Ronanki et al. [9] examined LLM-supported requirements elicitation processes. It raised an interesting dilemma. These models can generate explanatory questions that make sense. But it often hallucinates by making up requirements and producing structural inconsistencies. The lesson here is clear. A system that relies on an LLM without preprocessing and output validation layers cannot be reliable. LLMs should be supporting components tightly constrained by strict rules, not the pipeline itself.
+
+ISO/IEC/IEEE 29148 standard [4] defines the section structure of an SRS document quite clearly. This clarity should provide a suitable ground for automation. Yet automatic SRS generation has received surprisingly little attention. Most existing tools either do template-based static filling or expect the user to enter content manually. We could not find any open academic studies that create analytical representations from raw stakeholder texts and dynamically populate templates.
+
+Conflict detection has a longer history. Guo et al. [10] achieved 83.9% accuracy in pairwise conflict detection using semantic analysis methods. But these systems only classify contradictions in a binary way as "present/absent." Is this enough for an analyst in a real project? Most of the time, no. Knowing whether the contradiction is a logic error, a scope overlap, or a missing precondition is vital.
+
+Ronanki et al. [11] made an important finding in the automatic generation of BDD scenarios. The consistency of the User Stories generated by ChatGPT shows large fluctuations. Without expert oversight, including these in software processes is risky. This finding confirms that downstream output quality depends entirely on upstream preprocessing and analysis quality.
+
+In summary, there are studies in the literature that focus on the individual components of the pipeline. However, no integrated system has been designed that combines preprocessing, classification, conflict detection, and test scenario generation together. Moreover, this kind of integration has not been attempted for a language with high morphological complexity like Turkish. AutoReq was developed to carry out exactly this integration.
+
+TABLE I
+COMPARISON OF REQUIREMENTS ENGINEERING APPROACHES
+Approach	Lang.	FR/NFR	Conflict Detection	SRS (29148)	Artifact Suite
+Dalpiaz et al. [6]	EN	✓	-	-	-
+Ferrari & Esuli [7]	EN	-	Partial	-	-
+Guo et al. [10]	EN	-	Binary	-	-
+Ronanki et al. [9]	EN	-	-	-	-
+Ronanki et al. [11]	EN	-	-	-	User Stories + BDD
+AutoReq (ours)	TR	✓	Typed	✓	SRS + Stories + BDD + Backlog
+
+III. System Architecture and Methodology
+
+AutoReq pipeline consists of three layers. The raw stakeholder text first goes through the preprocessing layer. Then it is passed to the LLM analysis layer. Finally, the generation layer converts the findings into final documents. All data flow between layers runs through two data classes defined in core/models.py. ParsedDocument carries the preprocessing outputs. AnalysisReport, on the other hand, holds the LLM analysis results. This strict type checking minimizes integration errors. Honestly, during development we noticed that type mismatches between layers are one of the sneakiest sources of bugs. The application works by calling the central process_text() function through the Streamlit interface.
+
+Fig. 1. Three-layer pipeline architecture of AutoReq.
+
+Preprocessing. This layer uses the Turkish Stanza model [5]. It performs sentence segmentation, tokenization, multi-word tokenization (MWT), POS tagging, lemmatization, and dependency parsing. We disabled the unused neural NER module. This reduced memory consumption to around 300 MB. Application startup speed increased noticeably. Sentence boundary detection is done by the Stanza segmenter component. Each sentence is assigned a unique ID in the REQ_001 format.
+
+Actor extraction works in two stages. In the first pass, the lemmas obtained from Stanza morphological analysis are compared against a predefined role table.This table includes roles such as user, manager, admin, customer, patient, doctor, and secretary. Here is a critical point. Turkish is an agglutinative language. Mapping through surface forms results in a high rate of failure. The analysis must be done at the lemma level. In the second pass, the Stanza dependency tree is scanned. Only noun-type words that serve as the grammatical subject (nsubj, nsubj:pass, obl:agent) or are linked to the preposition "tarafından" in passive voice sentences become actor candidates. This mechanism largely prevents expressions in object position — such as "sayfa geçişleri" or "kupon kodu" — from being mislabeled.
+
+We integrated a local KVKK (Turkish Personal Data Protection Law) masking layer into the pipeline. Before raw text is sent to LLM services, Turkish ID Numbers and proper names are masked using regular expressions. Identity numbers are replaced with the [TC_KIMLIK_NO] tag, and proper names are replaced with the [KISI_ADI] tag. We used a sentence-initial analysis mechanism and exception lists to prevent words at the beginning of a sentence from being incorrectly masked as nouns.
+
+FR/NFR classification is being carried out with a three-layer hybrid architecture. In the first layer, the rule-based functional verb detector scans for modal verbs and simple present tense structures. In the second layer, a regex matcher runs that looks for standard NFR keywords such as security, performance, encryption, and latency. Ambiguous sentences that these two rule-based layers cannot clarify are sent to the Gemini LLM service in the final stage. The interesting part is that the result is quite impressive. This hybrid approach raised the accuracy from 69.8%, which was the baseline relying solely on keyword matching, to 94.7%.
+
+LLM Analysis Layer. The ParsedDocument object coming out of the preprocessing layer is sent to two LLM modules running in parallel with a ThreadPoolExecutor. These are ConflictDetector and GapAnalyzer. The RequirementImprover module works together with output generators inside a second thread pool. Modules serialize requirements in the format [REQ_NNN] (TYPE) TEXT. Input texts are wrapped in <requirement_text>...</requirement_text> XML tags to prevent prompt injection attacks. The JSON format of LLM outputs is guaranteed. The extract_json_object() function is used to clean up any markdown remnants that may be returned from the API.
+
+Fig. 2. Example input–output of the LLM analysis layer: conflict detection and optimization results.
+
+ConflictDetector classifies conflicts between requirements into six categories. These are logic, business rule, performance, security, usability, and other. Logic conflicts cover directly opposing requests. Business rule conflicts target inconsistencies in process flows. The GapAnalyzer module is perhaps the least appreciated but most useful component. It detects missing processes that are implicitly present but unwritten in the stakeholder text. For example, the password change flow may be defined but the "forgot my password" flow may have been forgotten. Domain_references checklists customized according to the system type are dynamically injected into this module. Analysis quality improves noticeably. RequirementImprover converts vague requirements into measurable, testable statements.
+
+Output Generation Layer. After the analysis results are written to the AnalysisReport object, the generation layer kicks in. All document generation operations are performed using in-memory io.BytesIO buffers instead of disk to prevent write conflicts and data leaks in multi-user environments.
+
+The SRS document consists of 11 sections compliant with the ISO/IEC/IEEE 29148 standard. We use the fpdf2 library, which has full Turkish character support in PDF documents. For DOCX output, we chose the python-docx library. For User Stories, LLM calls are made using templates suited to Turkish language structure. Gherkin BDD scenarios group all test cases under a single Feature heading. It produces output that is fully compatible with standard test runners. Finally, the backlog list with priorities determined according to the Fibonacci scale is generated in XLSX format. A small detail: to keep the 8 SP limit mathematically reachable, we had to raise the threshold value to 4.0 and above.
+
+IV. Results and Evaluation
+
+Fig. 4. AutoReq results interface showing detected conflicts with severity ratings and requirement pairs.
+
+In the experimental evaluation, we used three different datasets. The development corpus consists of 244 sentences covering 8 different domains. These domains are e-commerce, banking, education, enterprise, mobile application, IoT, SaaS, and gaming. To test the generalization ability, we prepared an independent held-out corpus of 113 sentences from the health and automotive domains. The system was never exposed to these areas during the development phase. Conflict detection evaluation was carried out on a total of 153 requirements, including 50 intentional conflict pairs and control sentences. All evaluations were run with the Gemini 2.5 Flash model.
+
+Development Corpus Results. On a 244-sentence development corpus, we achieved 94.7% accuracy in FR/NFR classification. Correct predictions were made in 231 out of 244 sentences. Actor extraction achieved 92.4% precision and 81.2% recall. The F1 score was calculated as 86.5%. In areas such as banking and corporate portals, actor extraction achieved 100.0% precision and recall values. Consistent results also emerged in the newly added technical areas such as IoT, SaaS, and gaming. The sectoral breakdown is presented in detail in Table II. One note should be made. Because the expected actor was not present in the mobile application field, the actor extraction metrics came out as mathematically 0%. This is not an error, but a characteristic that comes from the nature of the dataset.
+
+TABLE II
+
+SECTORAL PERFORMANCE BREAKDOWN OF THE DEVELOPMENT CORPUS
+Domain / Sector	Sentence
+Count	Class. Accuracy	Actor Precision	Actor Recall
+Banking	10	100.0%	100.0%	100.0%
+Enterprise Portal	13	100.0%	100.0%	100.0%
+Education	12	83.3%	100.0%	100.0%
+E-Commerce	13	100.0%	83.3%	71.4%
+Mobile Application	15	86.7%	0.0% *	0.0% *
+IoT	61	96.7%	93.8%	78.9%
+Saas	60	95.0%	90.9%	83.3%
+Gaming	60	93.3%	91.3%	84.0%
+
+TABLE III
+
+OVERALL PERFORMANCE AND METRIC RESULTS OF AUTOREQ
+Metric	Development Corpus (244 Sentences)	Held-out Corpus (113 Sentences)	Conflict Dataset (153 Sentences)
+FR/NFR Classification Accuracy	94.7%	87.6%	-
+Actor Extraction Precision	92.4%	61.9%	-
+Actor Extraction Recall	81.2%	41.9%	-
+Actor Extraction F1 Score	86.5%	50.0%	-
+Conflict Detection Recall	-	-	98.0%
+Conflict Detection Precision	-	-	94.2%
+Conflict Detection F1 Score	-	-	96.1%
+
+Held-out Corpus Results. FR/NFR classification accuracy was measured at 87.6% on 113 sentences from the health and automotive domains that the system had never seen before. A precision of 61.9% and a recall of 41.9% were achieved in actor extraction. F1 score 50.0%. We examined this performance drop closely. The main reason is that the current NER module depends on rule-based lexicon matching.
+
+Let's make this concrete. Compound expressions like "radar sensor" or "dashboard" are expected to appear as actors in the automotive domain. However, these expressions are not defined in the lexicon. The Stanza NER module can only extract single words. This situation shows up in the metrics as a matching error. A different issue is drawing attention in the health field. The word "patient" can be used both as an actor and as a modifier in Turkish. This ambiguity negatively affects precision metrics. Rule-based actor extraction is strong in well-known domains. But it reaches its limits in new domains where the terminology has not been defined in advance.
+
+Conflict Detection Results. We evaluated conflict detection on an independent and comprehensive dataset, unlike the small-scale trials in previous versions. Batched LLM analysis was performed on a total of 153 requirements, including 50 intentional contradiction pairs and control sentences. The ConflictDetector module reported 52 conflict pairs. Of these, 49 were correct detections and 3 were classified as false positives. Only 1 conflict pair was missed.
+
+These results correspond to a recall of 98.0%, a precision of 94.2%, and an F1 score of 96.1%. What was the one missed contradiction? It was the indirect scope-limiting contradiction between "dynamic translation of all interface texts" and "support for English and Turkish only." Because there was no direct word-level contrast, it slipped past the LLM's attention. The false positives came from sentence pairs on topics that are semantically close to each other, such as authorization management and security policy.
+
+Ablation Analysis. What happened when we completely disabled the LLM analysis layer? Conflict detection success dropped to 0%. This clearly shows that the LLM layer is indispensable. On the speed side, the hybrid classification flow takes an average of 1.15 seconds per sentence. Only the rule-based NLP flow completes in 0.68 seconds. About 25% of the requests were routed to the LLM fallback step. The average processing time for these sentences was measured at 2.45 seconds. The additional latency of the LLM layer in the overall average is +0.47 seconds per sentence. In single document generation processes, this latency does not negatively affect the user experience.
+
+Software Quality Assurance. We developed a comprehensive automated test suite to verify the stability of the pipeline. A total of 190 unit and integration tests passed successfully. 106 of them are snapshot tests. The average runtime of the test suite is 501.52 seconds. The tests run in a fully isolated and stable manner.
+
+V. Conclusion
+
+In this study, we presented AutoReq. This is the first end-to-end pipeline that fully automatically generates four different artifacts, including an ISO/IEC/IEEE 29148-compliant SRS, from Turkish stakeholder texts. Our hybrid architecture combines Stanza-based NLP preprocessing with two parallel LLM analysis modules. Although we achieved 94.7% FR/NFR accuracy and an 86.5% actor extraction F1 score, the 87.6% classification performance in unknown domains did not fully satisfy us. Honestly, the 50.0% actor extraction F1 score was disappointing. The 96.1% F1 score in conflict detection is a strong result. But the limits of rule-based actor extraction are clear.
+
+At this point, I must admit that the rule-based lexicon approach works in known domains. However, it breaks down in new fields with dense technical terminology, like automotive. The biggest weakness is its failure to recognize compound technical terms like "radar sensor" or "instrument panel." The ambiguity caused by the word "patient" functioning as both an actor and a qualifier element in Turkish is another problem. In short, the current actor extraction module is the weakest link in the system.
+
+Our priority in future studies is clear. We should integrate a deep learning-based NER model trained specifically for Turkish, replacing rule-based actor extraction. A Transformer or BERT-based approach will bring significant improvement in compound technical terms. Both English and German language support should be added. The generated backlog items should be exported directly to project management tools via Jira and Azure DevOps APIs. There should also be user experience studies conducted with business analysts working on real projects. Honestly, AutoReq is a promising start. But there is a lot of work to be done.
+
+References
+    [1] J. Johnson and H. Mulder, "The CHAOS Report 2020: Beyond Infinity," The Standish Group International, Boston, MA, USA, Tech. Rep., 2020.
+    [2] B. W. Boehm and V. R. Basili, "Software defect reduction top 10 list," IEEE Computer, vol. 34, no. 1, pp. 135–137, Jan. 2001, doi: 10.1109/2.962984.
+    [3] S. Wagner, D. Méndez Fernández, M. Felderer, A. Vetrò, M. Kalinowski, R. Wieringa, D. Pfahl, T. Conte, M.-T. Christiansson, D. Greer, C. Lassenius, T. Männistö, M. Nayebi, M. Oivo, B. Penzenstadler, R. Prikladnicki, G. Ruhe, A. Schekelmann, S. Sen, R. Spínola, J. L. de la Vara, and D. Winkler, "Status quo in requirements engineering: A theory and a global family of surveys," ACM Trans. Softw. Eng. Methodol., vol. 28, no. 2, Art. no. 9, pp. 9:1–9:48, 2019, doi: 10.1145/3306607.
+    [4] ISO/IEC/IEEE 29148:2018, Systems and Software Engineering — Life Cycle Processes — Requirements Engineering, International Organization for Standardization, Geneva, Switzerland, 2018.
+    [5] P. Qi, Y. Zhang, Y. Zhang, J. Bolton, and C. D. Manning, "Stanza: A Python natural language processing toolkit for many human languages," in Proc. 58th Annu. Meeting Assoc. Comput. Linguistics: System Demonstrations, Online, 2020, pp. 101–108.
+    [6] F. Dalpiaz, D. Dell'Anna, F. B. Aydemir, and S. Çevikol, "Requirements classification with interpretable machine learning and dependency parsing," in Proc. IEEE 27th Int. Requirements Eng. Conf. (RE), Jeju Island, South Korea, 2019, pp. 142–152.
+    [7] A. Ferrari and A. Esuli, "An NLP approach for cross- domain ambiguity detection in requirements engineering," Autom. Softw. Eng., vol. 26, no. 3, pp. 559–598, 2019.
+    [8] A. Fan, B. Gokkaya, M. Harman, M. Lyubarskiy, S. Sengupta, S. Yoo, and J. M. Zhang, "Large language models for software engineering: Survey and open problems," in Proc. IEEE/ACM 45th Int. Conf. Softw. Eng. — Future of Softw. Eng. (ICSE-FoSE), Melbourne, Australia, 2023, pp. 31–53.
+    [9] K. Ronanki, C. Berger, and J. Horkoff, "Investigating ChatGPT's potential to assist in requirements elicitation processes," in Proc. 49th Euromicro Conf. Softw. Eng. Adv. Appl. (SEAA), IEEE, 2023, pp. 354–361, doi: 10.48550/arXiv.2307.07381.
+    [10] W. Guo, L. Zhang, and X. Lian, "Automatically detecting the conflicts between software requirements based on finer semantic analysis," Inf. Softw. Technol., vol. 140, p. 106703, 2021, doi: 10.1016/j.infsof.2021.106703.
+    [11] K. Ronanki, B. Cabrero-Daniel, and C. Berger, "ChatGPT as a tool for user story quality evaluation: Trustworthy out of the box?" in Agile Processes in Softw. Eng. Extreme Programming — Workshops (XP 2023), Lecture Notes in Business Information Processing, vol. 489, Springer, Cham, 2024, pp. 189–196, doi: 10.1007/978-3-031-48550-3_17.
