@@ -1,0 +1,379 @@
+{
+  "overall_precision": 97.85,
+  "overall_recall": 95.79,
+  "overall_f1": 96.81,
+  "entity_stats": {
+    "KISI_ADI": {
+      "tp": 45,
+      "fn": 0,
+      "fp": 2
+    },
+    "TC_KIMLIK_NO": {
+      "tp": 10,
+      "fn": 0,
+      "fp": 0
+    },
+    "EPOSTA": {
+      "tp": 25,
+      "fn": 0,
+      "fp": 0
+    },
+    "TELEFON": {
+      "tp": 11,
+      "fn": 4,
+      "fp": 0
+    }
+  },
+  "results": [
+    {
+      "id": "KVKK_001",
+      "original": "Talep formu Ahmet Yılmaz tarafından 12345678901 TC numarası ile onaylanmalıdır.",
+      "expected": "Talep formu [KISI_ADI] tarafından [TC_KIMLIK_NO] TC numarası ile onaylanmalıdır.",
+      "actual": "Talep formu [KISI_ADI] tarafından [TC_KIMLIK_NO] TC numarası ile onaylanmalıdır.",
+      "match": true
+    },
+    {
+      "id": "KVKK_002",
+      "original": "Sn. Mehmet Kaya sisteme mehmet.kaya@example.com adresi üzerinden kayıt olabilir.",
+      "expected": "Sn. [KISI_ADI] sisteme [EPOSTA] adresi üzerinden kayıt olabilir.",
+      "actual": "Sn. [KISI_ADI] sisteme [EPOSTA] adresi üzerinden kayıt olabilir.",
+      "match": true
+    },
+    {
+      "id": "KVKK_003",
+      "original": "Kullanıcı destek hattına +905551234567 numarasından ulaşabilmelidir.",
+      "expected": "Kullanıcı destek hattına [TELEFON] numarasından ulaşabilmelidir.",
+      "actual": "Kullanıcı destek hattına +[TELEFON] numarasından ulaşabilmelidir.",
+      "match": false
+    },
+    {
+      "id": "KVKK_004",
+      "original": "Dr. Canan Dağdeviren için portal üzerinde yeni randevu oluşturulmalıdır.",
+      "expected": "Dr. [KISI_ADI] için portal üzerinde yeni randevu oluşturulmalıdır.",
+      "actual": "Dr. [KISI_ADI] için portal üzerinde yeni randevu oluşturulmalıdır.",
+      "match": true
+    },
+    {
+      "id": "KVKK_005",
+      "original": "Ayşe Hanım izin talebini ayse.kaya@firma.com.tr e-posta adresinden İK birimine iletti.",
+      "expected": "[KISI_ADI] Hanım izin talebini [EPOSTA] e-posta adresinden İK birimine iletti.",
+      "actual": "[KISI_ADI] Hanım izin talebini [EPOSTA] e-posta adresinden İK birimine iletti.",
+      "match": true
+    },
+    {
+      "id": "KVKK_006",
+      "original": "Ali Bey yeni parolasını 0542-987-65-43 numaralı telefona gelen SMS kodu ile doğrulamalıdır.",
+      "expected": "[KISI_ADI] Bey yeni parolasını [TELEFON] numaralı telefona gelen SMS kodu ile doğrulamalıdır.",
+      "actual": "[KISI_ADI] Bey yeni parolasını [TELEFON] numaralı telefona gelen SMS kodu ile doğrulamalıdır.",
+      "match": true
+    },
+    {
+      "id": "KVKK_007",
+      "original": "Sistem, fatura detaylarını avukatımız Av. Burak Demir ile paylaşmalıdır.",
+      "expected": "Sistem, fatura detaylarını avukatımız Av. [KISI_ADI] ile paylaşmalıdır.",
+      "actual": "Sistem, fatura detaylarını avukatımız Av. [KISI_ADI] ile paylaşmalıdır.",
+      "match": true
+    },
+    {
+      "id": "KVKK_008",
+      "original": "Müşteri temsilcisi Kemal Bey ile 0212 345 67 89 numarasından irtibat kurulabilir.",
+      "expected": "Müşteri temsilcisi [KISI_ADI] Bey ile [TELEFON] numarasından irtibat kurulabilir.",
+      "actual": "Müşteri temsilcisi [KISI_ADI] Bey ile 0212 345 67 89 numarasından irtibat kurulabilir.",
+      "match": false
+    },
+    {
+      "id": "KVKK_009",
+      "original": "Veri tabanında kayıtlı olan 98765432109 kimlik numaralı kullanıcının hesabı askıya alınmalıdır.",
+      "expected": "Veri tabanında kayıtlı olan [TC_KIMLIK_NO] kimlik numaralı kullanıcının hesabı askıya alınmalıdır.",
+      "actual": "Veri tabanında kayıtlı olan [TC_KIMLIK_NO] kimlik numaralı kullanıcının hesabı askıya alınmalıdır.",
+      "match": true
+    },
+    {
+      "id": "KVKK_010",
+      "original": "Ecz. Fatma Kara reçete bilgilerini eczane.sistemi@saglik.gov.tr adresine iletmelidir.",
+      "expected": "Ecz. [KISI_ADI] reçete bilgilerini [EPOSTA] adresine iletmelidir.",
+      "actual": "Ecz. [KISI_ADI] reçete bilgilerini [EPOSTA] adresine iletmelidir.",
+      "match": true
+    },
+    {
+      "id": "KVKK_011",
+      "original": "Sistem yöneticisi Mustafa Yılmaz (mustafa.yilmaz@sirket.com) yeni yedeklemeyi tetiklemelidir.",
+      "expected": "Sistem yöneticisi [KISI_ADI] ([EPOSTA]) yeni yedeklemeyi tetiklemelidir.",
+      "actual": "Sistem yöneticisi [KISI_ADI] ([EPOSTA]) yeni yedeklemeyi tetiklemelidir.",
+      "match": true
+    },
+    {
+      "id": "KVKK_012",
+      "original": "Müşteri Zeynep Öztürk, zeynep.ozturk@gmail.com ve 05331112233 bilgileriyle kaydoldu.",
+      "expected": "Müşteri [KISI_ADI], [EPOSTA] ve [TELEFON] bilgileriyle kaydoldu.",
+      "actual": "Müşteri [KISI_ADI], [EPOSTA] ve [TELEFON] bilgileriyle kaydoldu.",
+      "match": true
+    },
+    {
+      "id": "KVKK_013",
+      "original": "Lütfen destek için info@firma.com adresi veya 0216-555-44-33 numarası ile iletişime geçiniz.",
+      "expected": "Lütfen destek için [EPOSTA] adresi veya [TELEFON] numarası ile iletişime geçiniz.",
+      "actual": "Lütfen destek için [EPOSTA] adresi veya 0216-555-44-33 numarası ile iletişime geçiniz.",
+      "match": false
+    },
+    {
+      "id": "KVKK_014",
+      "original": "Prof. Dr. Hasan Şahin, hastanın durumunu izleme paneline kaydetti.",
+      "expected": "Prof. Dr. [KISI_ADI], hastanın durumunu izleme paneline kaydetti.",
+      "actual": "Prof. [KISI_ADI]. [KISI_ADI], hastanın durumunu izleme paneline kaydetti.",
+      "match": false
+    },
+    {
+      "id": "KVKK_015",
+      "original": "Hasta Yakup Yıldız için 55432109876 kimlik numarasıyla kayıt açılmalıdır.",
+      "expected": "Hasta [KISI_ADI] için [TC_KIMLIK_NO] kimlik numarasıyla kayıt açılmalıdır.",
+      "actual": "Hasta [KISI_ADI] için [TC_KIMLIK_NO] kimlik numarasıyla kayıt açılmalıdır.",
+      "match": true
+    },
+    {
+      "id": "KVKK_016",
+      "original": "İletişim adresi olarak muhasebe@sirketimiz.com ve telefon 0 (544) 333 22 11 kaydedildi.",
+      "expected": "İletişim adresi olarak [EPOSTA] ve telefon [TELEFON] kaydedildi.",
+      "actual": "İletişim adresi olarak [EPOSTA] ve telefon 0 ([TELEFON] kaydedildi.",
+      "match": false
+    },
+    {
+      "id": "KVKK_017",
+      "original": "Sayın Merve Can, m.can@edu.tr e-posta adresinize doğrulama linki gönderildi.",
+      "expected": "Sayın [KISI_ADI], [EPOSTA] e-posta adresinize doğrulama linki gönderildi.",
+      "actual": "Sayın [KISI_ADI], [EPOSTA] e-posta adresinize doğrulama linki gönderildi.",
+      "match": true
+    },
+    {
+      "id": "KVKK_018",
+      "original": "Yönetici Can Bey, yeni yetki tablosunu onayladı.",
+      "expected": "Yönetici [KISI_ADI] Bey, yeni yetki tablosunu onayladı.",
+      "actual": "[KISI_ADI] Bey, yeni yetki tablosunu onayladı.",
+      "match": false
+    },
+    {
+      "id": "KVKK_019",
+      "original": "Teknisyen Ahmet, sunucu arızasını gidermek için ahmet.teknisyen@gmail.com adresinden bilgilendirildi.",
+      "expected": "Teknisyen [KISI_ADI], sunucu arızasını gidermek için [EPOSTA] adresinden bilgilendirildi.",
+      "actual": "[KISI_ADI], sunucu arızasını gidermek için [EPOSTA] adresinden bilgilendirildi.",
+      "match": false
+    },
+    {
+      "id": "KVKK_020",
+      "original": "Sözleşme Dr. Elif Yılmaz ile imzalandı ve tc numarası 45678901234 olarak kaydedildi.",
+      "expected": "Sözleşme Dr. [KISI_ADI] ile imzalandı ve tc numarası [TC_KIMLIK_NO] olarak kaydedildi.",
+      "actual": "[KISI_ADI] Dr. [KISI_ADI] ile imzalandı ve tc numarası [TC_KIMLIK_NO] olarak kaydedildi.",
+      "match": false
+    },
+    {
+      "id": "KVKK_021",
+      "original": "Sn. Hakan Demirci, 05324445566 numaralı hattınız üzerinden aranacaksınız.",
+      "expected": "Sn. [KISI_ADI], [TELEFON] numaralı hattınız üzerinden aranacaksınız.",
+      "actual": "Sn. [KISI_ADI], [TELEFON] numaralı hattınız üzerinden aranacaksınız.",
+      "match": true
+    },
+    {
+      "id": "KVKK_022",
+      "original": "Müşterimiz Selim Koç (selim@koc.com.tr) siparişini tamamladı.",
+      "expected": "Müşterimiz [KISI_ADI] ([EPOSTA]) siparişini tamamladı.",
+      "actual": "[KISI_ADI] ([EPOSTA]) siparişini tamamladı.",
+      "match": false
+    },
+    {
+      "id": "KVKK_023",
+      "original": "Eczacı Murat Bey, murat.eczaci@gmail.com adresine sipariş formunu gönderdi.",
+      "expected": "Eczacı [KISI_ADI] Bey, [EPOSTA] adresine sipariş formunu gönderdi.",
+      "actual": "[KISI_ADI] Bey, [EPOSTA] adresine sipariş formunu gönderdi.",
+      "match": false
+    },
+    {
+      "id": "KVKK_024",
+      "original": "Laborant Gözde Çelik, gozde.celik@hastane.org e-posta adresini kullanmaktadır.",
+      "expected": "Laborant [KISI_ADI], [EPOSTA] e-posta adresini kullanmaktadır.",
+      "actual": "Laborant [KISI_ADI], [EPOSTA] e-posta adresini kullanmaktadır.",
+      "match": true
+    },
+    {
+      "id": "KVKK_025",
+      "original": "TC kimlik numarası 98765432101 olan Hüseyin Aksoy sistemde aktiftir.",
+      "expected": "TC kimlik numarası [TC_KIMLIK_NO] olan [KISI_ADI] sistemde aktiftir.",
+      "actual": "TC kimlik numarası [TC_KIMLIK_NO] olan [KISI_ADI] sistemde aktiftir.",
+      "match": true
+    },
+    {
+      "id": "KVKK_026",
+      "original": "Destek elemanı Tarık Bey, 0535-999-88-77 numaralı telefondan çağrıları yanıtlamalıdır.",
+      "expected": "Destek elemanı [KISI_ADI] Bey, [TELEFON] numaralı telefondan çağrıları yanıtlamalıdır.",
+      "actual": "Destek elemanı [KISI_ADI] Bey, [TELEFON] numaralı telefondan çağrıları yanıtlamalıdır.",
+      "match": true
+    },
+    {
+      "id": "KVKK_027",
+      "original": "Finans müdürü Sn. Burak Kaya, burak.kaya@sirket.com adresinden bütçe raporunu iletti.",
+      "expected": "Finans müdürü Sn. [KISI_ADI], [EPOSTA] adresinden bütçe raporunu iletti.",
+      "actual": "Finans müdürü Sn. [KISI_ADI], [EPOSTA] adresinden bütçe raporunu iletti.",
+      "match": true
+    },
+    {
+      "id": "KVKK_028",
+      "original": "Hemşire Fatma Hanım, fatma@hastane.org e-postasını kontrol etmelidir.",
+      "expected": "Hemşire [KISI_ADI] Hanım, [EPOSTA] e-postasını kontrol etmelidir.",
+      "actual": "[KISI_ADI] Hanım, [EPOSTA] e-postasını kontrol etmelidir.",
+      "match": false
+    },
+    {
+      "id": "KVKK_029",
+      "original": "Geliştirici Ömer Faruk Aksoy, omer.faruk@kod.com adresi üzerinden kod repolarına erişebilir.",
+      "expected": "Geliştirici [KISI_ADI], [EPOSTA] adresi üzerinden kod repolarına erişebilir.",
+      "actual": "Geliştirici [KISI_ADI], [EPOSTA] adresi üzerinden kod repolarına erişebilir.",
+      "match": true
+    },
+    {
+      "id": "KVKK_030",
+      "original": "Kurye Ahmet Bey, 0555-888-22-11 numaralı telefondan müşteriyle iletişim kurmalıdır.",
+      "expected": "Kurye [KISI_ADI] Bey, [TELEFON] numaralı telefondan müşteriyle iletişim kurmalıdır.",
+      "actual": "[KISI_ADI] Bey, [TELEFON] numaralı telefondan müşteriyle iletişim kurmalıdır.",
+      "match": false
+    },
+    {
+      "id": "KVKK_031",
+      "original": "Müşteri Ayşe Çetin, 12121212121 TC kimlik numarasıyla kayıt yaptırmalıdır.",
+      "expected": "Müşteri [KISI_ADI], [TC_KIMLIK_NO] TC kimlik numarasıyla kayıt yaptırmalıdır.",
+      "actual": "Müşteri [KISI_ADI], [TC_KIMLIK_NO] TC kimlik numarasıyla kayıt yaptırmalıdır.",
+      "match": true
+    },
+    {
+      "id": "KVKK_032",
+      "original": "Sayın Gökhan Kara, gokhan.kara@gmail.com adresinize yeni teklif formu iletildi.",
+      "expected": "Sayın [KISI_ADI], [EPOSTA] adresinize yeni teklif formu iletildi.",
+      "actual": "Sayın [KISI_ADI], [EPOSTA] adresinize yeni teklif formu iletildi.",
+      "match": true
+    },
+    {
+      "id": "KVKK_033",
+      "original": "Sistem admini Fatma Hanım, 05412223344 numarasını doğrulama için kullanmalıdır.",
+      "expected": "Sistem admini [KISI_ADI] Hanım, [TELEFON] numarasını doğrulama için kullanmalıdır.",
+      "actual": "Sistem admini [KISI_ADI] Hanım, [TELEFON] numarasını doğrulama için kullanmalıdır.",
+      "match": true
+    },
+    {
+      "id": "KVKK_034",
+      "original": "Av. Mehmet Öztürk, mehmet.ozturk@hukuk.com adresi üzerinden sözleşmeyi paylaştı.",
+      "expected": "Av. [KISI_ADI], [EPOSTA] adresi üzerinden sözleşmeyi paylaştı.",
+      "actual": "Av. [KISI_ADI], [EPOSTA] adresi üzerinden sözleşmeyi paylaştı.",
+      "match": true
+    },
+    {
+      "id": "KVKK_035",
+      "original": "Lütfen 22222222222 TC numaralı Selin Kaya için veri maskeleme testi yapınız.",
+      "expected": "Lütfen [TC_KIMLIK_NO] TC numaralı [KISI_ADI] için veri maskeleme testi yapınız.",
+      "actual": "Lütfen [TC_KIMLIK_NO] TC numaralı [KISI_ADI] için veri maskeleme testi yapınız.",
+      "match": true
+    },
+    {
+      "id": "KVKK_036",
+      "original": "Doktor Ahmet Bey, 0533 999 88 77 numarasından hastayı arayabilmelidir.",
+      "expected": "Doktor [KISI_ADI] Bey, [TELEFON] numarasından hastayı arayabilmelidir.",
+      "actual": "[KISI_ADI] Bey, [TELEFON] numarasından hastayı arayabilmelidir.",
+      "match": false
+    },
+    {
+      "id": "KVKK_037",
+      "original": "Sn. Yasemin Yalçın, yasemin.yalcin@outlook.com adresi üzerinden sisteme giriş yaptı.",
+      "expected": "Sn. [KISI_ADI], [EPOSTA] adresi üzerinden sisteme giriş yaptı.",
+      "actual": "Sn. [KISI_ADI], [EPOSTA] adresi üzerinden sisteme giriş yaptı.",
+      "match": true
+    },
+    {
+      "id": "KVKK_038",
+      "original": "Analist Kemal Çelik, kemal.celik@analiz.com adresini kullanmaktadır.",
+      "expected": "Analist [KISI_ADI], [EPOSTA] adresini kullanmaktadır.",
+      "actual": "Analist [KISI_ADI], [EPOSTA] adresini kullanmaktadır.",
+      "match": true
+    },
+    {
+      "id": "KVKK_039",
+      "original": "Kullanıcı Meral Hanım, meral.hanim@gmail.com adresinden yeni şifre talep etti.",
+      "expected": "Kullanıcı [KISI_ADI] Hanım, [EPOSTA] adresinden yeni şifre talep etti.",
+      "actual": "[KISI_ADI] Hanım, [EPOSTA] adresinden yeni şifre talep etti.",
+      "match": false
+    },
+    {
+      "id": "KVKK_040",
+      "original": "Müşteri Hizmetleri Temsilcisi Ali Bey, 0212 999 88 77 numarasından bilgi verecektir.",
+      "expected": "Müşteri Hizmetleri Temsilcisi [KISI_ADI] Bey, [TELEFON] numarasından bilgi verecektir.",
+      "actual": "[KISI_ADI] Bey, 0212 999 88 77 numarasından bilgi verecektir.",
+      "match": false
+    },
+    {
+      "id": "KVKK_041",
+      "original": "Lütfen test.user@example.com ve 33333333333 TC numaralı kullanıcının kaydını güncelleyin.",
+      "expected": "Lütfen [EPOSTA] ve [TC_KIMLIK_NO] TC numaralı kullanıcının kaydını güncelleyin.",
+      "actual": "Lütfen [EPOSTA] ve [TC_KIMLIK_NO] TC numaralı kullanıcının kaydını güncelleyin.",
+      "match": true
+    },
+    {
+      "id": "KVKK_042",
+      "original": "Sayın Veli Can, 0532-111-22-33 numaralı telefonunuz sistemde güncellenmiştir.",
+      "expected": "Sayın [KISI_ADI], [TELEFON] telefonunuz sistemde güncellenmiştir.",
+      "actual": "Sayın [KISI_ADI], [TELEFON] numaralı telefonunuz sistemde güncellenmiştir.",
+      "match": false
+    },
+    {
+      "id": "KVKK_043",
+      "original": "Teknisyen Canan Hanım, canan.teknik@sirket.com adresinden sunucu durumunu raporladı.",
+      "expected": "Teknisyen [KISI_ADI] Hanım, [EPOSTA] adresinden sunucu durumunu raporladı.",
+      "actual": "[KISI_ADI] Hanım, [EPOSTA] adresinden sunucu durumunu raporladı.",
+      "match": false
+    },
+    {
+      "id": "KVKK_044",
+      "original": "Dr. Halil İbrahim Kaya, halil.kaya@hastane.gov.tr e-posta adresini kaydettirdi.",
+      "expected": "Dr. [KISI_ADI], [EPOSTA] e-posta adresini kaydettirdi.",
+      "actual": "Dr. [KISI_ADI], [EPOSTA] e-posta adresini kaydettirdi.",
+      "match": true
+    },
+    {
+      "id": "KVKK_045",
+      "original": "Kullanıcı Derya Yılmaz, 44444444444 TC numarasıyla doğrulama işlemini başlattı.",
+      "expected": "Kullanıcı [KISI_ADI], [TC_KIMLIK_NO] TC numarasıyla doğrulama işlemini başlattı.",
+      "actual": "Kullanıcı [KISI_ADI], [TC_KIMLIK_NO] TC numarasıyla doğrulama işlemini başlattı.",
+      "match": true
+    },
+    {
+      "id": "KVKK_046",
+      "original": "Sn. Mehmet Şimşek, 0543 987 65 43 numarasından onay kodu gönderildi.",
+      "expected": "Sn. [KISI_ADI], [TELEFON] numarasından onay kodu gönderildi.",
+      "actual": "Sn. [KISI_ADI], [TELEFON] numarasından onay kodu gönderildi.",
+      "match": true
+    },
+    {
+      "id": "KVKK_047",
+      "original": "Hasta kabul memuru Fatma Beyza, fatma.beyza@saglik.gov.tr e-postasını kullanmaktadır.",
+      "expected": "Hasta kabul memuru [KISI_ADI], [EPOSTA] e-postasını kullanmaktadır.",
+      "actual": "Hasta kabul memuru [KISI_ADI], [EPOSTA] e-postasını kullanmaktadır.",
+      "match": true
+    },
+    {
+      "id": "KVKK_048",
+      "original": "Müşterimiz Ahmet Demir (ahmet@demir.com.tr) sipariş durumunu sordu.",
+      "expected": "Müşterimiz [KISI_ADI] ([EPOSTA]) sipariş durumunu sordu.",
+      "actual": "[KISI_ADI] ([EPOSTA]) sipariş durumunu sordu.",
+      "match": false
+    },
+    {
+      "id": "KVKK_049",
+      "original": "Destek mühendisi Kerem Bey, 0216-999-88-77 numarasından yardım sağladı.",
+      "expected": "Destek mühendisi [KISI_ADI] Bey, [TELEFON] numarasından yardım sağladı.",
+      "actual": "Destek mühendisi [KISI_ADI] Bey, 0216-999-88-77 numarasından yardım sağladı.",
+      "match": false
+    },
+    {
+      "id": "KVKK_050",
+      "original": "Sözleşme 55555555555 TC numaralı Hülya Öztürk ile tamamlanmıştır.",
+      "expected": "Sözleşme [TC_KIMLIK_NO] TC numaralı [KISI_ADI] ile tamamlanmıştır.",
+      "actual": "Sözleşme [TC_KIMLIK_NO] TC numaralı [KISI_ADI] ile tamamlanmıştır.",
+      "match": true
+    }
+  ]
+}

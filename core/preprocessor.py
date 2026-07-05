@@ -121,14 +121,24 @@ class TextPreprocessor:
         )
 
     def mask_kvkk(self, text: str) -> str:
-        """TC Kimlik No ve şahıs isimlerini regex ile maskeler (KVKK uyumluluğu için)."""
+        """TC Kimlik No, şahıs isimleri, e-posta ve telefon numaralarını regex ile maskeler (KVKK uyumluluğu için)."""
         if not text:
             return text
 
         # 1. TC Kimlik No maskeleme (11 haneli, 0 ile başlamayan sayılar)
         text = re.sub(r"\b[1-9]\d{10}\b", "[TC_KIMLIK_NO]", text)
 
-        # 2. Ünvan/Hitap içeren isimleri maskeleme (Sayın Ahmet Yılmaz, Dr. Ayşe vb.)
+        # 2. E-posta adresi maskeleme
+        text = re.sub(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", "[EPOSTA]", text)
+
+        # 3. Telefon numarası maskeleme (Türk telefon numarası formatları dahil)
+        text = re.sub(
+            r"\b(?:\+?90[-. ]?)?\(?0?[5-9]\d{2}\)?[-. ]?\d{3}[-. ]?\d{2}[-. ]?\d{2}\b",
+            "[TELEFON]",
+            text
+        )
+
+        # 4. Ünvan/Hitap içeren isimleri maskeleme (Sayın Ahmet Yılmaz, Dr. Ayşe vb.)
         text = re.sub(
             r"\b(?:Sayın|Sn\.|Dr\.|Doç\.|Prof\.|Av\.|Ecz\.)\s+([A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:\s+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)*)\b",
             lambda m: m.group(0).replace(m.group(1), "[KISI_ADI]"),

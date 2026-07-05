@@ -1,8 +1,8 @@
 {
   "corpus": "healthcare_heldout",
   "total_sentences": 113,
-  "actor_precision": 60.9,
+  "actor_precision": 61.9,
   "actor_recall": 41.9,
-  "actor_f1": 49.7,
-  "classification_accuracy": 87.6
+  "actor_f1": 50.0,
+  "classification_accuracy": 88.5
 }

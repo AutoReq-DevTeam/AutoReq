@@ -4,7 +4,7 @@
   "actor_precision": 63.7,
   "actor_recall": 41.6,
   "actor_f1": 50.3,
-  "classification_accuracy": 86.9,
+  "classification_accuracy": 87.3,
   "domain_breakdown": {
     "e-ticaret": {
       "precision": 83.3,
@@ -31,10 +31,11 @@
       "sentences": 13
     },
     "mobil": {
-      "precision": 0,
-      "recall": 0.0,
+      "precision": null,
+      "recall": null,
       "clf_accuracy": 86.7,
-      "sentences": 15
+      "sentences": 15,
+      "actor_note": "N/A — empty ground-truth actor set"
     },
     "iot": {
       "precision": 43.5,
@@ -51,8 +52,10 @@
     "oyun": {
       "precision": 74.1,
       "recall": 54.1,
-      "clf_accuracy": 85.0,
+      "clf_accuracy": 86.7,
       "sentences": 60
     }
-  }
+  },
+  "mobile_excluded_from_actor_avg": true,
+  "actor_avg_note": "Actor extraction averages exclude mobile domain (empty ground-truth set — precision/recall undefined for empty reference sets)"
 }

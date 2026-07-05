@@ -74,9 +74,11 @@ IV. BULGULAR VE DEĞERLENDİRME
 
 [Şekil 4. AutoReq Conflict Detection Arayüzü ve Tespit Edilen Gereksinim Çiftleri]
 
+Veri Kümesi ve Etiketleme Süreci. Değerlendirme veri kümeleri, sekiz farklı yazılım uygulama alanına (e-ticaret, bankacılık, eğitim, kurumsal, mobil uygulama, IoT, SaaS, oyun) ait Türkçe gereksinim ifadelerinden oluşturulmuş sentetik bir corpustur; gerçek proje belgelerinden değil, her alan için oluşturulan temsili örüntülerden türetilmiştir. Bu tercih, gizlilik kısıtları olmaksızın tekrarlanabilir karşılaştırmalı değerlendirme yapılmasına olanak tanımaktadır. Altın standart etiketleme, çalışma kapsamında hazırlanan `annotation_guidelines.md` kılavuzunu kullanan tek bir alan uzmanı tarafından gerçekleştirilmiştir. Etiketleyici yanlılığının ölçülmesi amacıyla, 244 cümlelik geliştirme kümesinden 8 alanı dengeli temsil eden 60 cümlelik rastgele bir alt küme üzerinde İnsan-YZ uyum analizi yapılmış ve %96.67 doğruluk ile 0.9251 Cohen's Kappa ($\kappa$) değerine ulaşılmıştır (bkz. Tablo IV). İki bağımsız insan etiketleyicisi arasındaki inter-annotator agreement (IAA) ölçümü bu çalışmanın kapsamı dışında bırakılmış olup gelecek çalışmalarda ele alınması planlanmaktadır.
+
 Sistemin deneysel değerlendirmesinde üç farklı dataset'ten yararlandık. Development corpus, 8 farklı alanı (e-ticaret, bankacılık, eğitim, kurumsal, mobil uygulama, IoT, SaaS ve oyun) kapsayan 244 cümleden oluşuyor. Generalization yeteneğini sınamak için sisteme geliştirme aşamasında hiç gösterilmeyen, sağlık ve otomotiv (otonom sürüş) alanlarından toplam 113 cümlelik bağımsız bir held-out corpus hazırladık. Conflict detection değerlendirmesi ise 50 kasıtlı çelişki çifti ve araya serpiştirilen kontrol cümleleri dahil toplam 153 gereksinim üzerinde gerçekleştirildi. Tüm değerlendirmeler OpenRouter üzerinden Gemini 2.5 Flash modeliyle yürütüldü.
 
-Development Corpus Sonuçları. Genişletilmiş 244 cümlelik development corpus'ta FR/NFR classification'da %86.5 accuracy (244 cümlenin 211'inde doğru tahmin) elde ettik. Actor extraction'da %63.7 precision ve %41.6 recall (F1 score %50.3) gözlemlendi. Bankacılık ve kurumsal portal gibi alanlarda actor extraction %100.0 precision ve recall değerlerine ulaştı. Yeni eklenen teknik alanlarda ise kural tabanlı yaklaşımdan ötürü actor extraction performansında düşüş yaşanmıştır: IoT (%43.5 precision, %16.7 recall), SaaS (%42.9 precision, %32.6 recall) ve oyun (%74.1 precision, %54.1 recall). Bir not düşmek gerekir. Mobil uygulama alanında beklenen aktörün bulunmaması (boş ground-truth listesi) nedeniyle actor extraction metrikleri matematiksel olarak %0 çıkmıştır. Bu bir hata değil, dataset'in doğasından kaynaklanan bir özellik. Sektörel kırılım Tablo II'de detaylı olarak sunuluyor.
+Development Corpus Sonuçları. Genişletilmiş 244 cümlelik development corpus'ta FR/NFR classification'da %86.5 accuracy (244 cümlenin 211'inde doğru tahmin) elde ettik. Aktör çıkarımında %63.7 precision ve %41.6 recall (F1 score %50.3) gözlemlendi; bu ortalama, ground-truth kümesi boş olduğu için değerlendirme dışı bırakılan mobil uygulama alanı hariç tutularak hesaplanmıştır. Bankacılık ve kurumsal portal gibi alanlarda actor extraction %100.0 precision ve recall değerlerine ulaştı. Yeni eklenen teknik alanlarda ise kural tabanlı yaklaşımdan ötürü actor extraction performansında düşüş yaşanmıştır: IoT (%43.5 precision, %16.7 recall), SaaS (%42.9 precision, %32.6 recall) ve oyun (%74.1 precision, %54.1 recall). Sektörel kırılım Tablo II'de detaylı olarak sunuluyor.
 
 TABLO II
 SEKTÖREL DEVELOPMENT CORPUS PERFORMANS KIRILIMI
@@ -85,11 +87,11 @@ Bankacılık              10              %100.0              %100.0            
 Kurumsal Portal         13              %100.0              %100.0             %100.0
 Eğitim                  12              %83.3               %100.0             %100.0
 E-Ticaret               13              %100.0              %83.3              %71.4
-Mobil Uygulama          15              %86.7               %0.0 *             %0.0 *
+Mobil Uygulama          15              %86.7               N/A †              N/A †
 IoT                     61              %83.6               %43.5              %16.7
 SaaS                    60              %83.3               %42.9              %32.6
 Oyun                    60              %85.0               %74.1              %54.1
-* Mobil dataset'te beklenen aktör bulunmadığı için metrik matematiksel olarak %0 çıkmıştır.
+† Mobil uygulama alanında ground-truth aktör kümesi boş olduğundan precision ve recall matematiksel olarak tanımsızdır; bu alan aktör metriği ortalamalarına dahil edilmemiştir.
 
 TABLO III
 AUTOREQ GENEL PERFORMANS VE METRİK SONUÇLARI
@@ -101,6 +103,16 @@ Actor Extraction F1 Score            %50.3                            %49.7     
 Conflict Detection Recall            -                                -                                %98.0
 Conflict Detection Precision         -                                -                                %94.2
 Conflict Detection F1 Score          -                                -                                %96.1
+
+TABLO IV
+KVKK KİŞİSEL VERİ MASKELEME DEĞERLENDİRMESİ (n = 50 test cümlesi)
+Varlık Türü     TP    FP    FN    Kesinlik (P)    Duyarlılık (R)    F1
+KISI_ADI        45    2     0     %95.7           %100.0            %97.8
+EPOSTA          25    0     0     %100.0          %100.0            %100.0
+TC_KIMLIK_NO    10    0     0     %100.0          %100.0            %100.0
+TELEFON         11    0     4     %100.0          %73.3             %84.6
+Genel           91    2     4     %97.9           %95.8             %96.8
+‡ TELEFON kaçırmaları (FN=4), kesme işareti içermeyen şehiriçi hat formatları (0212 999 88 77) gibi regex kalıbının dışında kalan varyantlardan kaynaklanmaktadır. Bu varyantlar Sınırlamalar bölümünde ele alınmaktadır.
 
 Held-out Corpus Sonuçları. Sistemin hiç görmediği sağlık ve otomotiv (otonom sürüş) alanlarından toplam 113 cümle üzerinde FR/NFR classification accuracy %87.6 olarak ölçüldü. Actor extraction'da ise %60.9 precision ve %41.9 recall (F1 score %49.7) elde edildi. Bu performans düşüşünü yakından incelediğimizde temel sebebin mevcut NER modülünün rule-based lexicon (lemma lookup) eşleştirmelerine bağımlı oluşu olduğunu gördük.
 
@@ -118,11 +130,25 @@ Ablation Analysis. LLM analiz katmanını tamamen devre dışı bıraktığımı
 
 Software Quality Assurance. Pipeline'ın mekanik ve yazılımsal kararlılığını doğrulamak için kapsamlı bir automated test suite geliştirdik. Toplam 190 unit ve integration test, bunların 106'sı snapshot test olmak üzere, tamamı başarıyla geçti. Test suite'in ortalama çalışma süresi 501.52 saniye olup testler tamamen izole ve kararlı bir şekilde yürütülüyor.
 
-V. SONUÇ VE GELECEK ÇALIŞMALAR
+V. SINIRLAMALAR
 
-Bu çalışmada, Türkçe paydaş metinlerinden yola çıkarak yazılım gereksinim analizi yapan ve ISO/IEC/IEEE 29148 uyumlu SRS belgesi dahil dört farklı geliştirme artefaktını tam otomatik üreten end-to-end ilk pipeline olan AutoReq'i sunduk. Geliştirdiğimiz hybrid mimari, Stanza tabanlı NLP preprocessing'i iki paralel LLM analiz modülüyle birleştiriyor. Sekiz sektörü kapsayan 244 cümlelik genişletilmiş development corpus'ta %86.5 FR/NFR accuracy ve %50.3 actor extraction F1 score elde edildi. 50 çelişki çifti içeren bağımsız dataset'te %98.0 recall ve %94.2 precision ile conflict detection gerçekleştirildi. Sistemin hiç görmediği sağlık ve otomotiv alanlarından oluşan 113 cümlelik held-out corpus'ta classification accuracy %87.6 olarak ölçüldü. Generalization testlerinde, özellikle otomotiv gibi teknik terminolojisi yoğun alanlarda actor extraction performansının düşmesi (F1 score %49.7), rule-based lexicon yaklaşımının sınırlarını net biçimde ortaya koydu.
+Bu çalışmanın yorumlanmasında aşağıdaki sınırlamalar göz önünde bulundurulmalıdır.
 
-Gelecek çalışmalarda önceliğimiz, rule-based actor extraction'ın yerine Türkçe dil yapısına özel eğitilmiş deep learning tabanlı (transformer/BERT) bir NER modelinin veya LLM tabanlı bir entity extractor'ın entegre edilmesi. Beklentimiz, bu değişikliğin özellikle otomotiv gibi compound technical term'lerin yoğun olduğu alanlarda actor extraction performansını ciddi ölçüde artıracağı yönünde. Bunun ötesinde, sisteme İngilizce ve Almanca dil desteklerinin eklenmesini, üretilen backlog ögelerinin Jira ve Azure DevOps API'leri aracılığıyla doğrudan proje yönetim araçlarına aktarılmasını ve gerçek projelerde çalışan iş analistleriyle user experience çalışmaları yürütülmesini hedefliyoruz.
+Örneklem büyüklüğü ve dil. Geliştirme veri kümesi 244, held-out veri kümesi ise 113 cümleden oluşmaktadır. Bu hacimler, özellikle sektör başına düşen örnek sayısı (10–61 cümle) göz önüne alındığında, geniş kapsamlı istatistiksel genelleme yapmak için sınırlı kalabilir. Çalışma Türkçe ile sınırlıdır; diğer agglutinative dillere genellenebilirlik deneysel olarak gösterilmemiştir.
+
+Kural tabanlı aktör çıkarımının bilinmeyen alanlardaki performansı. Rule-based actor extraction, geliştirme aşamasında tanımlı alanlarda güçlü sonuçlar vermekte (bankacılık, kurumsal: F1 %100.0); ancak held-out setinde F1 skoru %49.7'ye gerilemiş, otomotiv gibi bileşik teknik terim içeren alanlarda ise bu düşüş daha belirgin olmuştur. Kök listesinin (lexicon) kapsama alanı dışında kalan terminoloji, önemli miktarda false negative üretmektedir.
+
+Üretilen artefaktların kalitesi. Bu çalışmada değerlendirilen metrikler (FR/NFR classification, actor extraction, conflict detection) pipeline'ın ara adımlarını kapsamaktadır. Üretilen SRS belgelerinin ISO/IEC/IEEE 29148 standardına fiilî uyumu, User Story kalitesi ve Gherkin senaryolarının çalıştırılabilirliği bağımsız insan değerlendirmesiyle ya da otomatik metriklerle ölçülmemiştir. Bu, "ilk end-to-end pipeline" iddiasının deneysel olarak eksik kalan boyutudur.
+
+KVKK maskeleme eksiklikleri. KVKK maskeleme modülü genel olarak yüksek doğruluk sergilemiştir (genel F1 %96.8). Bununla birlikte, belirli telefon numarası formatları (özellikle tire veya boşluk içermeyen şehiriçi hat biçimleri) regex kalıplarının dışında kalarak maskelenmeden geçmektedir (Recall %73.3). Bu durum, veri gizliliği açısından kısmi bir risk oluşturmaktadır.
+
+Etiketleme metodolojisi. Ground-truth etiketleme tek bir alan uzmanı tarafından yapılmıştır. İki bağımsız insan arasındaki inter-annotator agreement (IAA) ölçülmemiştir. Etiketleyici yanlılığının yokluğunu doğrulamak amacıyla İnsan-YZ uyum analizi gerçekleştirilmiş ve 0.9251 Cohen's Kappa değerine ulaşılmıştır; ancak bu yaklaşım, insan IAA'nın yerini tam olarak tutmamaktadır. Ayrıca corpus, gerçek proje belgelerinden değil sentetik örneklerden oluşmakta olup bu durum dış geçerliliği (external validity) kısıtlamaktadır.
+
+VI. SONUÇ VE GELECEK ÇALIŞMALAR
+
+Bu çalışmada, Türkçe paydaş metinlerinden yola çıkarak yazılım gereksinim analizi yapan ve ISO/IEC/IEEE 29148 uyumlu SRS belgesi dahil dört farklı geliştirme artefaktını tam otomatik üreten end-to-end ilk pipeline olan AutoReq sunulmuştur. Geliştirilen hybrid mimari, Stanza tabanlı NLP preprocessing'i iki paralel LLM analiz modülüyle birleştirmektedir. Sekiz sektörü kapsayan 244 cümlelik genişletilmiş development corpus'ta %86.5 FR/NFR accuracy ve %50.3 actor extraction F1 skoru elde edilmiştir (mobil uygulama alanı aktör metriklerinden hariç tutulmuştur). 50 çelişki çifti içeren bağımsız dataset'te %98.0 recall ve %94.2 precision ile conflict detection gerçekleştirilmiştir. Sistemin hiç görmediği sağlık ve otomotiv alanlarından oluşan 113 cümlelik held-out corpus'ta classification accuracy %87.6 olarak ölçülmüştür. Generalization testlerinde, özellikle otomotiv gibi teknik terminolojisi yoğun alanlarda actor extraction performansının düşmesi (F1 score %49.7), rule-based lexicon yaklaşımının sınırlarını net biçimde ortaya koymaktadır.
+
+Gelecek çalışmalarda öncelik, rule-based actor extraction'ın yerine Türkçe dil yapısına özel eğitilmiş derin öğrenme tabanlı (transformer/BERT) bir NER modelinin veya LLM tabanlı bir entity extractor'ın entegre edilmesine verilecektir. Bu değişikliğin özellikle otomotiv gibi bileşik teknik terimlerin yoğun olduğu alanlarda actor extraction performansını ciddi ölçüde artıracağı öngörülmektedir. Bunun ötesinde, sisteme İngilizce ve Almanca dil desteklerinin eklenmesi, üretilen backlog ögelerinin Jira ve Azure DevOps API'leri aracılığıyla doğrudan proje yönetim araçlarına aktarılması ve üretilen artefaktların (SRS, User Stories, Gherkin) bağımsız insan değerlendiricileriyle kalite değerlendirmesinin yapılması hedeflenmektedir.
 
 KAYNAKLAR
 

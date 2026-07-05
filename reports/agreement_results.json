@@ -1,0 +1,785 @@
+{
+  "agreement_accuracy_percent": 95.0,
+  "cohens_kappa": 0.8892,
+  "total_sentences": 60,
+  "annotations": [
+    {
+      "id": "REQ_001",
+      "text": "Kullanıcı sepetine ürün ekleyebilmeli ve ödeme adımına geçebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "kullanıcı"
+      ],
+      "annotator2_actors": [
+        "kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_002",
+      "text": "Ödeme sayfasında kullanıcı oturumu zorunlu olmamalı; misafir kullanıcı da ödeme yapabilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "misafir kullanıcı",
+        "kullanıcı"
+      ],
+      "annotator2_actors": [
+        "kullanıcı",
+        "misafir kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_003",
+      "text": "Ödeme sayfasına erişim yalnızca kayıtlı ve giriş yapmış kullanıcılara açık olmalıdır.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [
+        "kullanıcı"
+      ],
+      "annotator2_actors": [
+        "kullanıcı"
+      ],
+      "type_agreement": false,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_004",
+      "text": "Sistem, stokta olmayan ürünleri sepete eklenmesine izin vermemelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [
+        "sistem"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_005",
+      "text": "Sistem, stokta olmayan ürünler sepete eklenebilmeli; ancak ödeme sırasında uyarı gösterilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [
+        "sistem"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_006",
+      "text": "Kullanıcı, siparişini tamamlamadan önce adres bilgisini girmek zorunda olmamalıdır.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "kullanıcı"
+      ],
+      "annotator2_actors": [
+        "kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_007",
+      "text": "Her sipariş için geçerli bir teslimat adresi zorunlu tutulmalıdır.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": false,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_014",
+      "text": "Müşteri mobil uygulama üzerinden hesap bakiyesini görüntüleyebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "müşteri"
+      ],
+      "annotator2_actors": [
+        "müşteri"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_015",
+      "text": "Müşteri EFT ve havale işlemi gerçekleştirebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "müşteri"
+      ],
+      "annotator2_actors": [
+        "müşteri"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_016",
+      "text": "Müşteri kredi kartı ekstresi PDF olarak indirilebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "müşteri"
+      ],
+      "annotator2_actors": [
+        "müşteri"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_017",
+      "text": "Müşteri döviz alım satım işlemi yapabilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "müşteri"
+      ],
+      "annotator2_actors": [
+        "müşteri"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_018",
+      "text": "Yatırım fonu alım satımı mobil uygulama üzerinden gerçekleştirilebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_019",
+      "text": "Müşteri şube randevusu oluşturabilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "müşteri"
+      ],
+      "annotator2_actors": [
+        "müşteri"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_020",
+      "text": "Müşteri destek hattını uygulama içinden arayabilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "müşteri"
+      ],
+      "annotator2_actors": [
+        "müşteri"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_024",
+      "text": "Sistem hızlı olmalıdır.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_025",
+      "text": "Öğrenciler sistemi kolayca kullanabilmelidir.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [
+        "öğrenci"
+      ],
+      "annotator2_actors": [
+        "öğrenci"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_026",
+      "text": "Platform güvenli olmalıdır.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_027",
+      "text": "İçerikler kaliteli sunulmalıdır.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_028",
+      "text": "Sistem her zaman erişilebilir olmalıdır.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_029",
+      "text": "Bildirimler zamanında gönderilmelidir.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_030",
+      "text": "Öğretmen raporları düzenli paylaşabilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "öğretmen"
+      ],
+      "annotator2_actors": [
+        "öğretmen"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_036",
+      "text": "Çalışan kendi izin taleplerini sisteme girebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "çalışan"
+      ],
+      "annotator2_actors": [
+        "çalışan"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_037",
+      "text": "Yönetici, ekibindeki çalışanların izin taleplerini onaylayabilmeli veya reddedebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "yönetici"
+      ],
+      "annotator2_actors": [
+        "yönetici",
+        "çalışan"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_038",
+      "text": "İK uzmanı, tüm departmanlardaki izin süreçlerini raporlayabilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "ik uzmanı"
+      ],
+      "annotator2_actors": [
+        "İK uzmanı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_039",
+      "text": "Sistem yöneticisi kullanıcı yetki matrisini güncelleyebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "sistem yöneticisi"
+      ],
+      "annotator2_actors": [
+        "sistem yöneticisi"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_040",
+      "text": "Çalışan bordro bilgilerini görüntüleyebilmeli; yalnızca kendi bilgilerine erişebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "çalışan"
+      ],
+      "annotator2_actors": [
+        "çalışan"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_041",
+      "text": "İK uzmanı, çalışan özlük dosyasına belge ekleyebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "ik uzmanı"
+      ],
+      "annotator2_actors": [
+        "İK uzmanı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_042",
+      "text": "Yönetici, ekibinin performans değerlendirme formlarını doldurabilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "yönetici"
+      ],
+      "annotator2_actors": [
+        "yönetici"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_049",
+      "text": "Uygulama, Android 10 ve üzeri ile iOS 15 ve üzeri sürümlerde çalışmalıdır.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_050",
+      "text": "Uygulama açılış süresi soğuk başlatmada 3 saniyeyi geçmemelidir.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_051",
+      "text": "Sayfa geçişleri 500 milisaniyenin altında tamamlanmalıdır.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_052",
+      "text": "Uygulama, 10.000 eş zamanlı kullanıcıyı desteklemelidir.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [
+        "kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_053",
+      "text": "Çevrimdışı modda son 7 günlük veri önbellekten erişilebilir olmalıdır.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_054",
+      "text": "Uygulama batarya tüketimi günde 2 saat aktif kullanımda %5'i geçmemelidir.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_055",
+      "text": "Tüm ağ iletişimi TLS 1.3 protokolüyle şifrelenmelidir.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_064",
+      "text": "Akıllı termostat, ortam sıcaklığını 0.5°C hassasiyetle ölçebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [
+        "akıllı termostat"
+      ],
+      "annotator2_actors": [
+        "akıllı termostat"
+      ],
+      "type_agreement": false,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_065",
+      "text": "Kullanıcı, mobil uygulama üzerinden akıllı aydınlatma sistemini açıp kapatabilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "kullanıcı"
+      ],
+      "annotator2_actors": [
+        "kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_066",
+      "text": "Sistem, bağlı tüm IoT cihazlarının anlık durumunu görüntüleyebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "sistem"
+      ],
+      "annotator2_actors": [
+        "sistem"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_067",
+      "text": "Akıllı kilit, yetkili kullanıcıların parmak iziyle kapıyı açmasına izin vermelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "akıllı kilit",
+        "yetkili kullanıcı"
+      ],
+      "annotator2_actors": [
+        "akıllı kilit",
+        "kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_068",
+      "text": "Sistem yöneticisi, yeni bir IoT cihazını sisteme kaydedebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "sistem yöneticisi"
+      ],
+      "annotator2_actors": [
+        "sistem yöneticisi"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_069",
+      "text": "Akıllı sulama sistemi, hava durumu verilerine göre sulama programını otomatik olarak ayarlamalıdır.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "akıllı sulama sistemi"
+      ],
+      "annotator2_actors": [
+        "akıllı sulama sistemi"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_070",
+      "text": "Kullanıcı, akıllı prizlerin enerji tüketimini gerçek zamanlı olarak izleyebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "kullanıcı"
+      ],
+      "annotator2_actors": [
+        "kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_071",
+      "text": "Sistem, belirlenen eşik değerler aşıldığında kullanıcılara bildirim göndermelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "sistem",
+        "kullanıcı"
+      ],
+      "annotator2_actors": [
+        "kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_125",
+      "text": "Kullanıcı, abonelik planını istediği zaman yükseltebilmeli veya düşürebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "Kullanıcı"
+      ],
+      "annotator2_actors": [
+        "kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_126",
+      "text": "Sistem, yeni bir kullanıcı kaydı yapıldığında otomatik olarak hoş geldin e-postası göndermelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "Sistem"
+      ],
+      "annotator2_actors": [
+        "sistem",
+        "kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_127",
+      "text": "Tenant yöneticisi, kendi tenant'ına ait kullanıcıları yönetebilmelidir (ekleme, silme, düzenleme).",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "Tenant yöneticisi"
+      ],
+      "annotator2_actors": [
+        "tenant yönetici"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_128",
+      "text": "Uygulama, farklı cihazlarda (masaüstü, mobil) duyarlı bir arayüz sunmalıdır.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_129",
+      "text": "Sistem, kullanıcı verilerini endüstri standardı şifreleme yöntemleriyle korumalıdır.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [
+        "Sistem"
+      ],
+      "annotator2_actors": [
+        "sistem"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_130",
+      "text": "Kullanıcı, faturalandırma geçmişini ve ödeme bilgilerini görüntüleyebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "Kullanıcı"
+      ],
+      "annotator2_actors": [
+        "kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_131",
+      "text": "Sistem, aylık kullanım raporlarını otomatik olarak oluşturup tenant yöneticisine e-posta ile göndermelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "Sistem",
+        "tenant yöneticisi"
+      ],
+      "annotator2_actors": [
+        "sistem",
+        "tenant yönetici"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_132",
+      "text": "Uygulama, %99.9 çalışma süresi garantisi vermelidir.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_185",
+      "text": "Oyuncu, oyun içi mağazadan sanal para birimi kullanarak eşya satın alabilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "oyuncu"
+      ],
+      "annotator2_actors": [
+        "oyuncu"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_186",
+      "text": "Sistem, oyuncunun ilerlemesini otomatik olarak kaydetmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "sistem"
+      ],
+      "annotator2_actors": [
+        "sistem",
+        "oyuncu"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_187",
+      "text": "Oyun, 1080p çözünürlükte akıcı bir şekilde çalışmalıdır.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_188",
+      "text": "Kullanıcı, oyun ayarlarını kişiselleştirebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "kullanıcı"
+      ],
+      "annotator2_actors": [
+        "kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_189",
+      "text": "Oyun sunucusu, aynı anda en az 100.000 oyuncuyu destekleyebilmelidir.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [
+        "oyun sunucusu"
+      ],
+      "annotator2_actors": [
+        "oyuncu",
+        "sunucu"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_190",
+      "text": "Oyuncu, diğer oyuncularla sohbet edebilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "oyuncu"
+      ],
+      "annotator2_actors": [
+        "oyuncu"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_191",
+      "text": "Sistem, hile yapan oyuncuları tespit edip cezalandırmalıdır.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "sistem"
+      ],
+      "annotator2_actors": [
+        "sistem",
+        "oyuncu"
+      ],
+      "type_agreement": true,
+      "actor_agreement": false
+    },
+    {
+      "id": "REQ_192",
+      "text": "Oyun, 5 saniyeden kısa sürede yüklenmelidir.",
+      "annotator1_req_type": "NON_FUNCTIONAL",
+      "annotator2_req_type": "NON_FUNCTIONAL",
+      "annotator1_actors": [],
+      "annotator2_actors": [],
+      "type_agreement": true,
+      "actor_agreement": true
+    },
+    {
+      "id": "REQ_193",
+      "text": "Kullanıcı, farklı oyun modları arasında geçiş yapabilmelidir.",
+      "annotator1_req_type": "FUNCTIONAL",
+      "annotator2_req_type": "FUNCTIONAL",
+      "annotator1_actors": [
+        "kullanıcı"
+      ],
+      "annotator2_actors": [
+        "kullanıcı"
+      ],
+      "type_agreement": true,
+      "actor_agreement": true
+    }
+  ]
+}
