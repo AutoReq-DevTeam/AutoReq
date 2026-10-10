@@ -1,0 +1,16 @@
+{
+  "total_sentences": 63,
+  "nlp_only": {
+    "mean_seconds": 0.559,
+    "std_seconds": 0.125,
+    "raw_count": 63,
+    "filtered_count": 49
+  },
+  "hybrid": {
+    "mean_seconds": 5.423,
+    "std_seconds": 1.997,
+    "raw_count": 63,
+    "filtered_count": 61
+  },
+  "added_latency": 4.864
+}

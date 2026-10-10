@@ -1,0 +1,30 @@
+{
+  "corpus": "heldout_domain_breakdown",
+  "total_sentences": 113,
+  "actor_precision": 60.9,
+  "actor_recall": 41.9,
+  "actor_f1": 49.7,
+  "classification_accuracy": 87.6,
+  "domain_breakdown": {
+    "healthcare": {
+      "sentences": 30,
+      "actor_tp": 19,
+      "actor_fp": 0,
+      "actor_fn": 0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "clf_accuracy": 96.7
+    },
+    "automotive": {
+      "sentences": 83,
+      "actor_tp": 20,
+      "actor_fp": 25,
+      "actor_fn": 54,
+      "precision": 44.4,
+      "recall": 27.0,
+      "f1": 33.6,
+      "clf_accuracy": 84.3
+    }
+  }
+}
