@@ -61,8 +61,8 @@
 ### 🛠 Core NLP Engine (Layer 1)
 - **Text Preprocessing** — Sentence-level tokenization, stopword removal, and lemmatization using Stanza Turkish pipeline
 - **KVKK Data Masking** — Auto-masks Turkish ID numbers (`[TC_KIMLIK_NO]`) and personal names (`[KISI_ADI]`) before LLM processing, with sentence-start analysis and exclusion lists to prevent false positives
-- **Hybrid FR/NFR Classification** — 3-layer approach: (1) Turkish verb suffix detection (regex), (2) NFR keyword matching (55+ terms), (3) LLM few-shot fallback for ambiguous cases → **94.7% accuracy**
-- **Actor & Object Extraction** — Multi-layer NER: lemma table (80+ actor lemmas), dependency parsing (`nsubj`/`nsubj:pass`), SOV syntactic patterns, and multi-word actor detection (18 bigram labels) → **86.5% F1 score**
+- **Hybrid FR/NFR Classification** — 3-layer approach: (1) Turkish verb suffix detection (regex), (2) NFR keyword matching (55+ terms), (3) LLM few-shot fallback for ambiguous cases
+- **Actor & Object Extraction** — Multi-layer NER: lemma table (80+ actor lemmas), dependency parsing (`nsubj`/`nsubj:pass`), SOV syntactic patterns, and multi-word actor detection (18 bigram labels)
 - **Priority Detection** — Rule-based priority scoring with negation detection and compound pattern exclusion
 
 ### 🧠 Intelligent Analysis (Layer 2 — LLM-Powered)
@@ -165,19 +165,7 @@ Raw Text ───────────┤                                   
 
 ## 📊 Performance Metrics
 
-Evaluated on 3 independent datasets:
-
-| Metric | Dev Corpus (244 sentences, 8 domains) | Held-out Corpus (113 sentences, 2 new domains) | Conflict Dataset (153 sentences, 50 conflict pairs) |
-|---|---|---|---|
-| **FR/NFR Classification** | 94.7% accuracy | 87.6% accuracy | — |
-| **Actor Extraction — Precision** | 92.4% | 61.9% | — |
-| **Actor Extraction — Recall** | 81.2% | 41.9% | — |
-| **Actor Extraction — F1** | 86.5% | 50.0% | — |
-| **Conflict Detection — Precision** | — | — | 94.2% |
-| **Conflict Detection — Recall** | — | — | 98.0% |
-| **Conflict Detection — F1** | — | — | 96.1% |
-
-> **Note:** Held-out corpus covers healthcare and automotive (autonomous driving) domains never seen during development. The drop in actor extraction F1 (50.0%) reflects limitations of rule-based NER with unseen technical terminology — future work targets transformer-based NER integration.
+Evaluation scripts and datasets are included in this repository. Performance depends on the dataset, evaluation protocol, and model configuration. Please consult the accompanying manuscript for the reported experimental results.
 
 ---
 
@@ -442,8 +430,8 @@ pytest tests/test_core.py -v
 ```
 Phase 1 — Core Analysis Engine                                 ✅ Complete
 ├── ✅ Text preprocessing pipeline (Stanza + KVKK masking)
-├── ✅ 3-layer hybrid FR/NFR classifier (94.7% accuracy)
-├── ✅ Multi-layer actor & object extraction (86.5% F1)
+├── ✅ 3-layer hybrid FR/NFR classifier
+├── ✅ Multi-layer actor & object extraction
 └── ✅ Rule-based priority detection with negation handling
 
 Phase 2 — Intelligent LLM Modules                              ✅ Complete
